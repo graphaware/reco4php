@@ -19,6 +19,12 @@ class DummyEngine extends BaseRecommendationEngine
         );
     }
 
+    public function postProcessors()
+    {
+        // TODO: Implement postProcessors() method.
+    }
+
+
     public function blacklistBuilders()
     {
         // TODO: Implement blacklistBuilders() method.

@@ -48,7 +48,11 @@ class Recommendation
      */
     public function addScore(Score $score)
     {
-        $this->scores[] = $score;
+        if (array_key_exists($score->reason(), $this->scores)) {
+            $this->scores[$score->reason()]->increment($score->score());
+        } else {
+            $this->scores[$score->reason()] = $score;
+        }
         $this->totalScore += $score->score();
     }
 

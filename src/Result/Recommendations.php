@@ -13,7 +13,7 @@ namespace GraphAware\Reco4PHP\Result;
 
 use GraphAware\Common\Type\NodeInterface;
 
-class Recommendations implements \Iterator, \Countable
+class Recommendations
 {
     /**
      * @var int
@@ -55,7 +55,7 @@ class Recommendations implements \Iterator, \Countable
      */
     public function getItems()
     {
-        return $this->recommendations;
+        return array_values($this->recommendations);
     }
 
     /**
@@ -64,19 +64,6 @@ class Recommendations implements \Iterator, \Countable
     public function size()
     {
         return $this->count();
-    }
-
-    /**
-     * @return float
-     */
-    public function totalScore()
-    {
-        $score = 0.0;
-        foreach ($this->recommendations as $recommendation) {
-            $score += (float) $recommendation->totalScore();
-        }
-
-        return $score;
     }
 
     /**
@@ -125,6 +112,13 @@ class Recommendations implements \Iterator, \Countable
     public function count()
     {
         return count($this->recommendations);
+    }
+
+    public function sort()
+    {
+        usort($this->recommendations, function(Recommendation $recommendationA, Recommendation $recommendationB){
+            return $recommendationA->totalScore() <= $recommendationB->totalScore();
+        });
     }
 
 }

@@ -43,7 +43,7 @@ class RecommendationExecutor
     {
         $result = $resultCollection->get($engine->name());
         foreach ($result->records() as $record) {
-            $recommendations->add($record->value("reco"), new Score($record->value("score")));
+            $recommendations->add($record->value("reco"), new Score($record->value("score"), $engine->name()));
         }
     }
 }

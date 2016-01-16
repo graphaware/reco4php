@@ -21,6 +21,7 @@ class DemoTest extends \PHPUnit_Framework_TestCase
         if ($input) {
             $s = microtime(true);
             $recommendations = $recommender->getRecommender("dummy")->recommend($input);
+            echo 'number of recommendations are : ' . $recommendations->size() . PHP_EOL;
             echo microtime(true) - $s . PHP_EOL;
         }
     }

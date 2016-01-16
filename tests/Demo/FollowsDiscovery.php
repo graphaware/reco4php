@@ -11,7 +11,7 @@ class FollowsDiscovery extends SingleDiscoveryEngine
         return "MATCH (input)-[:FOLLOWS]->(friend)-[:FOLLOWS]->(fof)
         RETURN fof as reco, count(*) as score
         ORDER BY score DESC
-        LIMIT 100";
+        LIMIT 500";
     }
 
     public function name()

@@ -35,6 +35,10 @@ class RecommenderService
         $this->logger = null !== $logger ? $logger : new NullLogger();
     }
 
+    /**
+     * @param $name
+     * @return \GraphAware\Reco4PHP\Engine\RecommendationEngine
+     */
     public function getRecommender($name)
     {
         if (!array_key_exists($name, $this->engines)) {

@@ -22,10 +22,16 @@ interface RecommendationEngine
 
     public function blacklistBuilders();
 
+    public function postProcessors();
+
     public function filters();
 
     public function loggers();
 
+    /**
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @return \GraphAware\Reco4PHP\Result\Recommendations
+     */
     public function recommend(NodeInterface $input);
 
     public function setDatabaseService(DatabaseService $databaseService);

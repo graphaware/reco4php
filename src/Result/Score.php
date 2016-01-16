@@ -42,6 +42,12 @@ class Score
         return $this->score;
     }
 
+
+    public function increment($v)
+    {
+        $this->score += (float) $v;
+    }
+
     /**
      * @return string
      */
