@@ -10,7 +10,7 @@ class WatchDiscoveryEngine extends SingleDiscoveryEngine
     {
         return "MATCH (input)-[:WATCH]->(repo)<-[:WATCH]-(reco)
         WHERE NOT (input)-[:FOLLOWS]->(reco)
-        RETURN reco, 1 as score";
+        RETURN reco";
     }
 
     public function name()
@@ -18,4 +18,8 @@ class WatchDiscoveryEngine extends SingleDiscoveryEngine
         return "user_via_watch";
     }
 
+    public function defaultScore()
+    {
+        return 10;
+    }
 }

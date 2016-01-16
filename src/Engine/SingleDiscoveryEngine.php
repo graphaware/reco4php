@@ -20,7 +20,7 @@ abstract class SingleDiscoveryEngine extends BaseCypherAware implements Discover
 {
     public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record)
     {
-        $score = $record->value($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
+        $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
 
         return new Score($score, $this->name());
     }

@@ -50,6 +50,14 @@ class Recommendations
         $this->getOrCreate($item)->addScore($score);
     }
 
+    public function remove(Recommendation $recommendation)
+    {
+        if (!array_key_exists($recommendation->item()->identity(), $this->recommendations)) {
+            return;
+        }
+        unset($this->recommendations[$recommendation->item()->identity()]);
+    }
+
     /**
      * @return \GraphAware\Reco4PHP\Result\Recommendation[]
      */

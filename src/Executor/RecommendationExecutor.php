@@ -36,6 +36,8 @@ class RecommendationExecutor
             $this->getRecommendationsFromResult($input, $discoveryResult, $discoveryEngine, $recommendations);
         }
 
+        $this->removeIrrelevant($input, $engine, $recommendations);
+
         return $recommendations;
     }
 
@@ -45,6 +47,17 @@ class RecommendationExecutor
 
         foreach ($result->records() as $record) {
             $recommendations->add($record->value("reco"), $engine->buildScore($input, $record->value($engine->recoResultName()), $record));
+        }
+    }
+
+    public function removeIrrelevant(NodeInterface $input, RecommendationEngine $engine, Recommendations $recommendations)
+    {
+        foreach ($recommendations->getItems() as $recommendation) {
+            foreach ($engine->filters() as $filter) {
+                if (!$filter->doInclude($input, $recommendation->item())) {
+                    $recommendations->remove($recommendation);
+                }
+            }
         }
     }
 }
