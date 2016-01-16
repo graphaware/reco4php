@@ -1,0 +1,30 @@
+{
+    "name": "graphaware/reco4php",
+    "description": "Recommendation Framework for PHP",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^5.1"
+    },
+    "license": "ApacheV2",
+    "authors": [
+        {
+            "name": "GraphAware Limited",
+            "email": "reco4php@graphaware.com"
+        }
+    ],
+    "require": {
+        "graphaware/neo4j-php-client": "4.0.x-dev",
+        "symfony/event-dispatcher": "^2.7",
+        "psr/log": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GraphAware\\Reco4PHP\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GraphAware\\Reco4PHP\\Tests\\": "tests/"
+        }
+    }
+}
