@@ -3,6 +3,7 @@
 namespace GraphAware\Reco4PHP\Tests\Demo;
 
 use GraphAware\Reco4PHP\Engine\BaseRecommendationEngine;
+use GraphAware\Reco4PHP\Filter\ExcludeSelf;
 
 class DummyEngine extends BaseRecommendationEngine
 {
@@ -15,7 +16,8 @@ class DummyEngine extends BaseRecommendationEngine
     {
         return array(
             new WatchDiscoveryEngine(),
-            new FollowsDiscovery()
+            new FollowsDiscovery(),
+            new ContributionDiscovery()
         );
     }
 
@@ -32,7 +34,9 @@ class DummyEngine extends BaseRecommendationEngine
 
     public function filters()
     {
-        // TODO: Implement filters() method.
+        return array(
+            new ExcludeSelf()
+        );
     }
 
     public function loggers()

@@ -11,11 +11,21 @@
 
 namespace GraphAware\Reco4PHP\Engine;
 
+use GraphAware\Common\Result\RecordViewInterface;
 use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Reco4PHP\Result\Score;
 use GraphAware\Reco4PHP\Transactional\BaseCypherAware;
 
 abstract class SingleDiscoveryEngine extends BaseCypherAware implements DiscoveryEngine
 {
+    public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record)
+    {
+        $score = $record->value($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
+
+        return new Score($score, $this->name());
+    }
+
+
     public function idParamName()
     {
         return "inputId";
@@ -29,6 +39,11 @@ abstract class SingleDiscoveryEngine extends BaseCypherAware implements Discover
     public function scoreResultName()
     {
         return "score";
+    }
+
+    public function defaultScore()
+    {
+        return 1.0;
     }
 
     final public function buildParams(NodeInterface $input)

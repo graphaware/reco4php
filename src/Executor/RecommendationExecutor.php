@@ -33,17 +33,18 @@ class RecommendationExecutor
         $recommendations = new Recommendations();
         $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->engines());
         foreach ($engine->engines() as $discoveryEngine) {
-            $this->getRecommendationsFromResult($discoveryResult, $discoveryEngine, $recommendations);
+            $this->getRecommendationsFromResult($input, $discoveryResult, $discoveryEngine, $recommendations);
         }
 
         return $recommendations;
     }
 
-    public function getRecommendationsFromResult(ResultCollection $resultCollection, DiscoveryEngine $engine, Recommendations $recommendations)
+    public function getRecommendationsFromResult(NodeInterface $input, ResultCollection $resultCollection, DiscoveryEngine $engine, Recommendations $recommendations)
     {
         $result = $resultCollection->get($engine->name());
+
         foreach ($result->records() as $record) {
-            $recommendations->add($record->value("reco"), new Score($record->value("score"), $engine->name()));
+            $recommendations->add($record->value("reco"), $engine->buildScore($input, $record->value($engine->recoResultName()), $record));
         }
     }
 }
