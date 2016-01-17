@@ -22,8 +22,14 @@ interface RecommendationEngine
 
     public function blacklistBuilders();
 
+    /**
+     * @return \GraphAware\Reco4PHP\Post\PostProcessor[]
+     */
     public function postProcessors();
 
+    /**
+     * @return \GraphAware\Reco4PHP\Filter\Filter[]
+     */
     public function filters();
 
     public function loggers();

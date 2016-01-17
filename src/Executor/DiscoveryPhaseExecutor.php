@@ -16,13 +16,26 @@ use GraphAware\Reco4PHP\Persistence\DatabaseService;
 
 class DiscoveryPhaseExecutor
 {
+    /**
+     * @var \GraphAware\Reco4PHP\Persistence\DatabaseService
+     */
     private $databaseService;
 
+    /**
+     * DiscoveryPhaseExecutor constructor.
+     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
+     */
     public function __construct(DatabaseService $databaseService)
     {
         $this->databaseService = $databaseService;
     }
 
+    /**
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param array $engines
+     *
+     * @return \GraphAware\Common\Result\ResultCollection
+     */
     public function processDiscovery(NodeInterface $input, array $engines)
     {
         $stack = $this->databaseService->getDriver()->stack();
@@ -41,6 +54,10 @@ class DiscoveryPhaseExecutor
         }
     }
 
+    /**
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @return string
+     */
     private function inputQueryPart(NodeInterface $input)
     {
         return "MATCH (input) WHERE id(input) = {inputId}" . PHP_EOL;

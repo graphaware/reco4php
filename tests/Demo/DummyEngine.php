@@ -23,7 +23,9 @@ class DummyEngine extends BaseRecommendationEngine
 
     public function postProcessors()
     {
-        // TODO: Implement postProcessors() method.
+        return array(
+            new LanguagePostProcessor()
+        );
     }
 
 

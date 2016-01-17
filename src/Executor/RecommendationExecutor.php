@@ -15,17 +15,20 @@ use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Engine\DiscoveryEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
+use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
-use GraphAware\Reco4PHP\Result\Score;
 
 class RecommendationExecutor
 {
     protected $discoveryExecutor;
 
+    protected $postProcessExecutor;
+
     public function __construct(DatabaseService $databaseService)
     {
         $this->discoveryExecutor = new DiscoveryPhaseExecutor($databaseService);
+        $this->postProcessExecutor = new PostProcessPhaseExecutor($databaseService);
     }
 
     public function processRecommendation(NodeInterface $input, RecommendationEngine $engine)
@@ -37,6 +40,18 @@ class RecommendationExecutor
         }
 
         $this->removeIrrelevant($input, $engine, $recommendations);
+
+        $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
+        foreach ($engine->postProcessors() as $postProcessor) {
+            foreach ($recommendations->getItems() as $recommendation) {
+                if ($postProcessor instanceof CypherAwarePostProcessor) {
+                    $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
+                    $postProcessor->doPostProcess($input, $recommendation, $postProcessResult->get($tag));
+                } else {
+                    $postProcessor->postProcess($input, $recommendation);
+                }
+            }
+        }
 
         return $recommendations;
     }
