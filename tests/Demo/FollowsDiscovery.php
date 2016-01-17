@@ -15,7 +15,7 @@ class FollowsDiscovery extends SingleDiscoveryEngine
         WHERE NOT (input)-[:FOLLOWS]->(fof)
         RETURN fof as reco, count(friend) as score
         ORDER BY score DESC
-        LIMIT 500";
+        LIMIT 1000";
     }
 
     public function name()
