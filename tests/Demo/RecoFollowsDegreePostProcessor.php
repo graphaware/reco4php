@@ -19,6 +19,9 @@ class RecoFollowsDegreePostProcessor extends CypherAwarePostProcessor
 
     public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result)
     {
+        if ($result->getRecord()->value('degree') <= 0) {
+            return;
+        }
         $recommendation->addScore(new Score(-($result->getRecord()->value('degree')/10), $this->name()));
     }
 

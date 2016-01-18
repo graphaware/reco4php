@@ -12,8 +12,7 @@ class LanguagePostProcessor extends CypherAwarePostProcessor
 {
     public function query()
     {
-        $query = "MATCH (input)-[:LIKE_LANGUAGE]->(l)<-[:LIKE_LANGUAGE]-(reco)
-        RETURN id(l) as bool";
+        $query = "MATCH (reco)-[:LIKE_LANGUAGE]->(l:Language {name:'PHP'}) RETURN id(l) as bool";
 
         return $query;
     }
@@ -24,7 +23,7 @@ class LanguagePostProcessor extends CypherAwarePostProcessor
             return;
         }
 
-        $recommendation->addScore(new Score(10, $this->name()));
+        $recommendation->addScore(new Score(1, $this->name()));
     }
 
     public function name()
