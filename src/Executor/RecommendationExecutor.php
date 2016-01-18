@@ -48,7 +48,10 @@ class RecommendationExecutor
 
         $this->removeIrrelevant($input, $engine, $recommendations);
 
+        $this->stopwatch->start("post_process");
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
+        $pPTime = $this->stopwatch->stop("post_process");
+        echo 'Post Process in ' . $pPTime . PHP_EOL;
         foreach ($engine->postProcessors() as $postProcessor) {
             foreach ($recommendations->getItems() as $recommendation) {
                 if ($postProcessor instanceof CypherAwarePostProcessor) {
