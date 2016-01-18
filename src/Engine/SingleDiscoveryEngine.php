@@ -48,6 +48,7 @@ abstract class SingleDiscoveryEngine extends BaseCypherAware implements Discover
 
     final public function buildParams(NodeInterface $input)
     {
+        $this->query();
         $this->addParameter($this->idParamName(), $input->identity());
     }
 
