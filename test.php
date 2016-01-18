@@ -6,7 +6,8 @@ use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\RecommenderService;
 use GraphAware\Reco4PHP\Tests\Demo\DummyEngine;
 
-$dbService = new DatabaseService("bolt://localhost");
+//$dbService = new DatabaseService("bolt://localhost");
+$dbService = new DatabaseService("http://localhost:7474");
 $recommender = new RecommenderService($dbService);
 $recommender->registerRecommendationEngine(new DummyEngine());
 
@@ -16,7 +17,7 @@ $input = $result->getRecord()->value("n");
 if ($input) {
     $s = microtime(true);
     $recommendations = $recommender->getRecommender("dummy")->recommend($input);
-    //$recommendations->sort();
+    $recommendations->sort();
     echo 'number of recommendations are : ' . $recommendations->size() . PHP_EOL;
     echo 'recommendations computed in :' . (microtime(true) - $s) . PHP_EOL;
     $items = $recommendations->getItems();
@@ -25,9 +26,9 @@ if ($input) {
 
     foreach ($recommendations->getItems() as $recommendation) {
         if (count($recommendation->scores()) > 0) {
-            //print_r($recommendation);
+            print_r($recommendation);
             ++$i;
-            if ($i > 9) {
+            if ($i > 2) {
                 break;
             }
         }

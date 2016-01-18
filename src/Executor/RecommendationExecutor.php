@@ -18,6 +18,7 @@ use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class RecommendationExecutor
 {
@@ -25,16 +26,22 @@ class RecommendationExecutor
 
     protected $postProcessExecutor;
 
+    protected $stopwatch;
+
     public function __construct(DatabaseService $databaseService)
     {
         $this->discoveryExecutor = new DiscoveryPhaseExecutor($databaseService);
         $this->postProcessExecutor = new PostProcessPhaseExecutor($databaseService);
+        $this->stopwatch = new Stopwatch();
     }
 
     public function processRecommendation(NodeInterface $input, RecommendationEngine $engine)
     {
         $recommendations = new Recommendations();
+        $this->stopwatch->start("discovery");
         $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->engines());
+        $discoveryTime = $this->stopwatch->stop("discovery");
+        echo $discoveryTime->getDuration() . PHP_EOL;
         foreach ($engine->engines() as $discoveryEngine) {
             $this->getRecommendationsFromResult($input, $discoveryResult, $discoveryEngine, $recommendations);
         }

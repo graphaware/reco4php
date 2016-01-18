@@ -17,14 +17,16 @@ class DummyEngine extends BaseRecommendationEngine
         return array(
             new WatchDiscoveryEngine(),
             new FollowsDiscovery(),
-            new ContributionDiscovery()
+            new ContributionDiscovery(),
+            //new CollaborativeFollowsDiscovery()
         );
     }
 
     public function postProcessors()
     {
         return array(
-            new LanguagePostProcessor()
+            new LanguagePostProcessor(),
+            new RecoFollowsDegreePostProcessor()
         );
     }
 
