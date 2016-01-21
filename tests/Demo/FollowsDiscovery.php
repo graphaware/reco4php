@@ -13,9 +13,9 @@ class FollowsDiscovery extends SingleDiscoveryEngine
     {
         return "MATCH (input)-[:FOLLOWS]->(friend)-[:FOLLOWS]->(fof)
         WHERE NOT (input)-[:FOLLOWS]->(fof)
-        RETURN fof as reco, count(friend) as score
+        RETURN fof as reco, count(*) as score
         ORDER BY score DESC
-        LIMIT 100";
+        LIMIT 200";
     }
 
     public function name()

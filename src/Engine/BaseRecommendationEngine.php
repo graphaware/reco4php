@@ -14,6 +14,7 @@ namespace GraphAware\Reco4PHP\Engine;
 use GraphAware\Reco4PHP\Executor\RecommendationExecutor;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 abstract class BaseRecommendationEngine implements RecommendationEngine
 {
@@ -31,7 +32,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
 
     public function __construct()
     {
-        $this->engines = $this->engines();
+        $this->buildEngines($this->engines());
         $this->blacklistBuilders = $this->blacklistBuilders();
         $this->filters = $this->filters();
         $this->loggers = $this->loggers();
@@ -73,5 +74,15 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     final public function setDatabaseService(DatabaseService $databaseService)
     {
         $this->databaseService = $databaseService;
+    }
+
+    private function buildEngines(array $engines)
+    {
+        foreach ($engines as $engine) {
+            if (!$engine instanceof SingleDiscoveryEngine) {
+                throw new \RuntimeException(sprintf('Engine is not an instance of "%s"', SingleDiscoveryEngine::class));
+            }
+            $this->engines[] = $engine;
+        }
     }
 }

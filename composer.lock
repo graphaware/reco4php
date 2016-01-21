@@ -4,32 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "83a83faa2071f7ce050b38b5621db02c",
-    "content-hash": "af554bb32ebf638e639db03d18a5b9fe",
+    "hash": "71cdbd48ba2a753e72ba9b0e4f0524ea",
+    "content-hash": "68678cf3e5551f4b7bc144e780e503e7",
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
-            "version": "1.0.2",
+            "version": "1.0.8",
             "source": {
                 "type": "git",
-                "url": "https://github.com/graphaware/neo4j-bolt-php.git",
-                "reference": "b00e0cc340ccd7ae17aab1c44f3df4737570f8ef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-bolt-php/zipball/b00e0cc340ccd7ae17aab1c44f3df4737570f8ef",
-                "reference": "b00e0cc340ccd7ae17aab1c44f3df4737570f8ef",
-                "shasum": ""
+                "url": "../neo4j-bolt-php",
+                "reference": "89c9c6640c454d39e1974b6305e23d63b3da2bd8"
             },
             "require": {
                 "graphaware/neo4j-common": "^1.7",
                 "myclabs/php-enum": "^1.4",
-                "symfony/console": "^2.7",
                 "symfony/event-dispatcher": "^2.7"
             },
             "require-dev": {
                 "behat/behat": "~3.0.4",
-                "neoxygen/neoclient": "^3.3",
                 "phpunit/phpunit": "^4.8",
                 "symfony/stopwatch": "^2.7"
             },
@@ -39,7 +31,11 @@
                     "GraphAware\\Bolt\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "GraphAware\\Bolt\\Tests\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -50,20 +46,20 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-01-12 20:55:41"
+            "time": "2016-01-21 17:24:54"
         },
         {
             "name": "graphaware/neo4j-common",
-            "version": "1.13.3",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-commons.git",
-                "reference": "ddda42b2d8bd5767323ab4430e99b29a7614f909"
+                "reference": "d24eaeaaacb7cb6538ae2a144be5d54ee24fc07a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/ddda42b2d8bd5767323ab4430e99b29a7614f909",
-                "reference": "ddda42b2d8bd5767323ab4430e99b29a7614f909",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-commons/zipball/d24eaeaaacb7cb6538ae2a144be5d54ee24fc07a",
+                "reference": "d24eaeaaacb7cb6538ae2a144be5d54ee24fc07a",
                 "shasum": ""
             },
             "require": {
@@ -96,7 +92,7 @@
                 "neo4j",
                 "statement"
             ],
-            "time": "2016-01-13 22:44:18"
+            "time": "2016-01-21 16:31:06"
         },
         {
             "name": "graphaware/neo4j-php-client",
@@ -104,12 +100,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-client.git",
-                "reference": "abb6a2fc24a5d9f38f61bfc2ae8f055fce9dd961"
+                "reference": "ae2ebd5de5fa7f0120dd5252544435c2974a4956"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-client/zipball/abb6a2fc24a5d9f38f61bfc2ae8f055fce9dd961",
-                "reference": "abb6a2fc24a5d9f38f61bfc2ae8f055fce9dd961",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-client/zipball/ae2ebd5de5fa7f0120dd5252544435c2974a4956",
+                "reference": "ae2ebd5de5fa7f0120dd5252544435c2974a4956",
                 "shasum": ""
             },
             "require": {
@@ -154,7 +150,7 @@
                 "http",
                 "neo4j"
             ],
-            "time": "2016-01-13 13:19:32"
+            "time": "2016-01-21 16:44:16"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -536,66 +532,6 @@
             "time": "2012-12-21 11:40:51"
         },
         {
-            "name": "symfony/console",
-            "version": "v2.8.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/console.git",
-                "reference": "d0239fb42f98dd02e7d342f793c5d2cdee0c478d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d0239fb42f98dd02e7d342f793c5d2cdee0c478d",
-                "reference": "d0239fb42f98dd02e7d342f793c5d2cdee0c478d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9",
-                "symfony/polyfill-mbstring": "~1.0"
-            },
-            "require-dev": {
-                "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1|~3.0.0",
-                "symfony/process": "~2.1|~3.0.0"
-            },
-            "suggest": {
-                "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": "",
-                "symfony/process": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Console\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Console Component",
-            "homepage": "https://symfony.com",
-            "time": "2016-01-14 08:33:16"
-        },
-        {
             "name": "symfony/event-dispatcher",
             "version": "v2.8.2",
             "source": {
@@ -654,65 +590,6 @@
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
             "time": "2016-01-13 10:28:07"
-        },
-        {
-            "name": "symfony/polyfill-mbstring",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/49ff736bd5d41f45240cec77b44967d76e0c3d25",
-                "reference": "49ff736bd5d41f45240cec77b44967d76e0c3d25",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "suggest": {
-                "ext-mbstring": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Mbstring\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for the Mbstring extension",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "mbstring",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "time": "2015-11-20 09:19:13"
         },
         {
             "name": "symfony/stopwatch",

@@ -19,6 +19,7 @@ class DummyEngine extends BaseRecommendationEngine
             new FollowsDiscovery(),
             new ContributionDiscovery(),
             //new CollaborativeFollowsDiscovery()
+            //new RandomDiscovery()
         );
     }
 

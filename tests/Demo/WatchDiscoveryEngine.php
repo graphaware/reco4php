@@ -12,7 +12,7 @@ class WatchDiscoveryEngine extends SingleDiscoveryEngine
         WHERE NOT (input)-[:FOLLOWS]->(reco)
         RETURN reco, count(*) as score
         ORDER BY score DESC
-        LIMIT 100";
+        LIMIT 200";
     }
 
     public function name()
