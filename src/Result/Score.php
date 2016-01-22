@@ -16,22 +16,20 @@ class Score
     /**
      * @var float
      */
-    protected $score;
+    protected $score = 0.0;
 
     /**
-     * @var string
+     * @var \GraphAware\Reco4PHP\Result\SingleScore[]
      */
-    protected $reason;
+    protected $scores;
 
     /**
-     * Score constructor.
-     * @param $score
-     * @param null $reason
+     * @param \GraphAware\Reco4PHP\Result\SingleScore $score
      */
-    public function __construct($score, $reason = null)
+    public function add(SingleScore $score)
     {
-        $this->score = (float) $score;
-        $this->reason = (string) $reason;
+        $this->scores[] = $score;
+        $this->score += (float) $score->getScore();
     }
 
     /**
@@ -42,17 +40,11 @@ class Score
         return $this->score;
     }
 
-
-    public function increment($v)
-    {
-        $this->score += (float) $v;
-    }
-
     /**
-     * @return string
+     * @return \GraphAware\Reco4PHP\Result\SingleScore[]
      */
-    public function reason()
+    public function getScores()
     {
-        return $this->reason;
+        return $this->scores;
     }
 }

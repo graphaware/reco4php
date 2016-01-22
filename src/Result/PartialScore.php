@@ -25,22 +25,22 @@ class PartialScore
 
     /**
      * @param float $value
-     * @param array $details
+     * @param mixed $reason
      */
-    public function __construct($value = 0, array $details = array())
+    public function __construct($value = 0, $reason = null)
     {
         $this->value = (float) $value;
-        $this->addReason($value, $details);
+        $this->addReason($value, $reason);
     }
 
     /**
      * @param float $value
      * @param array $details
      */
-    public function add($value, array $details = array())
+    public function add($value, $reaon = null)
     {
         $this->value += (float) $value;
-        $this->addReason($value, $details);
+        $this->addReason($value, $reaon);
     }
 
     /**
@@ -72,12 +72,12 @@ class PartialScore
      * @param $value
      * @param array $details
      */
-    private function addReason($value, array $details)
+    private function addReason($value, $detail = null)
     {
-        if (empty($details)) {
+        if (!$detail) {
             return;
         }
 
-        $this->reasons[] = new Reason($value, $details);
+        $this->reasons[] = new Reason($value, $detail);
     }
 }

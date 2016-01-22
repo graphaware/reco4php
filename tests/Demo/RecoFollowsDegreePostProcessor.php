@@ -5,8 +5,10 @@ namespace GraphAware\Reco4PHP\Tests\Demo;
 use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
+use GraphAware\Reco4PHP\Result\PartialScore;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Score;
+use GraphAware\Reco4PHP\Result\SingleScore;
 
 class RecoFollowsDegreePostProcessor extends CypherAwarePostProcessor
 {
@@ -22,7 +24,8 @@ class RecoFollowsDegreePostProcessor extends CypherAwarePostProcessor
         if ($result->getRecord()->value('degree') <= 0) {
             return;
         }
-        $recommendation->addScore(new Score(-($result->getRecord()->value('degree')/10), $this->name()));
+
+        $recommendation->addScore($this->name(), new SingleScore(-($result->getRecord()->value('degree') / 100)));
     }
 
     public function name()

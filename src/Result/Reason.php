@@ -15,13 +15,12 @@ class Reason
 {
     protected $value;
 
-    protected $details;
+    protected $detail;
 
-    public function __construct($value, array $details)
+    public function __construct($value, $detail)
     {
-        $this->notNull($details);
         $this->value = (float) $value;
-        $this->details = $details;
+        $this->detail = $detail;
     }
 
     public function getValue()
@@ -29,21 +28,8 @@ class Reason
         return $this->value;
     }
 
-    public function getDetails()
+    public function getDetail()
     {
-        return $this->details;
-    }
-
-    public function notNull($v)
-    {
-        if (!is_array($v) || empty($v)) {
-            throw new \InvalidArgumentException(sprintf('a detail should be of type array and cannot be null, "%s" given', $v));
-        }
-
-        foreach ($v as $k => $value) {
-            if (!is_string($k)) {
-                throw new \InvalidArgumentException(sprintf('a detail\'s key should be of type string, "%s" given', $k));
-            }
-        }
+        return $this->detail;
     }
 }

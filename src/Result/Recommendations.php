@@ -16,11 +16,6 @@ use GraphAware\Common\Type\NodeInterface;
 class Recommendations
 {
     /**
-     * @var int
-     */
-    private $position = 0;
-
-    /**
      * @var \GraphAware\Reco4PHP\Result\Recommendation[]
      */
     protected $recommendations = [];
@@ -43,11 +38,22 @@ class Recommendations
 
     /**
      * @param \GraphAware\Common\Type\NodeInterface $item
-     * @param \GraphAware\Reco4PHP\Result\Score|null $score
+     * @param string $name
+     * @param \GraphAware\Reco4PHP\Result\SingleScore $singleScore
      */
-    public function add(NodeInterface $item, Score $score = null)
+    public function add(NodeInterface $item, $name, SingleScore $singleScore)
     {
-        $this->getOrCreate($item)->addScore($score);
+        $this->getOrCreate($item)->addScore($name, $singleScore);
+    }
+
+    /**
+     * @param \GraphAware\Reco4PHP\Result\Recommendations $recommendations
+     */
+    public function merge(Recommendations $recommendations)
+    {
+        foreach ($recommendations->getItems() as $recommendation) {
+            $this->getOrCreate($recommendation->item())->addScores($recommendation->getScores());
+        }
     }
 
     public function remove(Recommendation $recommendation)
@@ -70,54 +76,6 @@ class Recommendations
      * @return int
      */
     public function size()
-    {
-        return $this->count();
-    }
-
-    /**
-     * @return \GraphAware\Reco4PHP\Result\Recommendation
-     */
-    public function current()
-    {
-        return $this->recommendations[$this->position];
-    }
-
-    /**
-     * @void
-     */
-    public function next()
-    {
-        ++$this->position;
-    }
-
-    /**
-     * @return int
-     */
-    public function key()
-    {
-        return $this->position;
-    }
-
-    /**
-     * @return bool
-     */
-    public function valid()
-    {
-        return isset($this->recommendations[$this->position]);
-    }
-
-    /**
-     * @void
-     */
-    public function rewind()
-    {
-        $this->position = 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function count()
     {
         return count($this->recommendations);
     }

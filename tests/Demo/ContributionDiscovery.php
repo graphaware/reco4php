@@ -5,7 +5,7 @@ namespace GraphAware\Reco4PHP\Tests\Demo;
 use GraphAware\Common\Result\RecordViewInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
-use GraphAware\Reco4PHP\Result\Score;
+use GraphAware\Reco4PHP\Result\SingleScore;
 
 class ContributionDiscovery extends SingleDiscoveryEngine
 {
@@ -23,9 +23,9 @@ class ContributionDiscovery extends SingleDiscoveryEngine
     {
         $initialScore = $record->value("score");
         $modifier = 100 - abs($record->value("inputRate") - $record->value("outputRate"));
-        $finalScore = $initialScore + (($initialScore/100) * $modifier);
+        $contribRate = $initialScore + (($initialScore/100) * $modifier);
 
-        return new Score($finalScore, $this->name());
+        return new SingleScore($contribRate, $record->value("reason"));
     }
 
 

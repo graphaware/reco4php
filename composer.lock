@@ -9,11 +9,11 @@
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
-            "version": "1.0.8",
+            "version": "1.0.9",
             "source": {
                 "type": "git",
                 "url": "../neo4j-bolt-php",
-                "reference": "89c9c6640c454d39e1974b6305e23d63b3da2bd8"
+                "reference": "2ec25c3829e4f04b66c517f4cd2d6972252ca2ba"
             },
             "require": {
                 "graphaware/neo4j-common": "^1.7",
@@ -46,7 +46,7 @@
                 }
             ],
             "description": "Neo4j Bolt Binary Protocol PHP Driver",
-            "time": "2016-01-21 17:24:54"
+            "time": "2016-01-21 23:44:13"
         },
         {
             "name": "graphaware/neo4j-common",

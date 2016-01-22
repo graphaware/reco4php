@@ -19,6 +19,7 @@ use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use Symfony\Component\Stopwatch\Stopwatch;
+use GraphAware\Reco4PHP\Result\Score;
 
 class RecommendationExecutor
 {
@@ -41,9 +42,8 @@ class RecommendationExecutor
         $this->stopwatch->start("discovery");
         $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->engines());
         $discoveryTime = $this->stopwatch->stop("discovery");
-        echo $discoveryTime->getDuration() . PHP_EOL;
         foreach ($engine->engines() as $discoveryEngine) {
-            $this->getRecommendationsFromResult($input, $discoveryResult, $discoveryEngine, $recommendations);
+            $recommendations->merge($discoveryEngine->produceRecommendations($input, $discoveryResult));
         }
 
         $this->removeIrrelevant($input, $engine, $recommendations);
@@ -51,7 +51,6 @@ class RecommendationExecutor
         $this->stopwatch->start("post_process");
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
         $pPTime = $this->stopwatch->stop("post_process");
-        echo 'Post Process in ' . $pPTime . PHP_EOL;
         foreach ($engine->postProcessors() as $postProcessor) {
             foreach ($recommendations->getItems() as $recommendation) {
                 if ($postProcessor instanceof CypherAwarePostProcessor) {
@@ -71,7 +70,7 @@ class RecommendationExecutor
         $result = $resultCollection->get($engine->name());
 
         foreach ($result->records() as $record) {
-            $recommendations->add($record->value("reco"), $engine->buildScore($input, $record->value($engine->recoResultName()), $record));
+            $recommendations->add($record->value("reco"), new Score($engine->buildScore($input, $record->value($engine->recoResultName()), $record)));
         }
     }
 

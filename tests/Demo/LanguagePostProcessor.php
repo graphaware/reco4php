@@ -5,6 +5,7 @@ namespace GraphAware\Reco4PHP\Tests\Demo;
 use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
+use GraphAware\Reco4PHP\Result\PartialScore;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Score;
 
@@ -23,7 +24,7 @@ class LanguagePostProcessor extends CypherAwarePostProcessor
             return;
         }
 
-        $recommendation->addScore(new Score(1, $this->name()));
+        $recommendation->add(new PartialScore(1, $this->name()));
     }
 
     public function name()

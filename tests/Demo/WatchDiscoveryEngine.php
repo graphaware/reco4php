@@ -10,9 +10,9 @@ class WatchDiscoveryEngine extends SingleDiscoveryEngine
     {
         return "MATCH (input)-[:WATCH]->(repo)<-[:WATCH]-(reco)
         WHERE NOT (input)-[:FOLLOWS]->(reco)
-        RETURN reco, count(*) as score
-        ORDER BY score DESC
-        LIMIT 200";
+        RETURN reco, repo.full_name as reason, count(*) as c
+        ORDER BY c DESC
+        LIMIT 100";
     }
 
     public function name()

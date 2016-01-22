@@ -14,12 +14,15 @@ namespace GraphAware\Reco4PHP\Engine;
 use GraphAware\Common\Result\RecordViewInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Transactional\CypherAware;
+use GraphAware\Common\Result\ResultCollection;
 
 interface DiscoveryEngine extends CypherAware
 {
     public function name();
 
     public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record);
+
+    public function produceRecommendations(NodeInterface $input, ResultCollection $resultCollection);
 
     public function idParamName();
 

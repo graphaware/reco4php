@@ -26,7 +26,7 @@ class DummyEngine extends BaseRecommendationEngine
     public function postProcessors()
     {
         return array(
-            new LanguagePostProcessor(),
+            //new LanguagePostProcessor(),
             new RecoFollowsDegreePostProcessor()
         );
     }

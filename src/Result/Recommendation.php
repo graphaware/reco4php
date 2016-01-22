@@ -26,7 +26,7 @@ class Recommendation
     protected $scores = [];
 
     /**
-     * @var float;
+     * @var float
      */
     protected $totalScore = 0.0;
 
@@ -35,25 +35,43 @@ class Recommendation
      * @param \GraphAware\Common\Type\NodeInterface $item
      * @param \GraphAware\Reco4PHP\Result\Score|null $score
      */
-    public function __construct(NodeInterface $item, Score $score = null)
+    public function __construct(NodeInterface $item)
     {
         $this->item = $item;
-        if ($score) {
-            $this->addScore($score);
-        }
     }
 
     /**
-     * @param \GraphAware\Reco4PHP\Result\Score $score
+     * @param string $name
+     * @param \GraphAware\Reco4PHP\Result\SingleScore $score
      */
-    public function addScore(Score $score)
+    public function addScore($name, SingleScore $score)
     {
-        if (array_key_exists($score->reason(), $this->scores)) {
-            $this->scores[$score->reason()]->increment($score->score());
-        } else {
-            $this->scores[$score->reason()] = $score;
+        $this->getScoreOrCreate($name)->add($score);
+        $this->totalScore += $score->getScore();
+    }
+
+    /**
+     * @param \GraphAware\Reco4PHP\Result\Score[]
+     */
+    public function addScores(array $scores)
+    {
+        foreach ($scores as $name => $score) {
+            $this->scores[$name] = $score;
         }
-        $this->totalScore += $score->score();
+    }
+
+    public function getScores()
+    {
+        return $this->scores;
+    }
+
+    private function getScoreOrCreate($name)
+    {
+        if (!array_key_exists($name, $this->scores)) {
+            $this->scores[$name] = new Score($name);
+        }
+
+        return $this->scores[$name];
     }
 
     /**
@@ -61,15 +79,12 @@ class Recommendation
      */
     public function totalScore()
     {
-        return (float) $this->totalScore;
-    }
+        $score = 0.0;
+        foreach ($this->scores as $sc) {
+            $score += $sc->score();
+        }
 
-    /**
-     * @return \GraphAware\Reco4PHP\Result\Score[]
-     */
-    public function scores()
-    {
-        return $this->scores;
+        return $score;
     }
 
     /**

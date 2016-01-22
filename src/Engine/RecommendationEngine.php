@@ -18,6 +18,9 @@ interface RecommendationEngine
 {
     public function name();
 
+    /**
+     * @return \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]
+     */
     public function engines();
 
     public function blacklistBuilders();
