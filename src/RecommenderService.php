@@ -71,8 +71,33 @@ class RecommenderService
     {
         $id = (int) $id;
         $result = $this->databaseService->getDriver()->run("MATCH (n) WHERE id(n) = {id} RETURN n as input", ['id' => $id]);
+
+        return $this->validateInput($result);
+    }
+
+    /**
+     * @param string $label
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return \GraphAware\Common\Type\NodeInterface
+     */
+    public function findInputBy($label, $key, $value)
+    {
+        $query = sprintf('MATCH (n:%s {%s: {value} }) RETURN n as input', $label, $key);
+        $result = $this->databaseService->getDriver()->run($query, ['value' => $value]);
+
+        return $this->validateInput($result);
+    }
+
+    /**
+     * @param \GraphAware\Common\Result\Result $result
+     * @return \GraphAware\Common\Type\NodeInterface
+     */
+    public function validateInput($result)
+    {
         if (count($result->records()) < 1 || !$result->getRecord()->value("input") instanceof NodeInterface) {
-            throw new \InvalidArgumentException(sprintf('Node with id %d not found', $id));
+            throw new \InvalidArgumentException(sprintf('Node not found'));
         }
 
         return $result->getRecord()->value("input");

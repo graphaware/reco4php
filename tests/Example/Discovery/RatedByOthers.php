@@ -1,6 +1,6 @@
 <?php
 
-namespace GraphAware\Reco4PHP\Tests\Example;
+namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 

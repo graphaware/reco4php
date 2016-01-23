@@ -6,6 +6,7 @@ use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
+use GraphAware\Reco4PHP\Result\SingleScore;
 
 class RewardWellRated extends CypherAwarePostProcessor
 {
@@ -18,10 +19,10 @@ class RewardWellRated extends CypherAwarePostProcessor
 
     public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result)
     {
-        $record = $result->first();
+        $record = $result->getRecord();
         if ($rating = $record->value("ratings")) {
             if ($rating > 10) {
-                $recommendation->addScore($this->name(), $rating);
+                $recommendation->addScore($this->name(), new SingleScore($rating));
             }
 
         }

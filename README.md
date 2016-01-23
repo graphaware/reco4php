@@ -130,7 +130,7 @@ the methods of the upper interfaces, here is how you would create your first dis
 ```php
 <?php
 
-namespace GraphAware\Reco4PHP\Tests\Example;
+namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
@@ -177,7 +177,7 @@ As an example of a filter, we will filter the movies that were produced before t
 ```php
 <?php
 
-namespace GraphAware\Bolt\Tests\Example;
+namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Filter\Filter;
@@ -189,8 +189,10 @@ class ExcludeOldMovies implements Filter
         $title = $item->value("title");
         preg_match('/(?:\()\d+(?:\))/', $title, $matches);
 
-        if (isset($matches[1])) {
-            $year = (int) $matches[1];
+        if (isset($matches[0])) {
+            $y = str_replace('(','',$matches[0]);
+            $y = str_replace(')','', $y);
+            $year = (int) $y;
             if ($year < 1999) {
                 return false;
             }
@@ -246,6 +248,7 @@ use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
+use GraphAware\Reco4PHP\Result\SingleScore;
 
 class RewardWellRated extends CypherAwarePostProcessor
 {
@@ -258,10 +261,10 @@ class RewardWellRated extends CypherAwarePostProcessor
 
     public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result)
     {
-        $record = $result->first();
+        $record = $result->getRecord();
         if ($rating = $record->value("ratings")) {
             if ($rating > 10) {
-                $recommendation->addScore($this->name(), $rating);
+                $recommendation->addScore($this->name(), new SingleScore($rating));
             }
 
         }
@@ -366,7 +369,7 @@ class ExampleRecommenderService
      */
     public function recommendMovieForUserWithId($id)
     {
-        $input = $this->service->findInputById($id);
+        $input = $this->service->findInputBy('User', 'id', $id);
         $recommendationEngine = $this->service->getRecommender("user_movie_reco");
 
         return $recommendationEngine->recommend($input);
@@ -374,7 +377,77 @@ class ExampleRecommenderService
 }
 ```
 
+#### Inspecting recommendations
 
+The `recommend()` method on a recommendation engine will returns you a `Recommendations` object which contains a set of `Recommendation` that holds the recommended item and their score.
+
+Each score is inserted so you can easily inspect why such recommendation has been produced, example :
+
+```php
+
+$recommender = new ExampleRecommendationService("http://localhost:7474");
+$recommendation = $recommender->recommendMovieForUserWithId(460);
+
+print_r($recommendations->getItems(1));
+
+Array
+(
+    [0] => GraphAware\Reco4PHP\Result\Recommendation Object
+        (
+            [item:protected] => GraphAware\Bolt\Result\Type\Node Object
+                (
+                    [identity:protected] => 13248
+                    [labels:protected] => Array
+                        (
+                            [0] => Movie
+                        )
+
+                    [properties:protected] => Array
+                        (
+                            [id] => 2571
+                            [title] => Matrix, The (1999)
+                        )
+
+                )
+
+            [scores:protected] => Array
+                (
+                    [rated_by_others] => GraphAware\Reco4PHP\Result\Score Object
+                        (
+                            [score:protected] => 1067
+                            [scores:protected] => Array
+                                (
+                                    [0] => GraphAware\Reco4PHP\Result\SingleScore Object
+                                        (
+                                            [score:GraphAware\Reco4PHP\Result\SingleScore:private] => 1067
+                                            [reason:GraphAware\Reco4PHP\Result\SingleScore:private] =>
+                                        )
+
+                                )
+
+                        )
+
+                    [reward_well_rated] => GraphAware\Reco4PHP\Result\Score Object
+                        (
+                            [score:protected] => 261
+                            [scores:protected] => Array
+                                (
+                                    [0] => GraphAware\Reco4PHP\Result\SingleScore Object
+                                        (
+                                            [score:GraphAware\Reco4PHP\Result\SingleScore:private] => 261
+                                            [reason:GraphAware\Reco4PHP\Result\SingleScore:private] =>
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [totalScore:protected] => 261
+        )
+)
+```
 ### License
 
 This library is released under the Apache v2 License, please read the attached `LICENSE` file.

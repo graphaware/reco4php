@@ -12,8 +12,10 @@ class ExcludeOldMovies implements Filter
         $title = $item->value("title");
         preg_match('/(?:\()\d+(?:\))/', $title, $matches);
 
-        if (isset($matches[1])) {
-            $year = (int) $matches[1];
+        if (isset($matches[0])) {
+            $y = str_replace('(','',$matches[0]);
+            $y = str_replace(')','', $y);
+            $year = (int) $y;
             if ($year < 1999) {
                 return false;
             }

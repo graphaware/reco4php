@@ -6,6 +6,7 @@ use GraphAware\Reco4PHP\Engine\BaseRecommendationEngine;
 use GraphAware\Reco4PHP\Tests\Example\Filter\AlreadyRatedBlackList;
 use GraphAware\Reco4PHP\Tests\Example\Filter\ExcludeOldMovies;
 use GraphAware\Reco4PHP\Tests\Example\PostProcessing\RewardWellRated;
+use GraphAware\Reco4PHP\Tests\Example\Discovery\RatedByOthers;
 
 class ExampleRecommendationEngine extends BaseRecommendationEngine
 {

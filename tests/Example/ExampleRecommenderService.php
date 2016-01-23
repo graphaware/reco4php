@@ -27,7 +27,7 @@ class ExampleRecommenderService
      */
     public function recommendMovieForUserWithId($id)
     {
-        $input = $this->service->findInputById($id);
+        $input = $this->service->findInputBy('User', 'id', $id);
         $recommendationEngine = $this->service->getRecommender("user_movie_reco");
 
         return $recommendationEngine->recommend($input);

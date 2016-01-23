@@ -67,8 +67,12 @@ class Recommendations
     /**
      * @return \GraphAware\Reco4PHP\Result\Recommendation[]
      */
-    public function getItems()
+    public function getItems($size = null)
     {
+        if (is_int($size) && $size > 0) {
+            return array_slice($this->recommendations, 0, $size-1);
+        }
+
         return array_values($this->recommendations);
     }
 
