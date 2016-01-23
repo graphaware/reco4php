@@ -68,7 +68,7 @@ Let's start it !
 
 We will use the small dataset available from MovieLens containing movies, users and ratings as well as genres.
 
-The dataset is publicly available here :
+The dataset is publicly available here : http://grouplens.org/datasets/movielens/
 
 Once downloaded and extracted the archive, you can run the following Cypher statements for importing the dataset, just adapt the file urls to match your actual path to the files :
 
@@ -122,7 +122,7 @@ In order to recommend movies people should watch, you have decided that we shoul
 As told before, the `reco4php` recommendation engine framework makes all the plumbing so you only have to concentrate on the business logic, that's why it provides base class that you should extend and just implement
 the methods of the upper interfaces, here is how you would create your first discovery engine :
 
-```
+```php
 <?php
 
 namespace GraphAware\Reco4PHP\Tests\Example;
