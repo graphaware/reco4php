@@ -159,6 +159,77 @@ The query here has some logic, we don't want to return as candidates all the mov
 of the ratings and returning the most rated ones, limit the results to 500 potential recommendations.
 
 
+The base class assumes that the recommended node will have the identifier `reco` and the score of the produced recommendation the identifier `score`. The score is not mandatory, and it will be given a default score of `1`.
+
+All these defaults are customizable by overriding the methods from the base class (see the Customization section).
+
+This discovery engine will then produce a set of 500 scored `Recommendation` objects that you can use in your filters or post processors.
+
+#### Filtering
+
+As an example of a filter, we will filter the movies that were produced before the year 1999. The year is written in the movie title, so we will use a regex for extracting the year in the filter.
+
+```php
+<?php
+
+namespace GraphAware\Bolt\Tests\Example;
+
+use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Reco4PHP\Filter\Filter;
+
+class ExcludeOldMovies implements Filter
+{
+    public function doInclude(NodeInterface $input, NodeInterface $item)
+    {
+        $title = $item->value("title");
+        preg_match('/(?:\()\d+(?:\))/', $title, $matches);
+
+        if (isset($matches[1])) {
+            $year = (int) $matches[1];
+            if ($year < 1999) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+}
+```
+
+The `Filter` interfaces forces you to implement the `doInclude` method which should return a boolean. You have access to the recommended node as well as the input in the method arguments.
+
+#### Blacklist
+
+Of course we do not want to recommend movies that the current user has already rated, for this we will create a Blacklist building a set of these already rated movie nodes.
+
+```php
+<?php
+
+namespace GraphAware\Reco4PHP\Tests\Example\Filter;
+
+use GraphAware\Reco4PHP\Filter\BaseBlackListBuilder;
+
+class AlreadyRatedBlackList extends BaseBlackListBuilder
+{
+    public function query()
+    {
+        $query = "MATCH (input)-[:RATED]->(movie)
+        RETURN movie as item";
+
+        return $query;
+    }
+
+}
+```
+
+Again, the framework takes care of matching first the input node for you. You really just need to add the logic for matching the nodes that should be blacklisted, the framework takes care for filtering the recommended
+nodes against the blacklists provided.
+
+
+
 
 ### License
 

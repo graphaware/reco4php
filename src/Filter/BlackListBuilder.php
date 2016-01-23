@@ -11,15 +11,25 @@
 
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Result\Result;
 use GraphAware\Reco4PHP\Transactional\CypherAware;
 
 interface BlackListBuilder extends CypherAware
 {
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Result\Result
      *
      * @return \GraphAware\Common\Type\NodeInterface[]
      */
-    public function buildBlackList(NodeInterface $input);
+    public function buildBlackList(Result $result);
+
+    /**
+     * @return string
+     */
+    public function itemResultName();
+
+    /**
+     * @return string
+     */
+    public function inputIdParam();
 }
