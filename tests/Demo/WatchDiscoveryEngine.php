@@ -22,6 +22,6 @@ class WatchDiscoveryEngine extends SingleDiscoveryEngine
 
     public function defaultScore()
     {
-        return 10;
+        return 1;
     }
 }
