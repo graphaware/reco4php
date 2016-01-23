@@ -64,6 +64,45 @@ To summarize, a typical recommendation engine will be a set of :
 Let's start it !
 
 
+#### Usage by example
+
+We will use the small dataset available from MovieLens containing movies, users and ratings as well as genres.
+
+The dataset is publicly available here :
+
+Once downloaded and extracted the archive, you can run the following Cypher statements for importing the dataset, just adapt the file urls to match your actual path to the files :
+
+```
+CREATE CONSTRAINT ON (m:Movie) ASSERT m.id IS UNIQUE;
+CREATE CONSTRAINT ON (g:Genre) ASSERT g.name IS UNIQUE;
+CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE;
+```
+
+```
+LOAD CSV WITH HEADERS FROM "file:///Users/ikwattro/dev/movielens/movies.csv" AS row
+WITH row
+MERGE (movie:Movie {id: toInt(row.movieId)})
+ON CREATE SET movie.title = row.title
+WITH movie, row
+UNWIND split(row.genres, '|') as genre
+MERGE (g:Genre {name: genre})
+MERGE (movie)-[:HAS_GENRE]->(g)
+```
+
+
+```
+USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///Users/ikwattro/dev/movielens/ratings.csv" AS row
+WITH row
+MATCH (movie:Movie {id: toInt(row.movieId)})
+MERGE (user:User {id: toInt(row.userId)})
+MERGE (user)-[r:RATED]->(movie)
+ON CREATE SET r.rating = toInt(row.rating), r.timestamp = toInt(row.timestamp)
+```
+
+For the purpose of the example, we will assume we are recommending movies for the User with ID 460.
+
+
 ### Installation
 
 Require the dependency with `composer` :
@@ -76,29 +115,50 @@ composer require graphaware/reco4php
 
 #### Discovery
 
-The first part of a Recommendation Engine is to find recommendations, this phase is generally called `Discovery`.
+In order to recommend movies people should watch, you have decided that we should find potential recommendations in the following way :
 
-`Reco4PHP` comes with a built-in discovery mechanism and helps you to just concentrate on your business logic.
+* Find movies rated by people who rated the same movies than me, but that I didn't rated yet
 
-In this example, we will create a `Discovery Engine` that finds persons that have participated to the same meetup than you :
+As told before, the `reco4php` recommendation engine framework makes all the plumbing so you only have to concentrate on the business logic, that's why it provides base class that you should extend and just implement
+the methods of the upper interfaces, here is how you would create your first discovery engine :
 
-```php
+```
+<?php
+
+namespace GraphAware\Reco4PHP\Tests\Example;
 
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
-class FindPeopleAttendedSameMeetup extends SingleDiscoveryEngine
+class RatedByOthers extends SingleDiscoveryEngine
 {
-    // You don't need to worry about finding the input, this part of the query is already done by the framework
-
     public function query()
     {
-        $query = "MATCH (input)-[:ATTENDED]->(meetup)<-[:ATTENDED]-(reco)
-        RETURN distinct reco, count(*) as score";
+        $query = "MATCH (input)-[:RATED]->(m)<-[:RATED]-(other)
+        WITH distinct other
+        MATCH (other)-[r:RATED]->(reco)
+        WITH distinct reco, sum(r.rating) as score
+        ORDER BY score DESC
+        RETURN reco, score LIMIT 500";
 
         return $query;
     }
+
+    public function name()
+    {
+        return "rated_by_others";
+    }
+
 }
 ```
+
+The `input` node is implicitly matched by the underlying query executor, so you don't have to write the query for matching the input node everytime. So basically it is doing for you `MATCH (input) WHERE id(input) = {idInput}`;
+
+The `query` method should return a string containing the query for finding recommendations, the `name` method should return a string describing the name of your engine (this is mostly for logging purposes).
+
+The query here has some logic, we don't want to return as candidates all the movies found, as in the initial dataset it would be 10k+, so imagine what it would be on a 100M dataset. So we are summing the score
+of the ratings and returning the most rated ones, limit the results to 500 potential recommendations.
+
+
 
 ### License
 
