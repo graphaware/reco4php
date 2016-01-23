@@ -39,22 +39,6 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @return \GraphAware\Reco4PHP\Filter\Filter[]
-     */
-    public function filters()
-    {
-        return array();
-    }
-
-    /**
-     * @return \GraphAware\Reco4PHP\Post\PostProcessor[]
-     */
-    public function postProcessors()
-    {
-        return array();
-    }
-
-    /**
      * @param \GraphAware\Common\Type\NodeInterface $input
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations

@@ -11,6 +11,11 @@ Features:
 * Ability to measure recommendation quality
 * Built-in Cypher transaction management
 
+Requirements:
+
+* PHP5.6+ (PHP7 recommended)
+* Neo4j 2.2.6+ (Neo4j 3.0.0M02 recommended)
+
 The library imposes a specific recommendation engine architecture, which has emerged from our experience building recommendation
 engines and solves the architectural challenge to run recommendation engines remotely via Cypher.
 In return it handles all the plumbing so that you only write the recommendation business logic specific to your use case.
@@ -228,7 +233,146 @@ class AlreadyRatedBlackList extends BaseBlackListBuilder
 Again, the framework takes care of matching first the input node for you. You really just need to add the logic for matching the nodes that should be blacklisted, the framework takes care for filtering the recommended
 nodes against the blacklists provided.
 
+#### Post Processors
 
+`Post Processors` are meant to add additional scoring to the recommended items. In our example, we could reward a produced recommendation if it has more than 10 ratings :
+
+```php
+<?php
+
+namespace GraphAware\Reco4PHP\Tests\Example\PostProcessing;
+
+use GraphAware\Common\Result\RecordCursorInterface;
+use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
+use GraphAware\Reco4PHP\Result\Recommendation;
+
+class RewardWellRated extends CypherAwarePostProcessor
+{
+    public function query()
+    {
+        $query = "RETURN size((reco)<-[:RATED]-()) as ratings";
+
+        return $query;
+    }
+
+    public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result)
+    {
+        $record = $result->first();
+        if ($rating = $record->value("ratings")) {
+            if ($rating > 10) {
+                $recommendation->addScore($this->name(), $rating);
+            }
+
+        }
+    }
+
+    public function name()
+    {
+        return "reward_well_rated";
+    }
+
+}
+```
+
+#### Wiring all together
+
+Now that our components are created, we need to build effectively our recommendation engine :
+
+```php
+<?php
+
+namespace GraphAware\Reco4PHP\Tests\Example;
+
+use GraphAware\Reco4PHP\Engine\BaseRecommendationEngine;
+use GraphAware\Reco4PHP\Tests\Example\Filter\AlreadyRatedBlackList;
+use GraphAware\Reco4PHP\Tests\Example\Filter\ExcludeOldMovies;
+use GraphAware\Reco4PHP\Tests\Example\PostProcessing\RewardWellRated;
+
+class ExampleRecommendationEngine extends BaseRecommendationEngine
+{
+    public function name()
+    {
+        return "user_movie_reco";
+    }
+
+    public function engines()
+    {
+        return array(
+            new RatedByOthers()
+        );
+    }
+
+    public function blacklistBuilders()
+    {
+        return array(
+            new AlreadyRatedBlackList()
+        );
+    }
+
+    public function postProcessors()
+    {
+        return array(
+            new RewardWellRated()
+        );
+    }
+
+    public function filters()
+    {
+        return array(
+            new ExcludeOldMovies()
+        );
+    }
+
+    public function loggers()
+    {
+        return array();
+    }
+
+
+}
+```
+
+As in your recommender service, you might have multiple recommendation engines serving different recommendations, the last step is to create this service and register each `RecommendationEngine` you have created.
+You'll need to provide also a connection to your Neo4j database, in your application this could look like this :
+
+```php
+<?php
+
+namespace GraphAware\Reco4PHP\Tests\Example;
+
+use GraphAware\Reco4PHP\RecommenderService;
+
+class ExampleRecommenderService
+{
+    /**
+     * @var \GraphAware\Reco4PHP\RecommenderService
+     */
+    protected $service;
+
+    /**
+     * ExampleRecommenderService constructor.
+     * @param string $databaseUri
+     */
+    public function __construct($databaseUri)
+    {
+        $this->service = RecommenderService::create($databaseUri);
+        $this->service->registerRecommendationEngine(new ExampleRecommendationEngine());
+    }
+
+    /**
+     * @param int $id
+     * @return \GraphAware\Reco4PHP\Result\Recommendations
+     */
+    public function recommendMovieForUserWithId($id)
+    {
+        $input = $this->service->findInputById($id);
+        $recommendationEngine = $this->service->getRecommender("user_movie_reco");
+
+        return $recommendationEngine->recommend($input);
+    }
+}
+```
 
 
 ### License
