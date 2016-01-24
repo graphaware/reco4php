@@ -12,7 +12,7 @@
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
-use GraphAware\Reco4PHP\Tests\Helper\NodeProxy;
+use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
 
 /**
  * @group engine
@@ -34,7 +34,7 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     public function testParametersBuilding()
     {
         $engine = new TestDiscoveryEngine();
-        $input = NodeProxy::createDummy();
+        $input = FakeNode::createDummy();
         $engine->buildParams($input);
         $this->assertEquals($input->identity(), $engine->parameters()['inputId']);
         $this->assertCount(1, $engine->parameters());
@@ -43,7 +43,7 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     public function testOverride()
     {
         $engine = new OverrideDiscoveryEngine();
-        $input = NodeProxy::createDummy();
+        $input = FakeNode::createDummy();
         $engine->buildParams($input);
         $this->assertCount(2, $engine->parameters());
         $this->assertEquals("php", $engine->parameters()['language']);

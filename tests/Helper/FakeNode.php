@@ -4,7 +4,7 @@ namespace GraphAware\Reco4PHP\Tests\Helper;
 
 use GraphAware\Common\Type\NodeInterface;
 
-class NodeProxy implements NodeInterface
+class FakeNode implements NodeInterface
 {
     protected $identity;
 

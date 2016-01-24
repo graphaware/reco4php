@@ -5,7 +5,7 @@ namespace GraphAware\Reco4PHP\Tests\Result;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\Score;
 use GraphAware\Reco4PHP\Result\SingleScore;
-use GraphAware\Reco4PHP\Tests\Helper\NodeProxy;
+use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
 
 /**
  * Class RecommendationsListTest
@@ -17,7 +17,7 @@ class RecommendationsListTest extends \PHPUnit_Framework_TestCase
 {
     public function testResultGetTwoScoresIfDiscoveredTwice()
     {
-        $node = NodeProxy::createDummy();
+        $node = FakeNode::createDummy();
         $list = new Recommendations();
 
         $list->add($node, 'e1', new SingleScore(1));
