@@ -77,6 +77,15 @@ class Recommendations
     }
 
     /**
+     * @param $position
+     * @return \GraphAware\Reco4PHP\Result\Recommendation
+     */
+    public function get($position)
+    {
+        return array_values($this->recommendations)[$position];
+    }
+
+    /**
      * @return int
      */
     public function size()

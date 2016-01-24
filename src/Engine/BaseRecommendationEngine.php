@@ -37,6 +37,16 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
+     * Method should be overriden by concrete class
+     *
+     * @return array
+     */
+    public function engines()
+    {
+        return array();
+    }
+
+    /**
      * @param \GraphAware\Common\Type\NodeInterface $input
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
@@ -45,10 +55,6 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     {
         $this->recommendationExecutor = new RecommendationExecutor($this->databaseService);
         $recommendations = $this->recommendationExecutor->processRecommendation($input, $this);
-
-        // @todo filters and blacklists
-
-        // @todo post processors
 
         return $recommendations;
     }

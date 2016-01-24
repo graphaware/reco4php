@@ -20,7 +20,7 @@ class Score
     /**
      * @var \GraphAware\Reco4PHP\Result\SingleScore[]
      */
-    protected $scores;
+    protected $scores = [];
 
     /**
      * @param \GraphAware\Reco4PHP\Result\SingleScore $score
