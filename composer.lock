@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "71cdbd48ba2a753e72ba9b0e4f0524ea",
-    "content-hash": "68678cf3e5551f4b7bc144e780e503e7",
+    "hash": "925bc73b879a71113852eec4bc09d5c1",
+    "content-hash": "d6d1482b72ea638cda46c34fb6802e30",
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
@@ -100,12 +100,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-client.git",
-                "reference": "ae2ebd5de5fa7f0120dd5252544435c2974a4956"
+                "reference": "5d178713a3f8e1a47660ac7db007a123ea1b2bc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-client/zipball/ae2ebd5de5fa7f0120dd5252544435c2974a4956",
-                "reference": "ae2ebd5de5fa7f0120dd5252544435c2974a4956",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-client/zipball/5d178713a3f8e1a47660ac7db007a123ea1b2bc0",
+                "reference": "5d178713a3f8e1a47660ac7db007a123ea1b2bc0",
                 "shasum": ""
             },
             "require": {
@@ -150,7 +150,7 @@
                 "http",
                 "neo4j"
             ],
-            "time": "2016-01-21 16:44:16"
+            "time": "2016-01-23 09:14:02"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -267,16 +267,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "4d0bdbe1206df7440219ce14c972aa57cc5e4982"
+                "reference": "f5d04bdd2881ac89abde1fb78cc234bce24327bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/4d0bdbe1206df7440219ce14c972aa57cc5e4982",
-                "reference": "4d0bdbe1206df7440219ce14c972aa57cc5e4982",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5d04bdd2881ac89abde1fb78cc234bce24327bb",
+                "reference": "f5d04bdd2881ac89abde1fb78cc234bce24327bb",
                 "shasum": ""
             },
             "require": {
@@ -321,7 +321,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2015-11-03 01:34:55"
+            "time": "2016-01-23 01:23:02"
         },
         {
             "name": "monolog/monolog",

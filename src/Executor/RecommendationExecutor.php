@@ -41,16 +41,16 @@ class RecommendationExecutor
         $recommendations = new Recommendations();
         $this->stopwatch->start("discovery");
         $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->engines());
-        $discoveryTime = $this->stopwatch->stop("discovery");
         foreach ($engine->engines() as $discoveryEngine) {
             $recommendations->merge($discoveryEngine->produceRecommendations($input, $discoveryResult));
         }
+        $discoveryTime = $this->stopwatch->stop("discovery");
+        echo $discoveryTime->getDuration() . PHP_EOL;
 
         $this->removeIrrelevant($input, $engine, $recommendations);
 
         $this->stopwatch->start("post_process");
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
-        $pPTime = $this->stopwatch->stop("post_process");
         foreach ($engine->postProcessors() as $postProcessor) {
             foreach ($recommendations->getItems() as $recommendation) {
                 if ($postProcessor instanceof CypherAwarePostProcessor) {
@@ -61,6 +61,11 @@ class RecommendationExecutor
                 }
             }
         }
+        $pPTime = $this->stopwatch->stop("post_process");
+
+        echo $pPTime->getDuration() . PHP_EOL;
+
+        $recommendations->sort();
 
         return $recommendations;
     }
