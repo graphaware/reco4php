@@ -37,7 +37,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * Method should be overriden by concrete class
+     * Method should be overriden by concrete class.
      *
      * @return array
      */

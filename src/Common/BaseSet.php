@@ -33,6 +33,7 @@ abstract class BaseSet implements Set
 
     /**
      * @param object $element
+     *
      * @return bool
      */
     protected function valid($element)

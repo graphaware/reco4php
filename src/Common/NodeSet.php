@@ -31,6 +31,7 @@ class NodeSet extends BaseSet
 
     /**
      * @param $key
+     *
      * @return \GraphAware\Common\Type\NodeInterface
      */
     public function get($key)
@@ -56,6 +57,7 @@ class NodeSet extends BaseSet
 
     /**
      * @param \GraphAware\Common\Type\NodeInterface $node
+     *
      * @return bool
      */
     public function contains(NodeInterface $node)

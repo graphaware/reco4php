@@ -10,4 +10,6 @@
  */
 namespace GraphAware\Reco4PHP\Common;
 
-interface Set{}
+interface Set
+{
+}

@@ -78,6 +78,7 @@ class Recommendations
 
     /**
      * @param $position
+     *
      * @return \GraphAware\Reco4PHP\Result\Recommendation
      */
     public function get($position)
