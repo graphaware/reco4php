@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "925bc73b879a71113852eec4bc09d5c1",
-    "content-hash": "d6d1482b72ea638cda46c34fb6802e30",
+    "hash": "19fb7c1a97547f92b1730da766b8fd7f",
+    "content-hash": "af554bb32ebf638e639db03d18a5b9fe",
     "packages": [
         {
             "name": "graphaware/neo4j-bolt",
@@ -100,21 +100,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/graphaware/neo4j-php-client.git",
-                "reference": "5d178713a3f8e1a47660ac7db007a123ea1b2bc0"
+                "reference": "ae69e533540210aa75782ba1f618246c589a356f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/graphaware/neo4j-php-client/zipball/5d178713a3f8e1a47660ac7db007a123ea1b2bc0",
-                "reference": "5d178713a3f8e1a47660ac7db007a123ea1b2bc0",
+                "url": "https://api.github.com/repos/graphaware/neo4j-php-client/zipball/ae69e533540210aa75782ba1f618246c589a356f",
+                "reference": "ae69e533540210aa75782ba1f618246c589a356f",
                 "shasum": ""
             },
             "require": {
                 "graphaware/neo4j-bolt": "^1.0",
                 "graphaware/neo4j-common": "^1.2",
                 "guzzlehttp/guzzle": "^6.0",
-                "monolog/monolog": "~1.1",
+                "monolog/monolog": "^1.1",
                 "myclabs/php-enum": "^1.4",
-                "php": ">= 5.6",
+                "php": "^5.6|^7.0",
                 "symfony/event-dispatcher": "^2.7",
                 "symfony/yaml": "^2.7"
             },
@@ -150,7 +150,7 @@
                 "http",
                 "neo4j"
             ],
-            "time": "2016-01-23 09:14:02"
+            "time": "2016-01-24 01:30:15"
         },
         {
             "name": "guzzlehttp/guzzle",
