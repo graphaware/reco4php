@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Filter;
 
 use GraphAware\Common\Type\NodeInterface;
@@ -19,5 +18,4 @@ class ExcludeSelf implements Filter
     {
         return $input->identity() !== $item->identity();
     }
-
 }

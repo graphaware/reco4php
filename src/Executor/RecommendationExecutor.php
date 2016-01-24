@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Result\ResultCollection;
@@ -39,17 +38,17 @@ class RecommendationExecutor
     public function processRecommendation(NodeInterface $input, RecommendationEngine $engine)
     {
         $recommendations = new Recommendations();
-        $this->stopwatch->start("discovery");
+        $this->stopwatch->start('discovery');
         $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->engines());
         foreach ($engine->engines() as $discoveryEngine) {
             $recommendations->merge($discoveryEngine->produceRecommendations($input, $discoveryResult));
         }
-        $discoveryTime = $this->stopwatch->stop("discovery");
-        echo $discoveryTime->getDuration() . PHP_EOL;
+        $discoveryTime = $this->stopwatch->stop('discovery');
+        echo $discoveryTime->getDuration().PHP_EOL;
 
         $this->removeIrrelevant($input, $engine, $recommendations);
 
-        $this->stopwatch->start("post_process");
+        $this->stopwatch->start('post_process');
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
         foreach ($engine->postProcessors() as $postProcessor) {
             foreach ($recommendations->getItems() as $recommendation) {
@@ -61,9 +60,9 @@ class RecommendationExecutor
                 }
             }
         }
-        $pPTime = $this->stopwatch->stop("post_process");
+        $pPTime = $this->stopwatch->stop('post_process');
 
-        echo $pPTime->getDuration() . PHP_EOL;
+        echo $pPTime->getDuration().PHP_EOL;
 
         $recommendations->sort();
 
@@ -75,7 +74,7 @@ class RecommendationExecutor
         $result = $resultCollection->get($engine->name());
 
         foreach ($result->records() as $record) {
-            $recommendations->add($record->value("reco"), new Score($engine->buildScore($input, $record->value($engine->recoResultName()), $record)));
+            $recommendations->add($record->value('reco'), new Score($engine->buildScore($input, $record->value($engine->recoResultName()), $record)));
         }
     }
 

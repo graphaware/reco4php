@@ -2,4 +2,6 @@
 
 namespace GraphAware\Reco4PHP\Post;
 
-abstract class BasePostProcessor implements PostProcessor{}
+abstract class BasePostProcessor implements PostProcessor
+{
+}

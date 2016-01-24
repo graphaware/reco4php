@@ -3,7 +3,6 @@
 namespace GraphAware\Reco4PHP\Post;
 
 use GraphAware\Common\Result\RecordCursorInterface;
-use GraphAware\Neo4j\Client\Result;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Transactional\BaseCypherAware;

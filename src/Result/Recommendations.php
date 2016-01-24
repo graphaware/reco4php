@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Result;
 
 use GraphAware\Common\Type\NodeInterface;
@@ -22,6 +21,7 @@ class Recommendations
 
     /**
      * @param \GraphAware\Common\Type\NodeInterface $item
+     *
      * @return \GraphAware\Reco4PHP\Result\Recommendation
      */
     public function getOrCreate(NodeInterface $item)
@@ -37,8 +37,8 @@ class Recommendations
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $item
-     * @param string $name
+     * @param \GraphAware\Common\Type\NodeInterface   $item
+     * @param string                                  $name
      * @param \GraphAware\Reco4PHP\Result\SingleScore $singleScore
      */
     public function add(NodeInterface $item, $name, SingleScore $singleScore)
@@ -86,9 +86,8 @@ class Recommendations
 
     public function sort()
     {
-        usort($this->recommendations, function(Recommendation $recommendationA, Recommendation $recommendationB){
+        usort($this->recommendations, function (Recommendation $recommendationA, Recommendation $recommendationB) {
             return $recommendationA->totalScore() <= $recommendationB->totalScore();
         });
     }
-
 }

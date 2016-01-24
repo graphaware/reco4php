@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Type\NodeInterface;
@@ -23,6 +22,7 @@ class DiscoveryPhaseExecutor
 
     /**
      * DiscoveryPhaseExecutor constructor.
+     *
      * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
      */
     public function __construct(DatabaseService $databaseService)
@@ -32,7 +32,7 @@ class DiscoveryPhaseExecutor
 
     /**
      * @param \GraphAware\Common\Type\NodeInterface $input
-     * @param array $engines
+     * @param array                                 $engines
      *
      * @return \GraphAware\Common\Result\ResultCollection
      */
@@ -40,14 +40,15 @@ class DiscoveryPhaseExecutor
     {
         $stack = $this->databaseService->getDriver()->stack();
         foreach ($engines as $engine) {
-            /** @var \GraphAware\Reco4PHP\Engine\DiscoveryEngine $engine */
+            /* @var \GraphAware\Reco4PHP\Engine\DiscoveryEngine $engine */
             $engine->buildParams($input);
-            $query = $this->inputQueryPart($input) . $engine->query();
+            $query = $this->inputQueryPart($input).$engine->query();
             $stack->push($query, $engine->parameters(), $engine->name());
         }
 
         try {
             $resultCollection = $this->databaseService->getDriver()->runStack($stack);
+
             return $resultCollection;
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
@@ -56,10 +57,11 @@ class DiscoveryPhaseExecutor
 
     /**
      * @param \GraphAware\Common\Type\NodeInterface $input
+     *
      * @return string
      */
     private function inputQueryPart(NodeInterface $input)
     {
-        return "MATCH (input) WHERE id(input) = {inputId}" . PHP_EOL;
+        return 'MATCH (input) WHERE id(input) = {inputId}'.PHP_EOL;
     }
 }

@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Result;
 
 use GraphAware\Common\Type\NodeInterface;
@@ -32,7 +31,8 @@ class Recommendation
 
     /**
      * Recommendation constructor.
-     * @param \GraphAware\Common\Type\NodeInterface $item
+     *
+     * @param \GraphAware\Common\Type\NodeInterface  $item
      * @param \GraphAware\Reco4PHP\Result\Score|null $score
      */
     public function __construct(NodeInterface $item)
@@ -41,7 +41,7 @@ class Recommendation
     }
 
     /**
-     * @param string $name
+     * @param string                                  $name
      * @param \GraphAware\Reco4PHP\Result\SingleScore $score
      */
     public function addScore($name, SingleScore $score)

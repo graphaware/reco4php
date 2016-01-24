@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Context;
 
 class FilteringContext implements Context
@@ -31,5 +30,4 @@ class FilteringContext implements Context
     {
         // TODO: Implement statistics() method.
     }
-
 }

@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP;
 
 use GraphAware\Common\Type\NodeInterface;
@@ -43,9 +42,10 @@ class RecommenderService
 
     /**
      * RecommenderService constructor.
-     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
+     *
+     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService                 $databaseService
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface|null $eventDispatcher
-     * @param \Psr\Log\LoggerInterface|null $logger
+     * @param \Psr\Log\LoggerInterface|null                                    $logger
      */
     public function __construct(DatabaseService $databaseService, EventDispatcherInterface $eventDispatcher = null, LoggerInterface $logger = null)
     {
@@ -56,6 +56,7 @@ class RecommenderService
 
     /**
      * @param string $uri
+     *
      * @return \GraphAware\Reco4PHP\RecommenderService
      */
     public static function create($uri)
@@ -65,12 +66,13 @@ class RecommenderService
 
     /**
      * @param $id
+     *
      * @return \GraphAware\Bolt\Result\Type\Node|\GraphAware\Bolt\Result\Type\Path|\GraphAware\Bolt\Result\Type\Relationship|mixed
      */
     public function findInputById($id)
     {
         $id = (int) $id;
-        $result = $this->databaseService->getDriver()->run("MATCH (n) WHERE id(n) = {id} RETURN n as input", ['id' => $id]);
+        $result = $this->databaseService->getDriver()->run('MATCH (n) WHERE id(n) = {id} RETURN n as input', ['id' => $id]);
 
         return $this->validateInput($result);
     }
@@ -78,7 +80,7 @@ class RecommenderService
     /**
      * @param string $label
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return \GraphAware\Common\Type\NodeInterface
      */
@@ -92,19 +94,21 @@ class RecommenderService
 
     /**
      * @param \GraphAware\Common\Result\Result $result
+     *
      * @return \GraphAware\Common\Type\NodeInterface
      */
     public function validateInput($result)
     {
-        if (count($result->records()) < 1 || !$result->getRecord()->value("input") instanceof NodeInterface) {
+        if (count($result->records()) < 1 || !$result->getRecord()->value('input') instanceof NodeInterface) {
             throw new \InvalidArgumentException(sprintf('Node not found'));
         }
 
-        return $result->getRecord()->value("input");
+        return $result->getRecord()->value('input');
     }
 
     /**
      * @param $name
+     *
      * @return \GraphAware\Reco4PHP\Engine\RecommendationEngine
      */
     public function getRecommender($name)

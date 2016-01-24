@@ -2,7 +2,6 @@
 
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 
 class BaseExecutor

@@ -8,13 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Engine;
 
 use GraphAware\Reco4PHP\Executor\RecommendationExecutor;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 abstract class BaseRecommendationEngine implements RecommendationEngine
 {

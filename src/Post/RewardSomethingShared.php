@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Post;
 
 use GraphAware\Common\Result\RecordCursorInterface;
@@ -29,15 +28,15 @@ abstract class RewardSomethingShared extends CypherAwarePostProcessor
     final public function query()
     {
         $relationshipPatterns = [
-            Direction::BOTH => array('-[:%s]-','-[:%s]-'),
-            Direction::INCOMING => array('<-[:%s]-','-[:%s]->'),
-            Direction::OUTGOING => array('-[:%s]->', '<-[:%s]-')
+            Direction::BOTH => array('-[:%s]-', '-[:%s]-'),
+            Direction::INCOMING => array('<-[:%s]-', '-[:%s]->'),
+            Direction::OUTGOING => array('-[:%s]->', '<-[:%s]-'),
         ];
 
         $relPattern = sprintf($relationshipPatterns[$this->relationshipDirection()][0], $this->relationshipType());
         $inversedRelPattern = sprintf($relationshipPatterns[$this->relationshipDirection()][1], $this->relationshipType());
 
-        $query = 'MATCH (input)' . $relPattern . '(shared)' . $inversedRelPattern . '(output)
+        $query = 'MATCH (input)'.$relPattern.'(shared)'.$inversedRelPattern.'(output)
         RETURN shared as sharedThing';
 
         return $query;
@@ -51,5 +50,4 @@ abstract class RewardSomethingShared extends CypherAwarePostProcessor
             }
         }
     }
-
 }

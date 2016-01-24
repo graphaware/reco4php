@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Engine;
 
 use GraphAware\Common\Result\RecordViewInterface;
@@ -20,11 +19,10 @@ use GraphAware\Reco4PHP\Transactional\BaseCypherAware;
 
 abstract class SingleDiscoveryEngine extends BaseCypherAware implements DiscoveryEngine
 {
-
     public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record)
     {
-        $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()): $this->defaultScore();
-        $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()): null;
+        $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
+        $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()) : null;
 
         return new SingleScore($score, $reason);
     }
@@ -43,25 +41,24 @@ abstract class SingleDiscoveryEngine extends BaseCypherAware implements Discover
         return $recommendations;
     }
 
-
     public function idParamName()
     {
-        return "inputId";
+        return 'inputId';
     }
 
     public function recoResultName()
     {
-        return "reco";
+        return 'reco';
     }
 
     public function scoreResultName()
     {
-        return "score";
+        return 'score';
     }
 
     public function reasonResultName()
     {
-        return "reason";
+        return 'reason';
     }
 
     public function defaultScore()
