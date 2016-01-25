@@ -75,7 +75,7 @@ Let's start it !
 
 We will use the small dataset available from MovieLens containing movies, users and ratings as well as genres.
 
-The dataset is publicly available here : http://grouplens.org/datasets/movielens/
+The dataset is publicly available here : http://grouplens.org/datasets/movielens/. The data set to download is in the **MovieLens Latest Datasets** section and is named `ml-latest-small.zip`.
 
 Once downloaded and extracted the archive, you can run the following Cypher statements for importing the dataset, just adapt the file urls to match your actual path to the files :
 
