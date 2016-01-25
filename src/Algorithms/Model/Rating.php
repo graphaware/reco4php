@@ -10,18 +10,23 @@
  */
 namespace GraphAware\Reco4PHP\Algorithms\Model;
 
-use GraphAware\Common\Type\NodeInterface;
 
 class Rating
 {
+    /**
+     * @var float
+     */
     protected $rating;
 
-    protected $node;
+    /**
+     * @var int
+     */
+    protected $userNodeId;
 
-    public function __construct($rating, NodeInterface $node)
+    public function __construct($rating, $userNodeId)
     {
         $this->rating = (float) $rating;
-        $this->node = $node;
+        $this->userNodeId = (int) $userNodeId;
     }
 
     /**
@@ -33,10 +38,10 @@ class Rating
     }
 
     /**
-     * @return \GraphAware\Common\Type\NodeInterface
+     * @return int
      */
-    public function getNode()
+    public function getId()
     {
-        return $this->node;
+        return $this->userNodeId;
     }
 }

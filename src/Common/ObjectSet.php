@@ -10,7 +10,7 @@
  */
 namespace GraphAware\Reco4PHP\Common;
 
-abstract class BaseSet implements Set
+class ObjectSet implements Set
 {
     /**
      * @var string
@@ -22,13 +22,38 @@ abstract class BaseSet implements Set
      */
     protected $elements = [];
 
-    protected function __construct($className)
+    final public function __construct($className)
     {
         if (!class_exists($className)) {
             throw new \InvalidArgumentException(sprintf('The classname %s does not exist', $className));
         }
 
         $this->className = $className;
+    }
+
+    public function add($element)
+    {
+        if ($this->valid($element) && !in_array($element, $this->elements)) {
+            $this->elements[] = $element;
+        }
+    }
+
+    /**
+     * @return object[]
+     */
+    public function getAll()
+    {
+        return $this->elements;
+    }
+
+    public function size()
+    {
+        return count($this->elements);
+    }
+
+    public function get($key)
+    {
+        return $this->elements[$key];
     }
 
     /**

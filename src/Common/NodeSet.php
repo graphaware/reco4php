@@ -12,7 +12,7 @@ namespace GraphAware\Reco4PHP\Common;
 
 use GraphAware\Common\Type\NodeInterface;
 
-class NodeSet extends BaseSet
+class NodeSet extends ObjectSet
 {
     public function __construct()
     {

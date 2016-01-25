@@ -3,7 +3,7 @@
 ## Neo4j based Recommendation Engine Framework for PHP
 
 GraphAware Reco4PHP is a library for building complex recommendation engines atop Neo4j.
-
+[![Build Status](https://travis-ci.org/graphaware/neo4j-php-commons.svg)](https://travis-ci.org/graphaware/neo4j-php-commons)
 [![Build Status](https://travis-ci.org/graphaware/neo4j-php-client.svg?branch=master)](https://travis-ci.org/graphaware/reco4php)
 
 Features:

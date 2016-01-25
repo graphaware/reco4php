@@ -16,9 +16,10 @@ class FakeNode implements NodeInterface
         $this->labels = $labels;
     }
 
-    public static function createDummy()
+    public static function createDummy($id = null)
     {
-        return new self(rand(0,1000), array("Dummy"));
+        $identity = null !== $id ? $id : rand(0,1000);
+        return new self($identity, array("Dummy"));
     }
 
     function identity()
