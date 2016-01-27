@@ -44,8 +44,6 @@ class RecommendationExecutor
             $recommendations->merge($discoveryEngine->produceRecommendations($input, $discoveryResult));
         }
         $discoveryTime = $this->stopwatch->stop('discovery');
-        echo $discoveryTime->getDuration().PHP_EOL;
-
         $this->removeIrrelevant($input, $engine, $recommendations);
 
         $this->stopwatch->start('post_process');
@@ -61,9 +59,6 @@ class RecommendationExecutor
             }
         }
         $pPTime = $this->stopwatch->stop('post_process');
-
-        echo $pPTime->getDuration().PHP_EOL;
-
         $recommendations->sort();
 
         return $recommendations;
