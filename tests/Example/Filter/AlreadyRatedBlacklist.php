@@ -2,16 +2,20 @@
 
 namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
+use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Filter\BaseBlackListBuilder;
 
 class AlreadyRatedBlackList extends BaseBlackListBuilder
 {
-    public function query()
+    public function blacklistQuery(NodeInterface $input)
     {
-        $query = "MATCH (input)-[:RATED]->(movie)
-        RETURN movie as item";
+        $query = 'MATCH (input) WHERE id(input) = {inputId}
+        MATCH (input)-[:RATED]->(movie)
+        RETURN movie as item';
 
-        return $query;
+        return Statement::create($query, ['inputId' => $input->identity()]);
     }
+
 
 }

@@ -125,7 +125,6 @@ class RecommenderService
      */
     public function registerRecommendationEngine(RecommendationEngine $recommendationEngine)
     {
-        var_dump($recommendationEngine->name());
         $recommendationEngine->setDatabaseService($this->databaseService);
         $this->engines[$recommendationEngine->name()] = $recommendationEngine;
     }

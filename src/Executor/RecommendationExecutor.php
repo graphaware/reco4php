@@ -10,15 +10,12 @@
  */
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Reco4PHP\Engine\DiscoveryEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use Symfony\Component\Stopwatch\Stopwatch;
-use GraphAware\Reco4PHP\Result\Score;
 
 class RecommendationExecutor
 {
@@ -39,8 +36,8 @@ class RecommendationExecutor
     {
         $recommendations = new Recommendations();
         $this->stopwatch->start('discovery');
-        $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->engines());
-        foreach ($engine->engines() as $discoveryEngine) {
+        $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->getDiscoveryEngines());
+        foreach ($engine->getDiscoveryEngines() as $discoveryEngine) {
             $recommendations->merge($discoveryEngine->produceRecommendations($input, $discoveryResult));
         }
         $discoveryTime = $this->stopwatch->stop('discovery');
@@ -48,11 +45,11 @@ class RecommendationExecutor
 
         $this->stopwatch->start('post_process');
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
-        foreach ($engine->postProcessors() as $postProcessor) {
+        foreach ($engine->getPostProcessors() as $postProcessor) {
             foreach ($recommendations->getItems() as $recommendation) {
                 if ($postProcessor instanceof CypherAwarePostProcessor) {
                     $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
-                    $postProcessor->doPostProcess($input, $recommendation, $postProcessResult->get($tag));
+                    $postProcessor->postProcess($input, $recommendation, $postProcessResult->get($tag));
                 } else {
                     $postProcessor->postProcess($input, $recommendation);
                 }
@@ -62,15 +59,6 @@ class RecommendationExecutor
         $recommendations->sort();
 
         return $recommendations;
-    }
-
-    public function getRecommendationsFromResult(NodeInterface $input, ResultCollection $resultCollection, DiscoveryEngine $engine, Recommendations $recommendations)
-    {
-        $result = $resultCollection->get($engine->name());
-
-        foreach ($result->records() as $record) {
-            $recommendations->add($record->value('reco'), new Score($engine->buildScore($input, $record->value($engine->recoResultName()), $record)));
-        }
     }
 
     public function removeIrrelevant(NodeInterface $input, RecommendationEngine $engine, Recommendations $recommendations)

@@ -14,57 +14,51 @@ use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
-use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
 
 class PostProcessPhaseExecutor
 {
+    /**
+     * @var \GraphAware\Reco4PHP\Persistence\DatabaseService
+     */
     protected $databaseService;
 
     /**
-     * @var \GraphAware\Neo4j\Client\Stack
+     * PostProcessPhaseExecutor constructor.
+     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
      */
-    protected $stack;
-
     public function __construct(DatabaseService $databaseService)
     {
         $this->databaseService = $databaseService;
     }
 
+    /**
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Reco4PHP\Result\Recommendations $recommendations
+     * @param \GraphAware\Reco4PHP\Engine\RecommendationEngine $recommendationEngine
+     *
+     * @return \GraphAware\Common\Result\ResultCollection
+     */
     public function execute(NodeInterface $input, Recommendations $recommendations, RecommendationEngine $recommendationEngine)
     {
-        $this->stack = $this->databaseService->getDriver()->stack('post_process_'.$recommendationEngine->name());
+        $stack = $this->databaseService->getDriver()->stack('post_process_'.$recommendationEngine->name());
 
         foreach ($recommendationEngine->postProcessors() as $postProcessor) {
             if ($postProcessor instanceof CypherAwarePostProcessor) {
                 foreach ($recommendations->getItems() as $recommendation) {
-                    $this->prepareQuery($input, $recommendation, $postProcessor);
+                    $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
+                    $statement = $postProcessor->buildQuery($input, $recommendation);
+                    $stack->push($statement->text(), $statement->parameters(), $tag);
                 }
             }
         }
 
         try {
-            $results = $this->databaseService->getDriver()->runStack($this->stack);
-            $this->stack = null;
+            $results = $this->databaseService->getDriver()->runStack($stack);
 
             return $results;
         } catch (\Exception $e) {
             throw new \RuntimeException('PostProcess Query Exception - '.$e->getMessage());
         }
-    }
-
-    public function prepareQuery(NodeInterface $input, Recommendation $recommendation, CypherAwarePostProcessor $postProcessor)
-    {
-        $query = 'MATCH (input), (reco) WHERE id(input) = {idInput} AND id(reco) = {idReco}'.PHP_EOL;
-        $query .= $postProcessor->query();
-
-        $parameters = [
-            'idInput' => $input->identity(),
-            'idReco' => $recommendation->item()->identity(),
-        ];
-
-        $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
-
-        $this->stack->push($query, $parameters, $tag);
     }
 }

@@ -10,13 +10,14 @@
  */
 namespace GraphAware\Reco4PHP\Post;
 
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Graph\Direction;
 use GraphAware\Reco4PHP\Result\Recommendation;
-use GraphAware\Reco4PHP\Result\Score;
+use GraphAware\Reco4PHP\Result\SingleScore;
 
-abstract class RewardSomethingShared extends CypherAwarePostProcessor
+abstract class RewardSomethingShared implements CypherAwarePostProcessor
 {
     abstract public function relationshipType();
 
@@ -25,7 +26,7 @@ abstract class RewardSomethingShared extends CypherAwarePostProcessor
         return Direction::BOTH;
     }
 
-    final public function query()
+    final public function buildQuery(NodeInterface $input, Recommendation $recommendation)
     {
         $relationshipPatterns = [
             Direction::BOTH => array('-[:%s]-', '-[:%s]-'),
@@ -36,17 +37,22 @@ abstract class RewardSomethingShared extends CypherAwarePostProcessor
         $relPattern = sprintf($relationshipPatterns[$this->relationshipDirection()][0], $this->relationshipType());
         $inversedRelPattern = sprintf($relationshipPatterns[$this->relationshipDirection()][1], $this->relationshipType());
 
-        $query = 'MATCH (input)'.$relPattern.'(shared)'.$inversedRelPattern.'(output)
+        $query = 'MATCH (input) WHERE id(input) = {inputId}, (item) WHERE id(item) = {itemId}
+        MATCH (input)'.$relPattern.'(shared)'.$inversedRelPattern.'(item)
         RETURN shared as sharedThing';
 
-        return $query;
+        return Statement::create($query, ['inputId' => $input->identity(), 'itemId' => $recommendation->item()->identity()]);
     }
 
-    public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result)
+    public function postProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result = null)
     {
+        if (null === $result) {
+            throw new \RuntimeException(sprintf('Expected a non-null result in %s::postProcess()', get_class($this)));
+        }
+
         if (count($result->records()) > 0) {
             foreach ($result->records() as $record) {
-                $recommendation->addScore(new Score(1, $this->name()));
+                $recommendation->addScore($this->name(), new SingleScore(1));
             }
         }
     }

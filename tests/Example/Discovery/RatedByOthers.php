@@ -2,23 +2,25 @@
 
 namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
+use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 class RatedByOthers extends SingleDiscoveryEngine
 {
-    public function query()
+    public function discoveryQuery(NodeInterface $input)
     {
-        $query = "MATCH (input:User)-[:RATED]->(m)
-WHERE 10 < size( (m)<-[:RATED]-() ) < 100
-MATCH (m)<-[:RATED]-(other)
-WITH distinct other
-MATCH (other)-[r:RATED]->(reco)
-WITH reco, sum(r.rating) as score
-ORDER BY score DESC
-RETURN reco, score LIMIT 100";
+        $query = 'MATCH (input:User) WHERE id(input) = {id}
+        MATCH (input)-[:RATED]->(movie)<-[:RATED]-(other)
+        WITH distinct other
+        MATCH (other)-[:RATED]->(reco)
+        RETURN reco, count(*) as score
+        ORDER BY score DESC
+        LIMIT 200';
 
-        return $query;
+        return Statement::create($query, ['id' => $input->identity()]);
     }
+
 
     public function name()
     {

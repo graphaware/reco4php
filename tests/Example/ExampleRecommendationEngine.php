@@ -12,10 +12,10 @@ class ExampleRecommendationEngine extends BaseRecommendationEngine
 {
     public function name()
     {
-        return "user_movie_reco";
+        return "example";
     }
 
-    public function engines()
+    public function discoveryEngines()
     {
         return array(
             new RatedByOthers()
@@ -42,11 +42,4 @@ class ExampleRecommendationEngine extends BaseRecommendationEngine
             new ExcludeOldMovies()
         );
     }
-
-    public function loggers()
-    {
-        return array();
-    }
-
-
 }

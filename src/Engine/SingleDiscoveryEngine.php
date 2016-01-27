@@ -15,10 +15,17 @@ use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\SingleScore;
-use GraphAware\Reco4PHP\Transactional\BaseCypherAware;
 
-abstract class SingleDiscoveryEngine extends BaseCypherAware implements DiscoveryEngine
+abstract class SingleDiscoveryEngine implements DiscoveryEngine
 {
+    /**
+     * @inheritdoc
+     *
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\NodeInterface $item
+     * @param \GraphAware\Common\Result\RecordViewInterface $record
+     * @return \GraphAware\Reco4PHP\Result\SingleScore
+     */
     public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record)
     {
         $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
@@ -27,6 +34,13 @@ abstract class SingleDiscoveryEngine extends BaseCypherAware implements Discover
         return new SingleScore($score, $reason);
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Result\ResultCollection $resultCollection
+     * @return \GraphAware\Reco4PHP\Result\Recommendations
+     */
     final public function produceRecommendations(NodeInterface $input, ResultCollection $resultCollection)
     {
         $result = $resultCollection->get($this->name());
@@ -41,34 +55,35 @@ abstract class SingleDiscoveryEngine extends BaseCypherAware implements Discover
         return $recommendations;
     }
 
-    public function idParamName()
-    {
-        return 'inputId';
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function recoResultName()
     {
         return 'reco';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function scoreResultName()
     {
         return 'score';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function reasonResultName()
     {
         return 'reason';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function defaultScore()
     {
         return 1.0;
-    }
-
-    final public function buildParams(NodeInterface $input)
-    {
-        $this->query();
-        $this->addParameter($this->idParamName(), $input->identity());
     }
 }

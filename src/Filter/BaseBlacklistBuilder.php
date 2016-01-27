@@ -12,20 +12,19 @@ namespace GraphAware\Reco4PHP\Filter;
 
 use GraphAware\Common\Result\Result;
 use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Reco4PHP\Transactional\BaseCypherAware;
 
-abstract class BaseBlacklistBuilder extends BaseCypherAware implements BlackListBuilder
+abstract class BaseBlacklistBuilder implements BlackListBuilder
 {
     /**
      * @param \GraphAware\Common\Result\Result $result
      *
      * @return \GraphAware\Common\Type\NodeInterface[]
      */
-    final public function buildBlackList(Result $result)
+    public function buildBlackList(Result $result)
     {
         $nodes = [];
         foreach ($result->records() as $record) {
-            if ($record->hasValue($this->itemResultName()) && $record->value($this->inputIdParam() instanceof NodeInterface)) {
+            if ($record->hasValue($this->itemResultName()) && $record->value($this->itemResultName() instanceof NodeInterface)) {
                 $nodes[] = $record->value($this->itemResultName());
             }
         }
@@ -36,10 +35,5 @@ abstract class BaseBlacklistBuilder extends BaseCypherAware implements BlackList
     public function itemResultName()
     {
         return 'item';
-    }
-
-    public function inputIdParam()
-    {
-        return 'input';
     }
 }

@@ -41,9 +41,8 @@ class DiscoveryPhaseExecutor
         $stack = $this->databaseService->getDriver()->stack();
         foreach ($engines as $engine) {
             /* @var \GraphAware\Reco4PHP\Engine\DiscoveryEngine $engine */
-            $engine->buildParams($input);
-            $query = $this->inputQueryPart($input).$engine->query();
-            $stack->push($query, $engine->parameters(), $engine->name());
+            $statement = $engine->discoveryQuery($input);
+            $stack->push($statement->text(), $statement->parameters(), $engine->name());
         }
 
         try {
@@ -53,15 +52,5 @@ class DiscoveryPhaseExecutor
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }
-    }
-
-    /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
-     *
-     * @return string
-     */
-    private function inputQueryPart(NodeInterface $input)
-    {
-        return 'MATCH (input) WHERE id(input) = {inputId}'.PHP_EOL;
     }
 }

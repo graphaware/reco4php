@@ -1,18 +1,25 @@
 <?php
 
+/**
+ * This file is part of the GraphAware Reco4PHP package.
+ *
+ * (c) GraphAware Limited <http://graphaware.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace GraphAware\Reco4PHP\Post;
 
-use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Result\Recommendation;
-use GraphAware\Reco4PHP\Transactional\BaseCypherAware;
 
-abstract class CypherAwarePostProcessor extends BaseCypherAware implements PostProcessor
+interface CypherAwarePostProcessor extends PostProcessor
 {
-    final public function postProcess(NodeInterface $input, Recommendation $recommendation)
-    {
-        return;
-    }
-
-    abstract public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result);
+    /**
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Reco4PHP\Result\Recommendation $recommendation
+     *
+     * @return \GraphAware\Common\Cypher\Statement the statement to be executed
+     */
+    public function buildQuery(NodeInterface $input, Recommendation $recommendation);
 }
