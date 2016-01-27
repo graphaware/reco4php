@@ -134,21 +134,25 @@ the methods of the upper interfaces, here is how you would create your first dis
 
 namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
+use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 class RatedByOthers extends SingleDiscoveryEngine
 {
-    public function query()
+    public function discoveryQuery(NodeInterface $input)
     {
-        $query = "MATCH (input)-[:RATED]->(m)<-[:RATED]-(other)
+        $query = 'MATCH (input:User) WHERE id(input) = {id}
+        MATCH (input)-[:RATED]->(movie)<-[:RATED]-(other)
         WITH distinct other
-        MATCH (other)-[r:RATED]->(reco)
-        WITH distinct reco, sum(r.rating) as score
+        MATCH (other)-[:RATED]->(reco)
+        RETURN reco, count(*) as score
         ORDER BY score DESC
-        RETURN reco, score LIMIT 500";
+        LIMIT 200';
 
-        return $query;
+        return Statement::create($query, ['id' => $input->identity()]);
     }
+
 
     public function name()
     {
@@ -158,9 +162,8 @@ class RatedByOthers extends SingleDiscoveryEngine
 }
 ```
 
-The `input` node is implicitly matched by the underlying query executor, so you don't have to write the query for matching the input node everytime. So basically it is doing for you `MATCH (input) WHERE id(input) = {idInput}`;
-
-The `query` method should return a string containing the query for finding recommendations, the `name` method should return a string describing the name of your engine (this is mostly for logging purposes).
+The `discoveryMethod` method should return a `Statement` object containing the query for finding recommendations,
+the `name` method should return a string describing the name of your engine (this is mostly for logging purposes).
 
 The query here has some logic, we don't want to return as candidates all the movies found, as in the initial dataset it would be 10k+, so imagine what it would be on a 100M dataset. So we are summing the score
 of the ratings and returning the most rated ones, limit the results to 500 potential recommendations.
@@ -219,22 +222,26 @@ Of course we do not want to recommend movies that the current user has already r
 
 namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
+use GraphAware\Common\Cypher\Statement;
+use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Filter\BaseBlackListBuilder;
 
 class AlreadyRatedBlackList extends BaseBlackListBuilder
 {
-    public function query()
+    public function blacklistQuery(NodeInterface $input)
     {
-        $query = "MATCH (input)-[:RATED]->(movie)
-        RETURN movie as item";
+        $query = 'MATCH (input) WHERE id(input) = {inputId}
+        MATCH (input)-[:RATED]->(movie)
+        RETURN movie as item';
 
-        return $query;
+        return Statement::create($query, ['inputId' => $input->identity()]);
     }
+
 
 }
 ```
 
-Again, the framework takes care of matching first the input node for you. You really just need to add the logic for matching the nodes that should be blacklisted, the framework takes care for filtering the recommended
+You really just need to add the logic for matching the nodes that should be blacklisted, the framework takes care for filtering the recommended
 nodes against the blacklists provided.
 
 #### Post Processors
@@ -246,29 +253,30 @@ nodes against the blacklists provided.
 
 namespace GraphAware\Reco4PHP\Tests\Example\PostProcessing;
 
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\RecordCursorInterface;
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\SingleScore;
 
-class RewardWellRated extends CypherAwarePostProcessor
+class RewardWellRated implements CypherAwarePostProcessor
 {
-    public function query()
+    public function buildQuery(NodeInterface $input, Recommendation $recommendation)
     {
-        $query = "RETURN size((reco)<-[:RATED]-()) as ratings";
+        $query = 'MATCH (item) WHERE id(item) = {itemId}
+        RETURN size((item)<-[:RATED]-()) as ratings';
 
-        return $query;
+        return Statement::create($query, ['itemId' => $recommendation->item()->identity()]);
     }
 
-    public function doPostProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result)
+    public function postProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result = null)
     {
         $record = $result->getRecord();
         if ($rating = $record->value("ratings")) {
             if ($rating > 10) {
                 $recommendation->addScore($this->name(), new SingleScore($rating));
             }
-
         }
     }
 
@@ -293,15 +301,16 @@ use GraphAware\Reco4PHP\Engine\BaseRecommendationEngine;
 use GraphAware\Reco4PHP\Tests\Example\Filter\AlreadyRatedBlackList;
 use GraphAware\Reco4PHP\Tests\Example\Filter\ExcludeOldMovies;
 use GraphAware\Reco4PHP\Tests\Example\PostProcessing\RewardWellRated;
+use GraphAware\Reco4PHP\Tests\Example\Discovery\RatedByOthers;
 
 class ExampleRecommendationEngine extends BaseRecommendationEngine
 {
     public function name()
     {
-        return "user_movie_reco";
+        return "example";
     }
 
-    public function engines()
+    public function discoveryEngines()
     {
         return array(
             new RatedByOthers()
@@ -328,13 +337,6 @@ class ExampleRecommendationEngine extends BaseRecommendationEngine
             new ExcludeOldMovies()
         );
     }
-
-    public function loggers()
-    {
-        return array();
-    }
-
-
 }
 ```
 
