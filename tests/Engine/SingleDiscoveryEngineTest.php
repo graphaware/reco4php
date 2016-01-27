@@ -11,6 +11,7 @@
 
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
 
@@ -23,8 +24,8 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = new TestDiscoveryEngine();
         $this->assertInstanceOf(SingleDiscoveryEngine::class, $engine);
-        $this->assertEquals("MATCH (n) RETURN n", $engine->query());
-        $this->assertEquals("inputId", $engine->idParamName());
+        $this->assertInstanceOf(Statement::class, $engine->discoveryQuery(FakeNode::createDummy()));
+        $this->assertEquals("MATCH (n) WHERE id(n) <> {inputId} RETURN n", $engine->discoveryQuery(FakeNode::createDummy())->text());
         $this->assertEquals("score", $engine->scoreResultName());
         $this->assertEquals("reco", $engine->recoResultName());
         $this->assertEquals(1, $engine->defaultScore());
@@ -35,18 +36,16 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = new TestDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $engine->buildParams($input);
-        $this->assertEquals($input->identity(), $engine->parameters()['inputId']);
-        $this->assertCount(1, $engine->parameters());
+        $this->assertEquals($input->identity(), $engine->discoveryQuery($input)->parameters()['inputId']);
+        $this->assertCount(1, $engine->discoveryQuery($input)->parameters());
     }
 
     public function testOverride()
     {
         $engine = new OverrideDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $engine->buildParams($input);
-        $this->assertCount(2, $engine->parameters());
-        $this->assertEquals("php", $engine->parameters()['language']);
+        $this->assertCount(2, $engine->discoveryQuery($input)->parameters());
+        $this->assertEquals($input->identity(), $engine->discoveryQuery($input)->parameters()['input']);
         $this->assertEquals("recommendation", $engine->recoResultName());
         $this->assertEquals("rate", $engine->scoreResultName());
         $this->assertEquals("source", $engine->idParamName());

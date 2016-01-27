@@ -32,7 +32,7 @@ class DiscoveryPhaseExecutor
 
     /**
      * @param \GraphAware\Common\Type\NodeInterface $input
-     * @param array                                 $engines
+     * @param \GraphAware\Reco4PHP\Engine\DiscoveryEngine[] $engines
      *
      * @return \GraphAware\Common\Result\ResultCollection
      */
@@ -40,7 +40,7 @@ class DiscoveryPhaseExecutor
     {
         $stack = $this->databaseService->getDriver()->stack();
         foreach ($engines as $engine) {
-            /* @var \GraphAware\Reco4PHP\Engine\DiscoveryEngine $engine */
+
             $statement = $engine->discoveryQuery($input);
             $stack->push($statement->text(), $statement->parameters(), $engine->name());
         }

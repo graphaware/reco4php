@@ -11,13 +11,17 @@
 
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
+use GraphAware\Common\Cypher\Statement;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
+use GraphAware\Common\Type\NodeInterface;
 
 class TestDiscoveryEngine extends SingleDiscoveryEngine
 {
-    public function query()
+    public function discoveryQuery(NodeInterface $input)
     {
-        return "MATCH (n) RETURN n";
+        $query = "MATCH (n) WHERE id(n) <> {inputId} RETURN n";
+
+        return Statement::create($query, ['inputId' => $input->identity()]);
     }
 
     public function name()
