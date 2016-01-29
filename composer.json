@@ -14,7 +14,7 @@
     ],
     "require": {
         "graphaware/neo4j-php-client": "^4.0@alpha",
-        "symfony/event-dispatcher": "^2.7",
+        "symfony/event-dispatcher": "^2.7|^3.0",
         "psr/log": "^1.0",
         "symfony/stopwatch": "^3.0"
     },
