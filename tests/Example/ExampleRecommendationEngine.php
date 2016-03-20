@@ -3,6 +3,7 @@
 namespace GraphAware\Reco4PHP\Tests\Example;
 
 use GraphAware\Reco4PHP\Engine\BaseRecommendationEngine;
+use GraphAware\Reco4PHP\Tests\Example\Discovery\FromSameGenreILike;
 use GraphAware\Reco4PHP\Tests\Example\Filter\AlreadyRatedBlackList;
 use GraphAware\Reco4PHP\Tests\Example\Filter\ExcludeOldMovies;
 use GraphAware\Reco4PHP\Tests\Example\PostProcessing\RewardWellRated;
@@ -18,7 +19,8 @@ class ExampleRecommendationEngine extends BaseRecommendationEngine
     public function discoveryEngines()
     {
         return array(
-            new RatedByOthers()
+            new RatedByOthers(),
+            new FromSameGenreILike()
         );
     }
 
