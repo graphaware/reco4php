@@ -37,4 +37,30 @@ class FakeNode implements NodeInterface
         return in_array($label, $this->labels);
     }
 
+    public function keys()
+    {
+        // TODO: Implement keys() method.
+    }
+
+    public function containsKey($key)
+    {
+        // TODO: Implement containsKey() method.
+    }
+
+    public function get($key)
+    {
+        // TODO: Implement get() method.
+    }
+
+    public function values()
+    {
+        // TODO: Implement values() method.
+    }
+
+    public function asArray()
+    {
+        // TODO: Implement asArray() method.
+    }
+
+
 }
