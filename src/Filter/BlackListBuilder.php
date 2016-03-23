@@ -15,6 +15,10 @@ use GraphAware\Common\Type\NodeInterface;
 
 interface BlackListBuilder
 {
+    /**
+     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @return \GraphAware\Common\Cypher\Statement
+     */
     public function blacklistQuery(NodeInterface $input);
 
     /**
@@ -28,4 +32,9 @@ interface BlackListBuilder
      * @return string
      */
     public function itemResultName();
+
+    /**
+     * @return string
+     */
+    public function name();
 }

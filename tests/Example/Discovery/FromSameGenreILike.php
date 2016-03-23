@@ -17,11 +17,10 @@ class FromSameGenreILike extends SingleDiscoveryEngine
     {
         $query = 'MATCH (input) WHERE id(input) = {id}
         MATCH (input)-[r:RATED]->(movie)-[:HAS_GENRE]->(genre)
-        WITH distinct genre, sum(r.rating) as score, input
+        WITH distinct genre, sum(r.rating) as score
         ORDER BY score DESC
         LIMIT 15
         MATCH (genre)<-[:HAS_GENRE]-(reco)
-        WHERE NOT (input)-[:RATED]->(reco)
         RETURN reco
         LIMIT 200';
 

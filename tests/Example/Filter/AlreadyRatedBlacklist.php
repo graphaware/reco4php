@@ -17,5 +17,8 @@ class AlreadyRatedBlackList extends BaseBlackListBuilder
         return Statement::create($query, ['inputId' => $input->identity()]);
     }
 
-
+    public function name()
+    {
+        return 'already_rated';
+    }
 }

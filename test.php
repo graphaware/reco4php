@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$rs = \GraphAware\Reco4PHP\RecommenderService::create("bolt://localhost");
+$rs = \GraphAware\Reco4PHP\RecommenderService::create("http://localhost:7474");
 $rs->registerRecommendationEngine(new \GraphAware\Reco4PHP\Tests\Example\ExampleRecommendationEngine());
 
 $stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
