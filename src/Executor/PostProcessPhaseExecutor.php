@@ -8,12 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
+use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
 
 class PostProcessPhaseExecutor
@@ -43,13 +45,16 @@ class PostProcessPhaseExecutor
     {
         $stack = $this->databaseService->getDriver()->stack('post_process_'.$recommendationEngine->name());
 
-        foreach ($recommendationEngine->postProcessors() as $postProcessor) {
+        foreach ($recommendationEngine->getPostProcessors() as $postProcessor) {
             if ($postProcessor instanceof CypherAwarePostProcessor) {
                 foreach ($recommendations->getItems() as $recommendation) {
                     $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
                     $statement = $postProcessor->buildQuery($input, $recommendation);
                     $stack->push($statement->text(), $statement->parameters(), $tag);
                 }
+            } else if ($postProcessor instanceof RecommendationSetPostProcessor) {
+                $statement = $postProcessor->buildQuery($input, $recommendations);
+                $stack->push($statement->text(), $statement->parameters(), $postProcessor->name());
             }
         }
 

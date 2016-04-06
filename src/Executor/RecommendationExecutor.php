@@ -49,14 +49,8 @@ class RecommendationExecutor
         $this->stopwatch->start('post_process');
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
         foreach ($engine->getPostProcessors() as $postProcessor) {
-            foreach ($recommendations->getItems() as $recommendation) {
-                if ($postProcessor instanceof CypherAwarePostProcessor) {
-                    $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
-                    $postProcessor->postProcess($input, $recommendation, $postProcessResult->get($tag));
-                } else {
-                    $postProcessor->postProcess($input, $recommendation);
-                }
-            }
+            $tag = $postProcessor->name();
+            $result = $postProcessResult->get($tag);
         }
         $pPTime = $this->stopwatch->stop('post_process');
         $recommendations->sort();

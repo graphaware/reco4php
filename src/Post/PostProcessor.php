@@ -17,6 +17,4 @@ use GraphAware\Reco4PHP\Result\Recommendation;
 interface PostProcessor
 {
     public function name();
-
-    public function postProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result = null);
 }

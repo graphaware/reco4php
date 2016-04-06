@@ -11,14 +11,10 @@ class RatedByOthers extends SingleDiscoveryEngine
     public function discoveryQuery(NodeInterface $input)
     {
         $query = 'MATCH (input:User) WHERE id(input) = {id}
-MATCH p=(input)-[r:RATED]->(movie)<-[r2:RATED]-(other)
-WITH other, collect(p) as paths
-WITH other, reduce(x=0, p in paths | x + reduce(i=0, r in rels(p) | i+r.rating)) as score
-WITH other, score
-ORDER BY score DESC
-MATCH (other)-[:RATED]->(reco)
-RETURN reco
-LIMIT 500';
+        MATCH (input)-[:RATED]->(m)<-[:RATED]-(o)
+        WITH distinct o
+        MATCH (o)-[:RATED]->(reco)
+        RETURN distinct reco LIMIT 500';
 
         return Statement::create($query, ['id' => $input->identity()]);
     }
