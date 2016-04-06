@@ -16,3 +16,5 @@ $recommendations = $engine->recommend($input);
 $e = $stopwatch->stop('reco');
 
 echo $recommendations->size() . ' found in ' . $e->getDuration() .  'ms' .PHP_EOL;
+
+print_r($recommendations->getItems(10));

@@ -51,6 +51,7 @@ class RecommendationExecutor
         foreach ($engine->getPostProcessors() as $postProcessor) {
             $tag = $postProcessor->name();
             $result = $postProcessResult->get($tag);
+            $postProcessor->handleResultSet($input, $result, $recommendations);
         }
         $pPTime = $this->stopwatch->stop('post_process');
         $recommendations->sort();
