@@ -25,7 +25,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GraphAware\\Reco4PHP\\Tests\\": "tests/"
+            "GraphAware\\Reco4PHP\\Tests\\": "tests/",
+            "GraphAware\\Reco4PHP\\Demo\\": "_demo/"
         }
     }
 }
