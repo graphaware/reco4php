@@ -62,5 +62,15 @@ class FakeNode implements NodeInterface
         // TODO: Implement asArray() method.
     }
 
+    public function hasValue($key)
+    {
+        // TODO: Implement hasValue() method.
+    }
+
+    public function value($key, $default = null)
+    {
+        // TODO: Implement value() method.
+    }
+
 
 }
