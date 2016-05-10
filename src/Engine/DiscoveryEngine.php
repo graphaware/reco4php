@@ -10,7 +10,7 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Result\Record;
+use GraphAware\Common\Result\RecordViewInterface;
 use GraphAware\Common\Type\Node;
 use GraphAware\Common\Result\ResultCollection;
 
@@ -35,11 +35,11 @@ interface DiscoveryEngine
      *
      * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Common\Type\Node $item
-     * @param Record $record
+     * @param RecordViewInterface $record
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
      */
-    public function buildScore(Node $input, Node $item, Record $record);
+    public function buildScore(Node $input, Node $item, RecordViewInterface $record);
 
     /**
      * Returns a collection of Recommendation object produced by this discovery engine

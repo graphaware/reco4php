@@ -10,7 +10,7 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Result\Record;
+use GraphAware\Common\Result\RecordViewInterface;
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Result\Recommendations;
@@ -23,10 +23,10 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
      *
      * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Common\Type\Node $item
-     * @param \GraphAware\Common\Result\Record $record
+     * @param \GraphAware\Common\Result\RecordViewInterface $record
      * @return \GraphAware\Reco4PHP\Result\SingleScore
      */
-    public function buildScore(Node $input, Node $item, Record $record)
+    public function buildScore(Node $input, Node $item, RecordViewInterface $record)
     {
         $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
         $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()) : null;
