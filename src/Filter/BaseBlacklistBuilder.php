@@ -11,20 +11,20 @@
 namespace GraphAware\Reco4PHP\Filter;
 
 use GraphAware\Common\Result\Result;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 abstract class BaseBlacklistBuilder implements BlackListBuilder
 {
     /**
      * @param \GraphAware\Common\Result\Result $result
      *
-     * @return \GraphAware\Common\Type\NodeInterface[]
+     * @return \GraphAware\Common\Type\Node[]
      */
     public function buildBlackList(Result $result)
     {
         $nodes = [];
         foreach ($result->records() as $record) {
-            if ($record->hasValue($this->itemResultName()) && $record->value($this->itemResultName()) instanceof NodeInterface) {
+            if ($record->hasValue($this->itemResultName()) && $record->value($this->itemResultName()) instanceof Node) {
                 $nodes[] = $record->value($this->itemResultName());
             }
         }

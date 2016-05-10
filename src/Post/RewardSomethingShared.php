@@ -12,7 +12,7 @@ namespace GraphAware\Reco4PHP\Post;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\RecordCursorInterface;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Graph\Direction;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\SingleScore;
@@ -26,7 +26,7 @@ abstract class RewardSomethingShared implements CypherAwarePostProcessor
         return Direction::BOTH;
     }
 
-    final public function buildQuery(NodeInterface $input, Recommendation $recommendation)
+    final public function buildQuery(Node $input, Recommendation $recommendation)
     {
         $relationshipPatterns = [
             Direction::BOTH => array('-[:%s]-', '-[:%s]-'),
@@ -44,7 +44,7 @@ abstract class RewardSomethingShared implements CypherAwarePostProcessor
         return Statement::create($query, ['inputId' => $input->identity(), 'itemId' => $recommendation->item()->identity()]);
     }
 
-    public function postProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result = null)
+    public function postProcess(Node $input, Recommendation $recommendation, RecordCursorInterface $result = null)
     {
         if (null === $result) {
             throw new \RuntimeException(sprintf('Expected a non-null result in %s::postProcess()', get_class($this)));

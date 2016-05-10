@@ -10,11 +10,11 @@
  */
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 class ExcludeSelf implements Filter
 {
-    public function doInclude(NodeInterface $input, NodeInterface $item)
+    public function doInclude(Node $input, Node $item)
     {
         return $input->identity() !== $item->identity();
     }

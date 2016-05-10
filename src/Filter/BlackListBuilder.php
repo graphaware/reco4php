@@ -11,20 +11,20 @@
 namespace GraphAware\Reco4PHP\Filter;
 
 use GraphAware\Common\Result\Result;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 interface BlackListBuilder
 {
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @return \GraphAware\Common\Cypher\Statement
      */
-    public function blacklistQuery(NodeInterface $input);
+    public function blacklistQuery(Node $input);
 
     /**
      * @param \GraphAware\Common\Result\Result
      *
-     * @return \GraphAware\Common\Type\NodeInterface[]
+     * @return \GraphAware\Common\Type\Node[]
      */
     public function buildBlackList(Result $result);
 

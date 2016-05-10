@@ -5,7 +5,6 @@ namespace GraphAware\Reco4PHP\Tests\Example\PostProcessing;
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\Record;
 use GraphAware\Common\Type\Node;
-use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
@@ -13,7 +12,7 @@ use GraphAware\Reco4PHP\Result\SingleScore;
 
 class RewardWellRated extends RecommendationSetPostProcessor
 {
-    public function buildQuery(NodeInterface $input, Recommendations $recommendations)
+    public function buildQuery(Node $input, Recommendations $recommendations)
     {
         $query = 'UNWIND {ids} as id
         MATCH (n) WHERE id(n) = id

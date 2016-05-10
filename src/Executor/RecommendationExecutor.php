@@ -12,9 +12,7 @@ namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\Node;
-use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
-use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -34,7 +32,7 @@ class RecommendationExecutor
         $this->stopwatch = new Stopwatch();
     }
 
-    public function processRecommendation(NodeInterface $input, RecommendationEngine $engine)
+    public function processRecommendation(Node $input, RecommendationEngine $engine)
     {
         $recommendations = new Recommendations();
         $this->stopwatch->start('discovery');
@@ -60,7 +58,7 @@ class RecommendationExecutor
         return $recommendations;
     }
 
-    public function removeIrrelevant(NodeInterface $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
+    public function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
     {
         foreach ($recommendations->getItems() as $recommendation) {
             foreach ($engine->filters() as $filter) {

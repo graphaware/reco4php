@@ -10,7 +10,7 @@
  */
 namespace GraphAware\Reco4PHP\Result;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 class Recommendations
 {
@@ -20,11 +20,11 @@ class Recommendations
     protected $recommendations = [];
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $item
+     * @param \GraphAware\Common\Type\Node $item
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendation
      */
-    public function getOrCreate(NodeInterface $item)
+    public function getOrCreate(Node $item)
     {
         if (array_key_exists($item->identity(), $this->recommendations)) {
             return $this->recommendations[$item->identity()];
@@ -37,11 +37,11 @@ class Recommendations
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface   $item
+     * @param \GraphAware\Common\Type\Node   $item
      * @param string                                  $name
      * @param \GraphAware\Reco4PHP\Result\SingleScore $singleScore
      */
-    public function add(NodeInterface $item, $name, SingleScore $singleScore)
+    public function add(Node $item, $name, SingleScore $singleScore)
     {
         $this->getOrCreate($item)->addScore($name, $singleScore);
     }

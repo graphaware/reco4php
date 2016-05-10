@@ -3,7 +3,7 @@
 namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
 use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 class FromSameGenreILike extends SingleDiscoveryEngine
@@ -13,7 +13,7 @@ class FromSameGenreILike extends SingleDiscoveryEngine
         return 'from_genre_i_like';
     }
 
-    public function discoveryQuery(NodeInterface $input)
+    public function discoveryQuery(Node $input)
     {
         $query = 'MATCH (input) WHERE id(input) = {id}
         MATCH (input)-[r:RATED]->(movie)-[:HAS_GENRE]->(genre)

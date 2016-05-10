@@ -14,7 +14,7 @@ use GraphAware\Reco4PHP\Executor\RecommendationExecutor;
 use GraphAware\Reco4PHP\Filter\BlackListBuilder;
 use GraphAware\Reco4PHP\Filter\Filter;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Post\PostProcessor;
 
 abstract class BaseRecommendationEngine implements RecommendationEngine
@@ -144,11 +144,11 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    final public function recommend(NodeInterface $input)
+    final public function recommend(Node $input)
     {
         $recommendations = $this->recommendationExecutor->processRecommendation($input, $this);
 

@@ -13,11 +13,11 @@ namespace GraphAware\Reco4PHP\Tests\Engine;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Result\RecordViewInterface;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 class OverrideDiscoveryEngine extends TestDiscoveryEngine
 {
-    public function discoveryQuery(NodeInterface $input)
+    public function discoveryQuery(Node $input)
     {
         $query = "MATCH (n) WHERE id(n) <> {input}
         RETURN n LIMIT {limit}";
@@ -25,7 +25,7 @@ class OverrideDiscoveryEngine extends TestDiscoveryEngine
         return Statement::create($query, ['input' => $input->identity(), 'limit' => 300]);
     }
 
-    public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record)
+    public function buildScore(Node $input, Node $item, RecordViewInterface $record)
     {
         return parent::buildScore($input, $item, $record);
     }

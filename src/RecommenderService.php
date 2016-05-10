@@ -10,7 +10,7 @@
  */
 namespace GraphAware\Reco4PHP;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -82,7 +82,7 @@ class RecommenderService
      * @param string $key
      * @param mixed  $value
      *
-     * @return \GraphAware\Common\Type\NodeInterface
+     * @return \GraphAware\Common\Type\Node
      */
     public function findInputBy($label, $key, $value)
     {
@@ -95,11 +95,11 @@ class RecommenderService
     /**
      * @param \GraphAware\Common\Result\Result $result
      *
-     * @return \GraphAware\Common\Type\NodeInterface
+     * @return \GraphAware\Common\Type\Node
      */
     public function validateInput($result)
     {
-        if (count($result->records()) < 1 || !$result->getRecord()->value('input') instanceof NodeInterface) {
+        if (count($result->records()) < 1 || !$result->getRecord()->value('input') instanceof Node) {
             throw new \InvalidArgumentException(sprintf('Node not found'));
         }
 

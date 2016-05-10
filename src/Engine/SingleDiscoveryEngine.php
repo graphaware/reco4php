@@ -10,9 +10,9 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Result\RecordViewInterface;
+use GraphAware\Common\Result\Record;
 use GraphAware\Common\Result\ResultCollection;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\SingleScore;
 
@@ -21,12 +21,12 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * @inheritdoc
      *
-     * @param \GraphAware\Common\Type\NodeInterface $input
-     * @param \GraphAware\Common\Type\NodeInterface $item
-     * @param \GraphAware\Common\Result\RecordViewInterface $record
+     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node $item
+     * @param \GraphAware\Common\Result\Record $record
      * @return \GraphAware\Reco4PHP\Result\SingleScore
      */
-    public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record)
+    public function buildScore(Node $input, Node $item, Record $record)
     {
         $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
         $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()) : null;
@@ -37,11 +37,11 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * @inheritdoc
      *
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Common\Result\ResultCollection $resultCollection
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    final public function produceRecommendations(NodeInterface $input, ResultCollection $resultCollection)
+    final public function produceRecommendations(Node $input, ResultCollection $resultCollection)
     {
         $result = $resultCollection->get($this->name());
         $recommendations = new Recommendations($this->name());

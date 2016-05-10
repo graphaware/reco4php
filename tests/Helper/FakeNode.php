@@ -2,9 +2,9 @@
 
 namespace GraphAware\Reco4PHP\Tests\Helper;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
-class FakeNode implements NodeInterface
+class FakeNode implements Node
 {
     protected $identity;
 
