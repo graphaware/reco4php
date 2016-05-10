@@ -135,12 +135,12 @@ the methods of the upper interfaces, here is how you would create your first dis
 namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
 use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 class RatedByOthers extends SingleDiscoveryEngine
 {
-    public function discoveryQuery(NodeInterface $input)
+    public function discoveryQuery(Node $input)
     {
         $query = 'MATCH (input:User) WHERE id(input) = {id}
         MATCH (input)-[:RATED]->(movie)<-[:RATED]-(other)
@@ -184,12 +184,12 @@ As an example of a filter, we will filter the movies that were produced before t
 
 namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Filter\Filter;
 
 class ExcludeOldMovies implements Filter
 {
-    public function doInclude(NodeInterface $input, NodeInterface $item)
+    public function doInclude(Node $input, Node $item)
     {
         $title = $item->value("title");
         preg_match('/(?:\()\d+(?:\))/', $title, $matches);
@@ -223,12 +223,12 @@ Of course we do not want to recommend movies that the current user has already r
 namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
 use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Filter\BaseBlackListBuilder;
 
 class AlreadyRatedBlackList extends BaseBlackListBuilder
 {
-    public function blacklistQuery(NodeInterface $input)
+    public function blacklistQuery(Node $input)
     {
         $query = 'MATCH (input) WHERE id(input) = {inputId}
         MATCH (input)-[:RATED]->(movie)

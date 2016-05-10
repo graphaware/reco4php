@@ -11,8 +11,7 @@
 namespace GraphAware\Reco4PHP\Engine;
 
 use GraphAware\Common\Result\RecordViewInterface;
-use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Reco4PHP\Transactional\CypherAware;
+use GraphAware\Common\Type\Node;
 use GraphAware\Common\Result\ResultCollection;
 
 interface DiscoveryEngine
@@ -25,32 +24,32 @@ interface DiscoveryEngine
     /**
      * The statement to be executed for finding items to be recommended
      *
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      *
      * @return \GraphAware\Common\Cypher\Statement
      */
-    public function discoveryQuery(NodeInterface $input);
+    public function discoveryQuery(Node $input);
 
     /**
      * Returns the score produced by the recommended item
      *
-     * @param \GraphAware\Common\Type\NodeInterface $input
-     * @param \GraphAware\Common\Type\NodeInterface $item
-     * @param \GraphAware\Common\Result\RecordViewInterface $record
+     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node $item
+     * @param RecordViewInterface $record
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
      */
-    public function buildScore(NodeInterface $input, NodeInterface $item, RecordViewInterface $record);
+    public function buildScore(Node $input, Node $item, RecordViewInterface $record);
 
     /**
      * Returns a collection of Recommendation object produced by this discovery engine
      *
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Common\Result\ResultCollection $resultCollection
      *
      * @return mixed
      */
-    public function produceRecommendations(NodeInterface $input, ResultCollection $resultCollection);
+    public function produceRecommendations(Node $input, ResultCollection $resultCollection);
 
     /**
      * @return string The column identifier of the row result representing the recommended item (node)

@@ -11,14 +11,14 @@
 
 namespace GraphAware\Reco4PHP\Common;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 class NodeSet extends ObjectSet
 {
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $node
+     * @param \GraphAware\Common\Type\Node $node
      */
-    public function add(NodeInterface $node)
+    public function add(Node $node)
     {
         if (parent::valid($node) && !$this->contains($node)) {
             $this->elements[$node->identity()] = $node;
@@ -28,7 +28,7 @@ class NodeSet extends ObjectSet
     /**
      * @param $key
      *
-     * @return \GraphAware\Common\Type\NodeInterface
+     * @return \GraphAware\Common\Type\Node
      */
     public function get($key)
     {
@@ -36,7 +36,7 @@ class NodeSet extends ObjectSet
     }
 
     /**
-     * @return \GraphAware\Common\Type\NodeInterface[]
+     * @return \GraphAware\Common\Type\Node[]
      */
     public function all()
     {
@@ -52,11 +52,11 @@ class NodeSet extends ObjectSet
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $node
+     * @param \GraphAware\Common\Type\Node $node
      *
      * @return bool
      */
-    public function contains(NodeInterface $node)
+    public function contains(Node $node)
     {
         return array_key_exists($node->identity(), $this->elements);
     }

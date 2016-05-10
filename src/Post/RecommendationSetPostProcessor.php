@@ -14,19 +14,18 @@ namespace GraphAware\Reco4PHP\Post;
 use GraphAware\Common\Result\Record;
 use GraphAware\Common\Result\Result;
 use GraphAware\Common\Type\Node;
-use GraphAware\Common\Type\NodeInterface;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
 
 abstract class RecommendationSetPostProcessor implements PostProcessor
 {
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Reco4PHP\Result\Recommendations $recommendations
      *
      * @return \GraphAware\Common\Cypher\Statement
      */
-    abstract public function buildQuery(NodeInterface $input, Recommendations $recommendations);
+    abstract public function buildQuery(Node $input, Recommendations $recommendations);
 
     abstract public function postProcess(Node $input, Recommendation $recommendation, Record $record);
 

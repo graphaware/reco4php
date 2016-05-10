@@ -11,7 +11,7 @@
 
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 
 class DiscoveryPhaseExecutor
@@ -32,13 +32,13 @@ class DiscoveryPhaseExecutor
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Reco4PHP\Engine\DiscoveryEngine[] $engines
      * @param \GraphAware\Reco4PHP\Filter\BlackListBuilder[] $blacklists
      *
      * @return \GraphAware\Common\Result\ResultCollection
      */
-    public function processDiscovery(NodeInterface $input, array $engines, array $blacklists)
+    public function processDiscovery(Node $input, array $engines, array $blacklists)
     {
         $stack = $this->databaseService->getDriver()->stack();
         foreach ($engines as $engine) {

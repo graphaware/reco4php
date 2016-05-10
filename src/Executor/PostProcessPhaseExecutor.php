@@ -11,7 +11,7 @@
 
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
@@ -35,13 +35,13 @@ class PostProcessPhaseExecutor
     }
 
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Reco4PHP\Result\Recommendations $recommendations
      * @param \GraphAware\Reco4PHP\Engine\RecommendationEngine $recommendationEngine
      *
      * @return \GraphAware\Common\Result\ResultCollection
      */
-    public function execute(NodeInterface $input, Recommendations $recommendations, RecommendationEngine $recommendationEngine)
+    public function execute(Node $input, Recommendations $recommendations, RecommendationEngine $recommendationEngine)
     {
         $stack = $this->databaseService->getDriver()->stack('post_process_'.$recommendationEngine->name());
 

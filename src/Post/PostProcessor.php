@@ -10,10 +10,6 @@
  */
 namespace GraphAware\Reco4PHP\Post;
 
-use GraphAware\Common\Result\RecordCursorInterface;
-use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Reco4PHP\Result\Recommendation;
-
 interface PostProcessor
 {
     public function name();

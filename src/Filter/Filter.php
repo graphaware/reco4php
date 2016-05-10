@@ -10,17 +10,17 @@
  */
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 interface Filter
 {
     /**
      * Returns whether or not the recommended node should be included in the recommendation.
      *
-     * @param \GraphAware\Common\Type\NodeInterface $input
-     * @param \GraphAware\Common\Type\NodeInterface $item
+     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node $item
      *
      * @return bool
      */
-    public function doInclude(NodeInterface $input, NodeInterface $item);
+    public function doInclude(Node $input, Node $item);
 }

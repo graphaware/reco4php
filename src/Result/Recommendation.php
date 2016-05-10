@@ -10,12 +10,12 @@
  */
 namespace GraphAware\Reco4PHP\Result;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 
 class Recommendation
 {
     /**
-     * @var \GraphAware\Common\Type\NodeInterface
+     * @var \GraphAware\Common\Type\Node
      */
     protected $item;
 
@@ -32,10 +32,9 @@ class Recommendation
     /**
      * Recommendation constructor.
      *
-     * @param \GraphAware\Common\Type\NodeInterface  $item
-     * @param \GraphAware\Reco4PHP\Result\Score|null $score
+     * @param \GraphAware\Common\Type\Node  $item
      */
-    public function __construct(NodeInterface $item)
+    public function __construct(Node $item)
     {
         $this->item = $item;
     }
@@ -88,7 +87,7 @@ class Recommendation
     }
 
     /**
-     * @return \GraphAware\Common\Type\NodeInterface
+     * @return \GraphAware\Common\Type\Node
      */
     public function item()
     {

@@ -11,16 +11,16 @@
 
 namespace GraphAware\Reco4PHP\Post;
 
-use GraphAware\Common\Type\NodeInterface;
+use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Result\Recommendation;
 
 interface CypherAwarePostProcessor extends PostProcessor
 {
     /**
-     * @param \GraphAware\Common\Type\NodeInterface $input
+     * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Reco4PHP\Result\Recommendation $recommendation
      *
      * @return \GraphAware\Common\Cypher\Statement the statement to be executed
      */
-    public function buildQuery(NodeInterface $input, Recommendation $recommendation);
+    public function buildQuery(Node $input, Recommendation $recommendation);
 }
