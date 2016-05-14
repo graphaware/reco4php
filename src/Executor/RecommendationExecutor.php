@@ -10,9 +10,11 @@
  */
 namespace GraphAware\Reco4PHP\Executor;
 
+use GraphAware\Common\Result\Result;
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
+use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -35,27 +37,34 @@ class RecommendationExecutor
     public function processRecommendation(Node $input, RecommendationEngine $engine)
     {
         $recommendations = new Recommendations();
-        $this->stopwatch->start('discovery');
-        $discoveryResult = $this->discoveryExecutor->processDiscovery($input, $engine->getDiscoveryEngines(), $engine->getBlacklistBuilders());
+        $discoveryResult = $this->doDiscovery($input, $engine);
         $blacklist = $this->buildBlacklistedNodes($discoveryResult, $engine);
-        foreach ($engine->getDiscoveryEngines() as $discoveryEngine) {
-            $recommendations->merge($discoveryEngine->produceRecommendations($input, $discoveryResult));
-        }
-        $discoveryTime = $this->stopwatch->stop('discovery');
-        //echo $discoveryTime->getDuration() . PHP_EOL;
         $this->removeIrrelevant($input, $engine, $recommendations, $blacklist);
+        $this->doPostProcess($input, $recommendations, $engine);
+        $recommendations->sort();
 
-        $this->stopwatch->start('post_process');
+        return $recommendations;
+    }
+
+    private function doDiscovery(Node $input, RecommendationEngine $engine)
+    {
+        $result = $this->discoveryExecutor->processDiscovery(
+            $input,
+            $engine->getDiscoveryEngines(),
+            $engine->getBlacklistBuilders()
+        );
+
+        return $result;
+    }
+
+    private function doPostProcess(Node $input, Recommendations $recommendations, RecommendationEngine $engine)
+    {
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
         foreach ($engine->getPostProcessors() as $postProcessor) {
             $tag = $postProcessor->name();
             $result = $postProcessResult->get($tag);
             $postProcessor->handleResultSet($input, $result, $recommendations);
         }
-        $pPTime = $this->stopwatch->stop('post_process');
-        $recommendations->sort();
-
-        return $recommendations;
     }
 
     public function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
