@@ -33,6 +33,13 @@ abstract class RecommendationSetPostProcessor implements PostProcessor
     {
         $recordsMap = [];
         foreach ($result->records() as $i => $record) {
+            if (!$record->hasValue($this->idResultName())) {
+                throw new \InvalidArgumentException(sprintf(
+                    'The record does not contain a value with key "%s" in "%s"',
+                    $this->idResultName(),
+                    $this->name()
+                ));
+            }
             $recordsMap[$record->get($this->idResultName())] = $record;
         }
 

@@ -10,22 +10,24 @@
  */
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Result\Result;
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
-use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class RecommendationExecutor
 {
+    /**
+     * @var \GraphAware\Reco4PHP\Executor\DiscoveryPhaseExecutor
+     */
     protected $discoveryExecutor;
 
+    /**
+     * @var \GraphAware\Reco4PHP\Executor\PostProcessPhaseExecutor
+     */
     protected $postProcessExecutor;
-
-    protected $stopwatch;
 
     public function __construct(DatabaseService $databaseService)
     {
@@ -36,10 +38,7 @@ class RecommendationExecutor
 
     public function processRecommendation(Node $input, RecommendationEngine $engine)
     {
-        $recommendations = new Recommendations();
-        $discoveryResult = $this->doDiscovery($input, $engine);
-        $blacklist = $this->buildBlacklistedNodes($discoveryResult, $engine);
-        $this->removeIrrelevant($input, $engine, $recommendations, $blacklist);
+        $recommendations = $this->doDiscovery($input, $engine);
         $this->doPostProcess($input, $recommendations, $engine);
         $recommendations->sort();
 
@@ -48,13 +47,21 @@ class RecommendationExecutor
 
     private function doDiscovery(Node $input, RecommendationEngine $engine)
     {
+        $recommendations = new Recommendations();
         $result = $this->discoveryExecutor->processDiscovery(
             $input,
             $engine->getDiscoveryEngines(),
             $engine->getBlacklistBuilders()
         );
 
-        return $result;
+        foreach ($engine->getDiscoveryEngines() as $discoveryEngine) {
+            $recommendations->merge($discoveryEngine->produceRecommendations($input, $result));
+        }
+
+        $blacklist = $this->buildBlacklistedNodes($result, $engine);
+        $this->removeIrrelevant($input, $engine, $recommendations, $blacklist);
+
+        return $recommendations;
     }
 
     private function doPostProcess(Node $input, Recommendations $recommendations, RecommendationEngine $engine)

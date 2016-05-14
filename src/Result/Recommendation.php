@@ -50,18 +50,34 @@ class Recommendation
     }
 
     /**
-     * @param \GraphAware\Reco4PHP\Result\Score[]
+     * @param \GraphAware\Reco4PHP\Result\SingleScore[]
      */
     public function addScores(array $scores)
     {
         foreach ($scores as $name => $score) {
-            $this->scores[$name] = $score;
+            $this->addScore($name, $score);
         }
     }
 
+    /**
+     * @return \GraphAware\Reco4PHP\Result\SingleScore[]
+     */
     public function getScores()
     {
         return $this->scores;
+    }
+
+    /**
+     * @param string $key
+     * @return \GraphAware\Reco4PHP\Result\Score
+     */
+    public function getScore($key)
+    {
+        if (!array_key_exists($key, $this->scores)) {
+            throw new \InvalidArgumentException(sprintf('The recommendation does not contains a score named "%s"', $key));
+        }
+
+        return $this->scores[$key];
     }
 
     private function getScoreOrCreate($name)
@@ -78,12 +94,7 @@ class Recommendation
      */
     public function totalScore()
     {
-        $score = 0.0;
-        foreach ($this->scores as $sc) {
-            $score += $sc->score();
-        }
-
-        return $score;
+        return $this->totalScore;
     }
 
     /**
