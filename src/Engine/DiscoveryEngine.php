@@ -22,7 +22,7 @@ interface DiscoveryEngine
     public function name();
 
     /**
-     * The statement to be executed for finding items to be recommended
+     * The statement to be executed for finding items to be recommended.
      *
      * @param \GraphAware\Common\Type\Node $input
      *
@@ -31,20 +31,20 @@ interface DiscoveryEngine
     public function discoveryQuery(Node $input);
 
     /**
-     * Returns the score produced by the recommended item
+     * Returns the score produced by the recommended item.
      *
      * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Common\Type\Node $item
-     * @param RecordViewInterface $record
+     * @param RecordViewInterface          $record
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
      */
     public function buildScore(Node $input, Node $item, RecordViewInterface $record);
 
     /**
-     * Returns a collection of Recommendation object produced by this discovery engine
+     * Returns a collection of Recommendation object produced by this discovery engine.
      *
-     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node               $input
      * @param \GraphAware\Common\Result\ResultCollection $resultCollection
      *
      * @return mixed
@@ -58,9 +58,9 @@ interface DiscoveryEngine
 
     /**
      * @return string The column identifier of the row result representing the score to be used, note that this
-     * is not mandatory to have a score in the result. If empty, the score will be the float value returned by
-     * <code>defaultScore()</code> or the score logic if the concrete class override the <code>buildScore</code>
-     * method.
+     *                is not mandatory to have a score in the result. If empty, the score will be the float value returned by
+     *                <code>defaultScore()</code> or the score logic if the concrete class override the <code>buildScore</code>
+     *                method.
      */
     public function scoreResultName();
 

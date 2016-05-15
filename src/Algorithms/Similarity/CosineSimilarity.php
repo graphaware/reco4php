@@ -43,5 +43,4 @@ class CosineSimilarity implements Similarity
 
         return sqrt($sum);
     }
-
 }

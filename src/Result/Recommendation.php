@@ -32,7 +32,7 @@ class Recommendation
     /**
      * Recommendation constructor.
      *
-     * @param \GraphAware\Common\Type\Node  $item
+     * @param \GraphAware\Common\Type\Node $item
      */
     public function __construct(Node $item)
     {
@@ -69,6 +69,7 @@ class Recommendation
 
     /**
      * @param string $key
+     *
      * @return \GraphAware\Reco4PHP\Result\Score
      */
     public function getScore($key)

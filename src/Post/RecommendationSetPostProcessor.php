@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Post;
 
 use GraphAware\Common\Result\Record;
@@ -20,7 +19,7 @@ use GraphAware\Reco4PHP\Result\Recommendations;
 abstract class RecommendationSetPostProcessor implements PostProcessor
 {
     /**
-     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node                $input
      * @param \GraphAware\Reco4PHP\Result\Recommendations $recommendations
      *
      * @return \GraphAware\Common\Cypher\Statement
@@ -52,6 +51,6 @@ abstract class RecommendationSetPostProcessor implements PostProcessor
 
     public function idResultName()
     {
-        return "id";
+        return 'id';
     }
 }

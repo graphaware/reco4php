@@ -39,12 +39,12 @@ class KNNModelBuilder
     {
         $ratings = [];
         foreach ($tfSource->getAll() as $source) {
-            /** @var \GraphAware\Reco4PHP\Algorithms\Model\Rating $source */
+            /* @var \GraphAware\Reco4PHP\Algorithms\Model\Rating $source */
             $ratings[$source->getId()][0] = $source->getRating();
         }
 
         foreach ($tfDestination->getAll() as $dest) {
-            /** @var \GraphAware\Reco4PHP\Algorithms\Model\Rating $dest */
+            /* @var \GraphAware\Reco4PHP\Algorithms\Model\Rating $dest */
             $ratings[$dest->getId()][1] = $dest->getRating();
         }
         ksort($ratings);
@@ -55,7 +55,6 @@ class KNNModelBuilder
         foreach ($ratings as $k => $rating) {
             $xVector[] = array_key_exists(0, $ratings[$k]) ? $ratings[$k][0] : 0;
             $yVector[] = array_key_exists(1, $ratings[$k]) ? $ratings[$k][1] : 0;
-
         }
 
         return array($xVector, $yVector);

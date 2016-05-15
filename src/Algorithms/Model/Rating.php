@@ -10,7 +10,6 @@
  */
 namespace GraphAware\Reco4PHP\Algorithms\Model;
 
-
 class Rating
 {
     /**

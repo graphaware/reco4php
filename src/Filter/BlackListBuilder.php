@@ -17,6 +17,7 @@ interface BlackListBuilder
 {
     /**
      * @param \GraphAware\Common\Type\Node $input
+     *
      * @return \GraphAware\Common\Cypher\Statement
      */
     public function blacklistQuery(Node $input);

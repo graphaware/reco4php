@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Type\Node;
@@ -32,8 +31,8 @@ class DiscoveryPhaseExecutor
     }
 
     /**
-     * @param \GraphAware\Common\Type\Node $input
-     * @param \GraphAware\Reco4PHP\Engine\DiscoveryEngine[] $engines
+     * @param \GraphAware\Common\Type\Node                   $input
+     * @param \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]  $engines
      * @param \GraphAware\Reco4PHP\Filter\BlackListBuilder[] $blacklists
      *
      * @return \GraphAware\Common\Result\ResultCollection
@@ -42,7 +41,6 @@ class DiscoveryPhaseExecutor
     {
         $stack = $this->databaseService->getDriver()->stack();
         foreach ($engines as $engine) {
-
             $statement = $engine->discoveryQuery($input);
             $stack->push($statement->text(), $statement->parameters(), $engine->name());
         }

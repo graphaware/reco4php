@@ -37,7 +37,7 @@ class Recommendations
     }
 
     /**
-     * @param \GraphAware\Common\Type\Node   $item
+     * @param \GraphAware\Common\Type\Node            $item
      * @param string                                  $name
      * @param \GraphAware\Reco4PHP\Result\SingleScore $singleScore
      */

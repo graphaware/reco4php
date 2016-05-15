@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Type\Node;
@@ -27,6 +26,7 @@ class PostProcessPhaseExecutor
 
     /**
      * PostProcessPhaseExecutor constructor.
+     *
      * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
      */
     public function __construct(DatabaseService $databaseService)
@@ -35,8 +35,8 @@ class PostProcessPhaseExecutor
     }
 
     /**
-     * @param \GraphAware\Common\Type\Node $input
-     * @param \GraphAware\Reco4PHP\Result\Recommendations $recommendations
+     * @param \GraphAware\Common\Type\Node                     $input
+     * @param \GraphAware\Reco4PHP\Result\Recommendations      $recommendations
      * @param \GraphAware\Reco4PHP\Engine\RecommendationEngine $recommendationEngine
      *
      * @return \GraphAware\Common\Result\ResultCollection
@@ -52,7 +52,7 @@ class PostProcessPhaseExecutor
                     $statement = $postProcessor->buildQuery($input, $recommendation);
                     $stack->push($statement->text(), $statement->parameters(), $tag);
                 }
-            } else if ($postProcessor instanceof RecommendationSetPostProcessor) {
+            } elseif ($postProcessor instanceof RecommendationSetPostProcessor) {
                 $statement = $postProcessor->buildQuery($input, $recommendations);
                 $stack->push($statement->text(), $statement->parameters(), $postProcessor->name());
             }

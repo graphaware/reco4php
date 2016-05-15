@@ -19,11 +19,12 @@ use GraphAware\Reco4PHP\Result\SingleScore;
 abstract class SingleDiscoveryEngine implements DiscoveryEngine
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
-     * @param \GraphAware\Common\Type\Node $input
-     * @param \GraphAware\Common\Type\Node $item
+     * @param \GraphAware\Common\Type\Node                  $input
+     * @param \GraphAware\Common\Type\Node                  $item
      * @param \GraphAware\Common\Result\RecordViewInterface $record
+     *
      * @return \GraphAware\Reco4PHP\Result\SingleScore
      */
     public function buildScore(Node $input, Node $item, RecordViewInterface $record)
@@ -35,10 +36,11 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
-     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node               $input
      * @param \GraphAware\Common\Result\ResultCollection $resultCollection
+     *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
     final public function produceRecommendations(Node $input, ResultCollection $resultCollection)
@@ -56,7 +58,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function recoResultName()
     {
@@ -64,7 +66,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function scoreResultName()
     {
@@ -72,7 +74,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function reasonResultName()
     {
@@ -80,7 +82,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function defaultScore()
     {

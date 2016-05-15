@@ -67,7 +67,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function discoveryEngines()
     {
@@ -75,7 +75,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function blacklistBuilders()
     {
@@ -83,7 +83,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function filters()
     {
@@ -91,7 +91,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function postProcessors()
     {
