@@ -455,3 +455,5 @@ Array
 ### License
 
 This library is released under the Apache v2 License, please read the attached `LICENSE` file.
+
+Commercial support or custom development/extension available upon request to info@graphaware.com.
