@@ -12,12 +12,13 @@
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
 use GraphAware\Common\Cypher\Statement;
+use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 use GraphAware\Common\Type\Node;
 
 class TestDiscoveryEngine extends SingleDiscoveryEngine
 {
-    public function discoveryQuery(Node $input)
+    public function discoveryQuery(Node $input, Context $context)
     {
         $query = "MATCH (n) WHERE id(n) <> {inputId} RETURN n";
 

@@ -13,6 +13,7 @@ namespace GraphAware\Reco4PHP\Context;
 
 use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Config\Config;
+use GraphAware\Reco4PHP\Config\SimpleConfig;
 
 class SimpleContext implements Context
 {
@@ -30,10 +31,10 @@ class SimpleContext implements Context
      * @param \GraphAware\Common\Type\Node $input
      * @param \GraphAware\Reco4PHP\Config\Config $config
      */
-    public function __construct(Node $input, Config $config)
+    public function __construct(Node $input, Config $config = null)
     {
         $this->input = $input;
-        $this->config = $config;
+        $this->config = null !== $config ? $config : new SimpleConfig();
     }
 
     /**

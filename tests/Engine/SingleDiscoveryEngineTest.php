@@ -12,6 +12,8 @@
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
 use GraphAware\Common\Cypher\Statement;
+use GraphAware\Reco4PHP\Config\SimpleConfig;
+use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
 
@@ -44,8 +46,9 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = new OverrideDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $this->assertCount(2, $engine->discoveryQuery($input)->parameters());
-        $this->assertEquals($input->identity(), $engine->discoveryQuery($input)->parameters()['input']);
+        $context = new SimpleContext($input, new SimpleConfig());
+        $this->assertCount(2, $engine->discoveryQuery($input, $context)->parameters());
+        $this->assertEquals($input->identity(), $engine->discoveryQuery($input, $context)->parameters()['input']);
         $this->assertEquals("recommendation", $engine->recoResultName());
         $this->assertEquals("rate", $engine->scoreResultName());
         $this->assertEquals("source", $engine->idParamName());

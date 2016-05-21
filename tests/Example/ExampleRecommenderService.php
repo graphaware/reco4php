@@ -2,6 +2,7 @@
 
 namespace GraphAware\Reco4PHP\Tests\Example;
 
+use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\RecommenderService;
 
 class ExampleRecommenderService
@@ -30,6 +31,6 @@ class ExampleRecommenderService
         $input = $this->service->findInputBy('User', 'id', $id);
         $recommendationEngine = $this->service->getRecommender("user_movie_reco");
 
-        return $recommendationEngine->recommend($input);
+        return $recommendationEngine->recommend($input, new SimpleContext($input));
     }
 }
