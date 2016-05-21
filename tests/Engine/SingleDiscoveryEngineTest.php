@@ -26,8 +26,9 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = new TestDiscoveryEngine();
         $this->assertInstanceOf(SingleDiscoveryEngine::class, $engine);
-        $this->assertInstanceOf(Statement::class, $engine->discoveryQuery(FakeNode::createDummy()));
-        $this->assertEquals("MATCH (n) WHERE id(n) <> {inputId} RETURN n", $engine->discoveryQuery(FakeNode::createDummy())->text());
+        $input = FakeNode::createDummy();
+        $this->assertInstanceOf(Statement::class, $engine->discoveryQuery($input, new SimpleContext($input)));
+        $this->assertEquals("MATCH (n) WHERE id(n) <> {inputId} RETURN n", $engine->discoveryQuery($input, new SimpleContext($input))->text());
         $this->assertEquals("score", $engine->scoreResultName());
         $this->assertEquals("reco", $engine->recoResultName());
         $this->assertEquals(1, $engine->defaultScore());
@@ -38,8 +39,8 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = new TestDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $this->assertEquals($input->identity(), $engine->discoveryQuery($input)->parameters()['inputId']);
-        $this->assertCount(1, $engine->discoveryQuery($input)->parameters());
+        $this->assertEquals($input->identity(), $engine->discoveryQuery($input, new SimpleContext($input))->parameters()['inputId']);
+        $this->assertCount(1, $engine->discoveryQuery($input, new SimpleContext($input))->parameters());
     }
 
     public function testOverride()
