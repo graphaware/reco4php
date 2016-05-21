@@ -12,6 +12,7 @@ namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\Node;
+use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
@@ -36,26 +37,27 @@ class RecommendationExecutor
         $this->stopwatch = new Stopwatch();
     }
 
-    public function processRecommendation(Node $input, RecommendationEngine $engine)
+    public function processRecommendation(Node $input, RecommendationEngine $engine, Context $context)
     {
-        $recommendations = $this->doDiscovery($input, $engine);
+        $recommendations = $this->doDiscovery($input, $engine, $context);
         $this->doPostProcess($input, $recommendations, $engine);
         $recommendations->sort();
 
         return $recommendations;
     }
 
-    private function doDiscovery(Node $input, RecommendationEngine $engine)
+    private function doDiscovery(Node $input, RecommendationEngine $engine, Context $context)
     {
         $recommendations = new Recommendations();
         $result = $this->discoveryExecutor->processDiscovery(
             $input,
             $engine->getDiscoveryEngines(),
-            $engine->getBlacklistBuilders()
+            $engine->getBlacklistBuilders(),
+            $context
         );
 
         foreach ($engine->getDiscoveryEngines() as $discoveryEngine) {
-            $recommendations->merge($discoveryEngine->produceRecommendations($input, $result));
+            $recommendations->merge($discoveryEngine->produceRecommendations($input, $result, $context));
         }
 
         $blacklist = $this->buildBlacklistedNodes($result, $engine);

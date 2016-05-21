@@ -10,9 +10,10 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Result\RecordViewInterface;
+use GraphAware\Common\Result\Record;
 use GraphAware\Common\Type\Node;
 use GraphAware\Common\Result\ResultCollection;
+use GraphAware\Reco4PHP\Context\Context;
 
 interface DiscoveryEngine
 {
@@ -24,32 +25,35 @@ interface DiscoveryEngine
     /**
      * The statement to be executed for finding items to be recommended.
      *
-     * @param \GraphAware\Common\Type\Node $input
+     * @param Node $input
+     * @param Context $context
      *
      * @return \GraphAware\Common\Cypher\Statement
      */
-    public function discoveryQuery(Node $input);
+    public function discoveryQuery(Node $input, Context $context);
 
     /**
      * Returns the score produced by the recommended item.
      *
-     * @param \GraphAware\Common\Type\Node $input
-     * @param \GraphAware\Common\Type\Node $item
-     * @param RecordViewInterface          $record
+     * @param Node $input
+     * @param Node $item
+     * @param Record          $record
+     * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
      */
-    public function buildScore(Node $input, Node $item, RecordViewInterface $record);
+    public function buildScore(Node $input, Node $item, Record $record, Context $context);
 
     /**
      * Returns a collection of Recommendation object produced by this discovery engine.
      *
-     * @param \GraphAware\Common\Type\Node               $input
-     * @param \GraphAware\Common\Result\ResultCollection $resultCollection
+     * @param Node               $input
+     * @param ResultCollection $resultCollection
+     * @param Context $context
      *
      * @return mixed
      */
-    public function produceRecommendations(Node $input, ResultCollection $resultCollection);
+    public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context);
 
     /**
      * @return string The column identifier of the row result representing the recommended item (node)

@@ -11,6 +11,7 @@
 namespace GraphAware\Reco4PHP\Engine;
 
 use GraphAware\Common\Type\Node;
+use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 
 interface RecommendationEngine
@@ -71,11 +72,12 @@ interface RecommendationEngine
     public function getLoggers();
 
     /**
-     * @param \GraphAware\Common\Type\Node $input
+     * @param Node $input
+     * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    public function recommend(Node $input);
+    public function recommend(Node $input, Context $context);
 
     /**
      * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService

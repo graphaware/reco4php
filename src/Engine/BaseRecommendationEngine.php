@@ -10,6 +10,7 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
+use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Executor\RecommendationExecutor;
 use GraphAware\Reco4PHP\Filter\BlackListBuilder;
 use GraphAware\Reco4PHP\Filter\Filter;
@@ -144,13 +145,14 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
     }
 
     /**
-     * @param \GraphAware\Common\Type\Node $input
+     * @param Node $input
+     * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    final public function recommend(Node $input)
+    final public function recommend(Node $input, Context $context)
     {
-        $recommendations = $this->recommendationExecutor->processRecommendation($input, $this);
+        $recommendations = $this->recommendationExecutor->processRecommendation($input, $this, $context);
 
         return $recommendations;
     }

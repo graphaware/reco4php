@@ -10,24 +10,30 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Result\RecordViewInterface;
+use GraphAware\Common\Result\Record;
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Common\Type\Node;
+use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\SingleScore;
 
 abstract class SingleDiscoveryEngine implements DiscoveryEngine
 {
+    private static $DEFAULT_RECO_NAME = 'reco';
+    private static $DEFAULT_SCORE_NAME = 'score';
+    private static $DEFAULT_REASON_NAME = 'reason';
+
     /**
      * {@inheritdoc}
      *
-     * @param \GraphAware\Common\Type\Node                  $input
-     * @param \GraphAware\Common\Type\Node                  $item
-     * @param \GraphAware\Common\Result\RecordViewInterface $record
+     * @param Node                  $input
+     * @param Node                  $item
+     * @param Record $record
+     * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore
      */
-    public function buildScore(Node $input, Node $item, RecordViewInterface $record)
+    public function buildScore(Node $input, Node $item, Record $record, Context $context)
     {
         $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
         $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()) : null;
@@ -38,19 +44,20 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      *
-     * @param \GraphAware\Common\Type\Node               $input
-     * @param \GraphAware\Common\Result\ResultCollection $resultCollection
+     * @param Node               $input
+     * @param ResultCollection $resultCollection
+     * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    final public function produceRecommendations(Node $input, ResultCollection $resultCollection)
+    final public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context)
     {
         $result = $resultCollection->get($this->name());
         $recommendations = new Recommendations($this->name());
 
         foreach ($result->records() as $record) {
             if ($record->hasValue($this->recoResultName())) {
-                $recommendations->add($record->value($this->recoResultName()), $this->name(), $this->buildScore($input, $record->value($this->recoResultName()), $record));
+                $recommendations->add($record->value($this->recoResultName()), $this->name(), $this->buildScore($input, $record->value($this->recoResultName()), $record, $context));
             }
         }
 
@@ -62,7 +69,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
      */
     public function recoResultName()
     {
-        return 'reco';
+        return self::$DEFAULT_RECO_NAME;
     }
 
     /**
@@ -70,7 +77,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
      */
     public function scoreResultName()
     {
-        return 'score';
+        return self::$DEFAULT_SCORE_NAME;
     }
 
     /**
@@ -78,7 +85,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
      */
     public function reasonResultName()
     {
-        return 'reason';
+        return self::$DEFAULT_REASON_NAME;
     }
 
     /**
