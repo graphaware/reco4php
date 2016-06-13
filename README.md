@@ -15,8 +15,8 @@ Features:
 
 Requirements:
 
-* PHP5.6+ (PHP7 recommended)
-* Neo4j 2.2.6+ (Neo4j 3.0.0M02 recommended)
+* PHP7.0+
+* Neo4j 2.2.6+ (Neo4j 3.0+ recommended)
 
 The library imposes a specific recommendation engine architecture, which has emerged from our experience building recommendation
 engines and solves the architectural challenge to run recommendation engines remotely via Cypher.
@@ -136,19 +136,18 @@ namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Type\Node;
+use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
 class RatedByOthers extends SingleDiscoveryEngine
 {
-    public function discoveryQuery(Node $input)
+    public function discoveryQuery(Node $input, Context $context)
     {
         $query = 'MATCH (input:User) WHERE id(input) = {id}
-        MATCH (input)-[:RATED]->(movie)<-[:RATED]-(other)
-        WITH distinct other
-        MATCH (other)-[:RATED]->(reco)
-        RETURN reco, count(*) as score
-        ORDER BY score DESC
-        LIMIT 200';
+        MATCH (input)-[:RATED]->(m)<-[:RATED]-(o)
+        WITH distinct o
+        MATCH (o)-[:RATED]->(reco)
+        RETURN distinct reco LIMIT 500';
 
         return Statement::create($query, ['id' => $input->identity()]);
     }
@@ -224,9 +223,9 @@ namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
 use GraphAware\Common\Cypher\Statement;
 use GraphAware\Common\Type\Node;
-use GraphAware\Reco4PHP\Filter\BaseBlackListBuilder;
+use GraphAware\Reco4PHP\Filter\BaseBlacklistBuilder;
 
-class AlreadyRatedBlackList extends BaseBlackListBuilder
+class AlreadyRatedBlackList extends BaseBlacklistBuilder
 {
     public function blacklistQuery(Node $input)
     {
@@ -237,7 +236,10 @@ class AlreadyRatedBlackList extends BaseBlackListBuilder
         return Statement::create($query, ['inputId' => $input->identity()]);
     }
 
-
+    public function name()
+    {
+        return 'already_rated';
+    }
 }
 ```
 
@@ -254,30 +256,33 @@ nodes against the blacklists provided.
 namespace GraphAware\Reco4PHP\Tests\Example\PostProcessing;
 
 use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Result\RecordCursorInterface;
-use GraphAware\Common\Type\NodeInterface;
-use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
+use GraphAware\Common\Result\Record;
+use GraphAware\Common\Type\Node;
+use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
+use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\SingleScore;
 
-class RewardWellRated implements CypherAwarePostProcessor
+class RewardWellRated extends RecommendationSetPostProcessor
 {
-    public function buildQuery(NodeInterface $input, Recommendation $recommendation)
+    public function buildQuery(Node $input, Recommendations $recommendations)
     {
-        $query = 'MATCH (item) WHERE id(item) = {itemId}
-        RETURN size((item)<-[:RATED]-()) as ratings';
+        $query = 'UNWIND {ids} as id
+        MATCH (n) WHERE id(n) = id
+        MATCH (n)<-[r:RATED]-(u)
+        RETURN id(n) as id, sum(r.rating) as score';
 
-        return Statement::create($query, ['itemId' => $recommendation->item()->identity()]);
+        $ids = [];
+        foreach ($recommendations->getItems() as $item) {
+            $ids[] = $item->item()->identity();
+        }
+
+        return Statement::create($query, ['ids' => $ids]);
     }
 
-    public function postProcess(NodeInterface $input, Recommendation $recommendation, RecordCursorInterface $result = null)
+    public function postProcess(Node $input, Recommendation $recommendation, Record $record)
     {
-        $record = $result->getRecord();
-        if ($rating = $record->value("ratings")) {
-            if ($rating > 10) {
-                $recommendation->addScore($this->name(), new SingleScore($rating));
-            }
-        }
+        $recommendation->addScore($this->name(), new SingleScore($record->get('score'), 'total_ratings_relationships'));
     }
 
     public function name()
@@ -348,6 +353,7 @@ You'll need to provide also a connection to your Neo4j database, in your applica
 
 namespace GraphAware\Reco4PHP\Tests\Example;
 
+use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\RecommenderService;
 
 class ExampleRecommenderService
@@ -376,7 +382,7 @@ class ExampleRecommenderService
         $input = $this->service->findInputBy('User', 'id', $id);
         $recommendationEngine = $this->service->getRecommender("user_movie_reco");
 
-        return $recommendationEngine->recommend($input);
+        return $recommendationEngine->recommend($input, new SimpleContext());
     }
 }
 ```

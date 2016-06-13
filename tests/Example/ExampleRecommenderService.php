@@ -31,6 +31,6 @@ class ExampleRecommenderService
         $input = $this->service->findInputBy('User', 'id', $id);
         $recommendationEngine = $this->service->getRecommender("user_movie_reco");
 
-        return $recommendationEngine->recommend($input, new SimpleContext($input));
+        return $recommendationEngine->recommend($input, new SimpleContext());
     }
 }
