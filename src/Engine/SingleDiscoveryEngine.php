@@ -60,7 +60,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
 
         foreach ($result->records() as $record) {
             if ($record->hasValue($this->recoResultName())) {
-                $recommendations->add($record->value($this->recoResultName()), $this->name(), $this->buildScore($input, $record->value($this->recoResultName()), $record, $context));
+                $recommendations->add($record->get($this->recoResultName()), $this->name(), $this->buildScore($input, $record->get($this->recoResultName()), $record, $context));
             }
         }
 

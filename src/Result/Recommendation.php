@@ -55,8 +55,10 @@ class Recommendation
      */
     public function addScores(array $scores)
     {
-        foreach ($scores as $name => $score) {
-            $this->addScore($name, $score);
+        foreach ($scores as $name => $singleScores) {
+            foreach ($singleScores->getScores() as $score) {
+                $this->addScore($name, $score);
+            }
         }
     }
 

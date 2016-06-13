@@ -95,6 +95,37 @@ class Recommendations
         return count($this->recommendations);
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return \GraphAware\Reco4PHP\Result\Recommendation|null
+     */
+    public function getItemBy($key, $value)
+    {
+        foreach ($this->getItems() as $recommendation) {
+            if ($recommendation->item()->hasValue($key) && $recommendation->item()->value($key) === $value) {
+                return $recommendation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param int $id
+     * @return \GraphAware\Reco4PHP\Result\Recommendation|null
+     */
+    public function getItemById($id)
+    {
+        foreach ($this->getItems() as $item) {
+            if ($item->item()->identity() === $id) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
     public function sort()
     {
         usort($this->recommendations, function (Recommendation $recommendationA, Recommendation $recommendationB) {
