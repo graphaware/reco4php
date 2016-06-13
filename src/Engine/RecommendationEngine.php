@@ -19,57 +19,57 @@ interface RecommendationEngine
     /**
      * @return string
      */
-    public function name();
+    public function name() : string;
 
     /**
      * @return \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]
      */
-    public function discoveryEngines();
+    public function discoveryEngines() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Filter\BlackListBuilder[]
      */
-    public function blacklistBuilders();
+    public function blacklistBuilders() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Post\PostProcessor[]
      */
-    public function postProcessors();
+    public function postProcessors() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Filter\Filter[]
      */
-    public function filters();
+    public function filters() : array;
 
     /**
      * @return \Psr\Log\LoggerInterface[]
      */
-    public function loggers();
+    public function loggers() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]
      */
-    public function getDiscoveryEngines();
+    public function getDiscoveryEngines() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Filter\BlackListBuilder[]
      */
-    public function getBlacklistBuilders();
+    public function getBlacklistBuilders() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Filter\Filter[]
      */
-    public function getFilters();
+    public function getFilters() : array;
 
     /**
      * @return \GraphAware\Reco4PHP\Post\PostProcessor[]
      */
-    public function getPostProcessors();
+    public function getPostProcessors() : array;
 
     /**
      * @return \Psr\Log\LoggerInterface[]
      */
-    public function getLoggers();
+    public function getLoggers() : array;
 
     /**
      * @param Node $input

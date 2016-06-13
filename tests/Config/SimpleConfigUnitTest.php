@@ -4,7 +4,7 @@ namespace GraphAware\Reco4PHP\Tests\Config;
 
 use GraphAware\Reco4PHP\Config\SimpleConfig;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
-use GraphAware\Bolt\Result\Type\Node;
+use GraphAware\Common\Type\Node;
 
 class SimpleConfigUnitTest extends \PHPUnit_Framework_TestCase
 {
