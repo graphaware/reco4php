@@ -45,7 +45,6 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $recoForMarc->totalScore());
         $recoForBill = $recommendations->getItemBy('name', 'Bill');
         $this->assertEquals(2, $recoForBill->totalScore());
-        print_r($recommendations->getContext()->getStatistics()->getTimes());
     }
 
     private function getUserNode($name)
