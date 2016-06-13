@@ -37,7 +37,7 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = $this->recoService->getRecommender('find_friends');
         $john = $this->getUserNode('John');
-        $recommendations = $engine->recommend($john, new SimpleContext($john));
+        $recommendations = $engine->recommend($john, new SimpleContext());
         $recommendations->sort();
         $this->assertEquals(2, $recommendations->size());
         $this->assertNull($recommendations->getItemBy('name', 'John'));
@@ -45,6 +45,7 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $recoForMarc->totalScore());
         $recoForBill = $recommendations->getItemBy('name', 'Bill');
         $this->assertEquals(2, $recoForBill->totalScore());
+        print_r($recommendations->getContext()->getStatistics()->getTimes());
     }
 
     private function getUserNode($name)

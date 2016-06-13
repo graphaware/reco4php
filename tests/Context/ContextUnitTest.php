@@ -11,9 +11,8 @@ class ContextUnitTest extends \PHPUnit_Framework_TestCase
     public function testDefault()
     {
         $input = FakeNode::createDummy();
-        $context = new SimpleContext($input);
+        $context = new SimpleContext();
         $this->assertInstanceOf(Config::class, $context->config());
-        $this->assertEquals($input, $context->input());
     }
 }
 

@@ -12,13 +12,27 @@
 namespace GraphAware\Reco4PHP\Result;
 
 use GraphAware\Common\Type\Node;
+use GraphAware\Reco4PHP\Context\Context;
 
 class Recommendations
 {
     /**
+     * @var \GraphAware\Reco4PHP\Context\Context
+     */
+    protected $context;
+
+    /**
      * @var \GraphAware\Reco4PHP\Result\Recommendation[]
      */
     protected $recommendations = [];
+
+    /**
+     * @param \GraphAware\Reco4PHP\Context\Context $context
+     */
+    public function __construct(Context $context)
+    {
+        $this->context = $context;
+    }
 
     /**
      * @param \GraphAware\Common\Type\Node $item
@@ -68,7 +82,7 @@ class Recommendations
     /**
      * @return \GraphAware\Reco4PHP\Result\Recommendation[]
      */
-    public function getItems($size = null)
+    public function getItems($size = null) : array
     {
         if (is_int($size) && $size > 0) {
             return array_slice($this->recommendations, 0, $size);
@@ -82,7 +96,7 @@ class Recommendations
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendation
      */
-    public function get($position)
+    public function get($position) : Recommendation
     {
         return array_values($this->recommendations)[$position];
     }
@@ -90,7 +104,7 @@ class Recommendations
     /**
      * @return int
      */
-    public function size()
+    public function size() : int
     {
         return count($this->recommendations);
     }
@@ -131,5 +145,13 @@ class Recommendations
         usort($this->recommendations, function (Recommendation $recommendationA, Recommendation $recommendationB) {
             return $recommendationA->totalScore() <= $recommendationB->totalScore();
         });
+    }
+
+    /**
+     * @return \GraphAware\Reco4PHP\Context\Context
+     */
+    public function getContext() : Context
+    {
+        return $this->context;
     }
 }

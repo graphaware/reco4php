@@ -11,20 +11,22 @@
 
 namespace GraphAware\Reco4PHP\Context;
 
+use GraphAware\Reco4PHP\Config\Config;
+
 interface Context
 {
     /**
-     * @return \GraphAware\Common\Type\Node
-     */
-    public function input();
-
-    /**
      * @return \GraphAware\Reco4PHP\Config\Config
      */
-    public function config();
+    public function config() : Config;
 
     /**
      * @return bool
      */
-    public function timeLeft();
+    public function timeLeft() : bool;
+
+    /**
+     * @return \GraphAware\Reco4PHP\Context\Statistics
+     */
+    public function getStatistics() : Statistics;
 }

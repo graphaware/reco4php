@@ -18,37 +18,29 @@ use GraphAware\Reco4PHP\Config\SimpleConfig;
 class SimpleContext implements Context
 {
     /**
-     * @var \GraphAware\Common\Type\Node
-     */
-    protected $input;
-
-    /**
      * @var \GraphAware\Reco4PHP\Config\Config
      */
     protected $config;
 
     /**
+     * @var \GraphAware\Reco4PHP\Context\Statistics
+     */
+    protected $statistics;
+
+    /**
      * @param \GraphAware\Common\Type\Node       $input
      * @param \GraphAware\Reco4PHP\Config\Config $config
      */
-    public function __construct(Node $input, Config $config = null)
+    public function __construct(Config $config = null)
     {
-        $this->input = $input;
         $this->config = null !== $config ? $config : new SimpleConfig();
+        $this->statistics = new Statistics();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function input()
-    {
-        return $this->input;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function config()
+    public function config() : Config
     {
         return $this->config;
     }
@@ -56,8 +48,13 @@ class SimpleContext implements Context
     /**
      * {@inheritdoc}
      */
-    public function timeLeft()
+    public function timeLeft() : bool
     {
-        // TODO: Implement timeLeft() method.
+        return $this->statistics->getCurrentTimeSpent() < $this->config()->limit();
+    }
+
+    public function getStatistics() : Statistics
+    {
+        return $this->statistics;
     }
 }

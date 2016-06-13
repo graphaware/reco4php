@@ -49,7 +49,8 @@ class RecommendationExecutor
 
     private function doDiscovery(Node $input, RecommendationEngine $engine, Context $context)
     {
-        $recommendations = new Recommendations();
+        $recommendations = new Recommendations($context);
+        $context->getStatistics()->startDiscovery();
         $result = $this->discoveryExecutor->processDiscovery(
             $input,
             $engine->getDiscoveryEngines(),
@@ -60,6 +61,7 @@ class RecommendationExecutor
         foreach ($engine->getDiscoveryEngines() as $discoveryEngine) {
             $recommendations->merge($discoveryEngine->produceRecommendations($input, $result, $context));
         }
+        $context->getStatistics()->stopDiscovery();
 
         $blacklist = $this->buildBlacklistedNodes($result, $engine);
         $this->removeIrrelevant($input, $engine, $recommendations, $blacklist);
@@ -69,15 +71,17 @@ class RecommendationExecutor
 
     private function doPostProcess(Node $input, Recommendations $recommendations, RecommendationEngine $engine)
     {
+        $recommendations->getContext()->getStatistics()->startPostProcess();
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
         foreach ($engine->getPostProcessors() as $postProcessor) {
             $tag = $postProcessor->name();
             $result = $postProcessResult->get($tag);
             $postProcessor->handleResultSet($input, $result, $recommendations);
         }
+        $recommendations->getContext()->getStatistics()->stopPostProcess();
     }
 
-    public function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
+    private function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
     {
         foreach ($recommendations->getItems() as $recommendation) {
             foreach ($engine->filters() as $filter) {
@@ -88,7 +92,7 @@ class RecommendationExecutor
         }
     }
 
-    public function buildBlacklistedNodes(ResultCollection $result, RecommendationEngine $engine)
+    private function buildBlacklistedNodes(ResultCollection $result, RecommendationEngine $engine)
     {
         $set = [];
         foreach ($engine->getBlacklistBuilders() as $blacklist) {

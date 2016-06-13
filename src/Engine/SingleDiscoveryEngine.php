@@ -56,7 +56,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     final public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context) : Recommendations
     {
         $result = $resultCollection->get($this->name());
-        $recommendations = new Recommendations($this->name());
+        $recommendations = new Recommendations($context);
 
         foreach ($result->records() as $record) {
             if ($record->hasValue($this->recoResultName())) {

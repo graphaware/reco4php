@@ -27,8 +27,8 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
         $engine = new TestDiscoveryEngine();
         $this->assertInstanceOf(SingleDiscoveryEngine::class, $engine);
         $input = FakeNode::createDummy();
-        $this->assertInstanceOf(Statement::class, $engine->discoveryQuery($input, new SimpleContext($input)));
-        $this->assertEquals("MATCH (n) WHERE id(n) <> {inputId} RETURN n", $engine->discoveryQuery($input, new SimpleContext($input))->text());
+        $this->assertInstanceOf(Statement::class, $engine->discoveryQuery($input, new SimpleContext()));
+        $this->assertEquals("MATCH (n) WHERE id(n) <> {inputId} RETURN n", $engine->discoveryQuery($input, new SimpleContext())->text());
         $this->assertEquals("score", $engine->scoreResultName());
         $this->assertEquals("reco", $engine->recoResultName());
         $this->assertEquals(1, $engine->defaultScore());
@@ -39,15 +39,15 @@ class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
     {
         $engine = new TestDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $this->assertEquals($input->identity(), $engine->discoveryQuery($input, new SimpleContext($input))->parameters()['inputId']);
-        $this->assertCount(1, $engine->discoveryQuery($input, new SimpleContext($input))->parameters());
+        $this->assertEquals($input->identity(), $engine->discoveryQuery($input, new SimpleContext())->parameters()['inputId']);
+        $this->assertCount(1, $engine->discoveryQuery($input, new SimpleContext())->parameters());
     }
 
     public function testOverride()
     {
         $engine = new OverrideDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $context = new SimpleContext($input, new SimpleConfig());
+        $context = new SimpleContext(new SimpleConfig());
         $this->assertCount(2, $engine->discoveryQuery($input, $context)->parameters());
         $this->assertEquals($input->identity(), $engine->discoveryQuery($input, $context)->parameters()['input']);
         $this->assertEquals("recommendation", $engine->recoResultName());

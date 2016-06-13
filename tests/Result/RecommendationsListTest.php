@@ -2,6 +2,7 @@
 
 namespace GraphAware\Reco4PHP\Tests\Result;
 
+use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\Score;
 use GraphAware\Reco4PHP\Result\SingleScore;
@@ -18,7 +19,7 @@ class RecommendationsListTest extends \PHPUnit_Framework_TestCase
     public function testResultGetTwoScoresIfDiscoveredTwice()
     {
         $node = FakeNode::createDummy();
-        $list = new Recommendations();
+        $list = new Recommendations(new SimpleContext());
 
         $list->add($node, 'e1', new SingleScore(1));
         $list->add($node, 'e2', new SingleScore(1));
@@ -33,7 +34,7 @@ class RecommendationsListTest extends \PHPUnit_Framework_TestCase
     public function testTotalScoreIsIncremented()
     {
         $node = FakeNode::createDummy();
-        $list = new Recommendations();
+        $list = new Recommendations(new SimpleContext());
 
         $list->add($node, 'e1', new SingleScore(1));
         $reco = $list->getItems()[0];
@@ -45,7 +46,7 @@ class RecommendationsListTest extends \PHPUnit_Framework_TestCase
     public function testReasons()
     {
         $node = FakeNode::createDummy();
-        $list = new Recommendations();
+        $list = new Recommendations(new SimpleContext());
 
         $list->add($node, 'disc1', new SingleScore(1, 'reason1'));
         $list->add($node, 'disc1', new SingleScore(1, 'reason2'));
