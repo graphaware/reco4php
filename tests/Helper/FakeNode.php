@@ -10,6 +10,12 @@ class FakeNode implements Node
 
     protected $labels = [];
 
+    function __get($name)
+    {
+        return null;
+    }
+
+
     public function __construct($identity, array $labels = array())
     {
         $this->identity = $identity;

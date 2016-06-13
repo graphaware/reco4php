@@ -10,17 +10,20 @@
  */
 namespace GraphAware\Reco4PHP\Engine;
 
+use GraphAware\Common\Cypher\StatementInterface;
 use GraphAware\Common\Result\Record;
 use GraphAware\Common\Type\Node;
 use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Reco4PHP\Context\Context;
+use GraphAware\Reco4PHP\Result\Recommendations;
+use GraphAware\Reco4PHP\Result\SingleScore;
 
 interface DiscoveryEngine
 {
     /**
      * @return string The name of the discovery engine
      */
-    public function name();
+    public function name() : string;
 
     /**
      * The statement to be executed for finding items to be recommended.
@@ -30,7 +33,7 @@ interface DiscoveryEngine
      *
      * @return \GraphAware\Common\Cypher\Statement
      */
-    public function discoveryQuery(Node $input, Context $context);
+    public function discoveryQuery(Node $input, Context $context) : StatementInterface;
 
     /**
      * Returns the score produced by the recommended item.
@@ -42,7 +45,7 @@ interface DiscoveryEngine
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
      */
-    public function buildScore(Node $input, Node $item, Record $record, Context $context);
+    public function buildScore(Node $input, Node $item, Record $record, Context $context) : SingleScore;
 
     /**
      * Returns a collection of Recommendation object produced by this discovery engine.
@@ -51,14 +54,14 @@ interface DiscoveryEngine
      * @param ResultCollection $resultCollection
      * @param Context $context
      *
-     * @return mixed
+     * @return Recommendations
      */
-    public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context);
+    public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context) : Recommendations;
 
     /**
      * @return string The column identifier of the row result representing the recommended item (node)
      */
-    public function recoResultName();
+    public function recoResultName() : string;
 
     /**
      * @return string The column identifier of the row result representing the score to be used, note that this
@@ -66,10 +69,10 @@ interface DiscoveryEngine
      *                <code>defaultScore()</code> or the score logic if the concrete class override the <code>buildScore</code>
      *                method.
      */
-    public function scoreResultName();
+    public function scoreResultName() : string;
 
     /**
      * @return float The default score to be given to the discovered recommended item
      */
-    public function defaultScore();
+    public function defaultScore() : float;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * This file is part of the GraphAware Reco4PHP package.
@@ -33,7 +34,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore
      */
-    public function buildScore(Node $input, Node $item, Record $record, Context $context)
+    public function buildScore(Node $input, Node $item, Record $record, Context $context) : SingleScore
     {
         $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
         $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()) : null;
@@ -50,7 +51,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    final public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context)
+    final public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context) : Recommendations
     {
         $result = $resultCollection->get($this->name());
         $recommendations = new Recommendations($this->name());
@@ -67,7 +68,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function recoResultName()
+    public function recoResultName() : string
     {
         return self::$DEFAULT_RECO_NAME;
     }
@@ -75,7 +76,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function scoreResultName()
+    public function scoreResultName() : string
     {
         return self::$DEFAULT_SCORE_NAME;
     }
@@ -83,7 +84,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function reasonResultName()
+    public function reasonResultName() : string
     {
         return self::$DEFAULT_REASON_NAME;
     }
@@ -91,7 +92,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function defaultScore()
+    public function defaultScore() : float
     {
         return 1.0;
     }
