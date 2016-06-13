@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Reco4PHP\Executor;
 
 use GraphAware\Common\Type\Node;
@@ -32,10 +33,10 @@ class DiscoveryPhaseExecutor
     }
 
     /**
-     * @param Node                   $input
+     * @param Node                                           $input
      * @param \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]  $engines
      * @param \GraphAware\Reco4PHP\Filter\BlackListBuilder[] $blacklists
-     * @param Context $context
+     * @param Context                                        $context
      *
      * @return \GraphAware\Common\Result\ResultCollection
      */

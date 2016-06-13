@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare (strict_types = 1);
 
 /**
  * This file is part of the GraphAware Reco4PHP package.
@@ -9,6 +10,7 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Reco4PHP\Engine;
 
 use GraphAware\Common\Result\Record;
@@ -27,9 +29,9 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      *
-     * @param Node                  $input
-     * @param Node                  $item
-     * @param Record $record
+     * @param Node    $input
+     * @param Node    $item
+     * @param Record  $record
      * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore
@@ -45,9 +47,9 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      *
-     * @param Node               $input
+     * @param Node             $input
      * @param ResultCollection $resultCollection
-     * @param Context $context
+     * @param Context          $context
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations
      */

@@ -28,7 +28,7 @@ class NodeProxy implements Node
         $this->labels = $labels;
     }
 
-    function identity()
+    public function identity()
     {
         return $this->id;
     }
@@ -76,19 +76,17 @@ class NodeProxy implements Node
         return [
             'id' => $this->id,
             'labels' => $this->labels,
-            'properties' => $this->properties
+            'properties' => $this->properties,
         ];
     }
 
-    function labels()
+    public function labels()
     {
         return $this->labels;
     }
 
-    function hasLabel($label)
+    public function hasLabel($label)
     {
         return in_array($label, $this->labels);
     }
-
 }
-

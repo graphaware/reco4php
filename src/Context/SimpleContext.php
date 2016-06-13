@@ -28,7 +28,7 @@ class SimpleContext implements Context
     protected $config;
 
     /**
-     * @param \GraphAware\Common\Type\Node $input
+     * @param \GraphAware\Common\Type\Node       $input
      * @param \GraphAware\Reco4PHP\Config\Config $config
      */
     public function __construct(Node $input, Config $config = null)
@@ -38,7 +38,7 @@ class SimpleContext implements Context
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function input()
     {
@@ -46,7 +46,7 @@ class SimpleContext implements Context
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function config()
     {
@@ -54,11 +54,10 @@ class SimpleContext implements Context
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function timeLeft()
     {
         // TODO: Implement timeLeft() method.
     }
-
 }

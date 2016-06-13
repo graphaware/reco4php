@@ -34,7 +34,7 @@ class SimpleConfig extends KeyValueConfig
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function limit()
     {
@@ -42,11 +42,10 @@ class SimpleConfig extends KeyValueConfig
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function maxTime()
     {
         return $this->maxTime;
     }
-
 }

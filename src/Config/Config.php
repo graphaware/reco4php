@@ -22,7 +22,7 @@ interface Config
 
     /**
      * @return int maximum number of ms the recommendation-computing process should take. Note that it is
-     * for information only, it is the responsibility of the engines to honour this configuration or not.
+     *             for information only, it is the responsibility of the engines to honour this configuration or not.
      */
     public function maxTime();
 }

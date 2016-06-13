@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare (strict_types = 1);
 
 /**
  * This file is part of the GraphAware Reco4PHP package.
@@ -79,7 +80,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
      */
     final public function getDiscoveryEngines() : array
     {
-        return array_filter($this->discoveryEngines(), function(DiscoveryEngine $discoveryEngine) {
+        return array_filter($this->discoveryEngines(), function (DiscoveryEngine $discoveryEngine) {
             return true;
         });
     }
@@ -89,7 +90,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
      */
     final public function getBlacklistBuilders() : array
     {
-        return array_filter($this->blacklistBuilders(), function(BlackListBuilder $blackListBuilder) {
+        return array_filter($this->blacklistBuilders(), function (BlackListBuilder $blackListBuilder) {
             return true;
         });
     }
@@ -99,7 +100,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
      */
     final public function getFilters() : array
     {
-        return array_filter($this->filters(), function(Filter $filter) {
+        return array_filter($this->filters(), function (Filter $filter) {
             return true;
         });
     }
@@ -109,7 +110,7 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
      */
     final public function getPostProcessors() : array
     {
-        return array_filter($this->postProcessors(), function(PostProcessor $postProcessor) {
+        return array_filter($this->postProcessors(), function (PostProcessor $postProcessor) {
             return true;
         });
     }
@@ -119,13 +120,13 @@ abstract class BaseRecommendationEngine implements RecommendationEngine
      */
     final public function getLoggers() : array
     {
-        return array_filter($this->loggers(), function(LoggerInterface $logger) {
+        return array_filter($this->loggers(), function (LoggerInterface $logger) {
             return true;
         });
     }
 
     /**
-     * @param Node $input
+     * @param Node    $input
      * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\Recommendations

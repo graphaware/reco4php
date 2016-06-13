@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace GraphAware\Reco4PHP\Engine;
 
 use GraphAware\Common\Cypher\StatementInterface;
@@ -28,7 +29,7 @@ interface DiscoveryEngine
     /**
      * The statement to be executed for finding items to be recommended.
      *
-     * @param Node $input
+     * @param Node    $input
      * @param Context $context
      *
      * @return \GraphAware\Common\Cypher\Statement
@@ -38,9 +39,9 @@ interface DiscoveryEngine
     /**
      * Returns the score produced by the recommended item.
      *
-     * @param Node $input
-     * @param Node $item
-     * @param Record          $record
+     * @param Node    $input
+     * @param Node    $item
+     * @param Record  $record
      * @param Context $context
      *
      * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
@@ -50,9 +51,9 @@ interface DiscoveryEngine
     /**
      * Returns a collection of Recommendation object produced by this discovery engine.
      *
-     * @param Node               $input
+     * @param Node             $input
      * @param ResultCollection $resultCollection
-     * @param Context $context
+     * @param Context          $context
      *
      * @return Recommendations
      */
