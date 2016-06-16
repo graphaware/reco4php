@@ -84,9 +84,14 @@ class RecommendationExecutor
     private function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
     {
         foreach ($recommendations->getItems() as $recommendation) {
-            foreach ($engine->filters() as $filter) {
-                if (!$filter->doInclude($input, $recommendation->item()) || array_key_exists($recommendation->item()->identity(), $blacklist)) {
-                    $recommendations->remove($recommendation);
+            if (array_key_exists($recommendation->item()->identity(), $blacklist)) {
+                $recommendations->remove($recommendation);
+            } else {
+                foreach ($engine->filters() as $filter) {
+                    if (!$filter->doInclude($input, $recommendation->item())) {
+                        $recommendations->remove($recommendation);
+                        break;
+                    }
                 }
             }
         }
