@@ -8,6 +8,12 @@ use GraphAware\Reco4PHP\Tests\Integration\Model\RecoEngine;
 use GraphAware\Reco4PHP\RecommenderService;
 use GraphAware\Neo4j\Client\Client;
 
+/**
+ * Class SimpleFriendsRecoEngineTest
+ * @package GraphAware\Reco4PHP\Tests\Integration
+ *
+ * @group integration
+ */
 class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
 {
     /**

@@ -19,10 +19,10 @@ class RecoEngine extends BaseRecommendationEngine
         );
     }
 
-    public function filters() : array
+    public function blacklistBuilders() : array
     {
         return array(
-            new ExcludeSelf()
+            new SimpleBlacklist()
         );
     }
 

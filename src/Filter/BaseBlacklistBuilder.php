@@ -26,7 +26,7 @@ abstract class BaseBlacklistBuilder implements BlackListBuilder
         $nodes = [];
         foreach ($result->records() as $record) {
             if ($record->hasValue($this->itemResultName()) && $record->value($this->itemResultName()) instanceof Node) {
-                $nodes[] = $record->value($this->itemResultName());
+                $nodes[] = $record->get($this->itemResultName());
             }
         }
 
