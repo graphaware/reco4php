@@ -70,7 +70,8 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
         (paul)-[:FRIEND]->(bill:User {name:"Bill"}),
         (judith)-[:FRIEND]->(bill),
         (judith)-[:FRIEND]->(sofia),
-        (john)-[:FRIEND]->(sofia)';
+        (john)-[:FRIEND]->(sofia),
+        (sofia)-[:FRIEND]->(:User {name:"Zoe"})';
         $this->client->run($query);
     }
 }
