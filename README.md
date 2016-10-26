@@ -152,12 +152,10 @@ class RatedByOthers extends SingleDiscoveryEngine
         return Statement::create($query, ['id' => $input->identity()]);
     }
 
-
     public function name()
     {
         return "rated_by_others";
     }
-
 }
 ```
 
@@ -206,7 +204,6 @@ class ExcludeOldMovies implements Filter
 
         return false;
     }
-
 }
 ```
 
@@ -289,7 +286,6 @@ class RewardWellRated extends RecommendationSetPostProcessor
     {
         return "reward_well_rated";
     }
-
 }
 ```
 
