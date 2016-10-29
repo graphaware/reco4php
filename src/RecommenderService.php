@@ -12,6 +12,7 @@
 namespace GraphAware\Reco4PHP;
 
 use GraphAware\Common\Type\Node;
+use GraphAware\Neo4j\Client\ClientInterface;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -63,6 +64,19 @@ class RecommenderService
     public static function create($uri)
     {
         return new self(new DatabaseService($uri));
+    }
+
+    /**
+     * @param ClientInterface $client
+     *
+     * @return \GraphAware\Reco4PHP\RecommenderService
+     */
+    public static function createWithClient(ClientInterface $client)
+    {
+        $databaseService = new DatabaseService();
+        $databaseService->setDriver($client);
+
+        return new self($databaseService);
     }
 
     /**
