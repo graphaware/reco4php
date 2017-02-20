@@ -2,9 +2,6 @@
     "name": "graphaware/reco4php",
     "description": "Neo4j based Recommendation Engine Framework for PHP",
     "type": "library",
-    "require-dev": {
-        "phpunit/phpunit": "^5.1"
-    },
     "license": "ApacheV2",
     "authors": [
         {
@@ -13,11 +10,14 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
+        "php": "^7.0",
         "graphaware/neo4j-php-client": "^4.0",
-        "symfony/event-dispatcher": "^2.7|^3.0",
+        "symfony/event-dispatcher": "^2.7 || ^3.0",
         "psr/log": "^1.0",
-        "symfony/stopwatch": "^2.7|^3.0"
+        "symfony/stopwatch": "^2.7 || ^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.1"
     },
     "autoload": {
         "psr-4": {
