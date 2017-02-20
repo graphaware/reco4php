@@ -28,7 +28,6 @@ class SimpleContext implements Context
     protected $statistics;
 
     /**
-     * @param \GraphAware\Common\Type\Node       $input
      * @param \GraphAware\Reco4PHP\Config\Config $config
      */
     public function __construct(Config $config = null)
