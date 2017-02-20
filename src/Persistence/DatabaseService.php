@@ -15,7 +15,7 @@ use GraphAware\Neo4j\Client\ClientBuilder;
 
 class DatabaseService
 {
-    private $driver;
+    protected $driver;
 
     public function __construct($uri)
     {
