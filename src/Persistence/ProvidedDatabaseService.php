@@ -11,11 +11,11 @@
 
 namespace GraphAware\Reco4PHP\Persistence;
 
-use GraphAware\Neo4j\Client\Client;
+use GraphAware\Neo4j\Client\ClientInterface;
 
 class ProvidedDatabaseService extends DatabaseService
 {
-    public function __construct(Client $client)
+    public function __construct(ClientInterface $client)
     {
         parent::__construct('localhost:7474');
 
