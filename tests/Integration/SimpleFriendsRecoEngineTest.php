@@ -4,7 +4,6 @@ namespace GraphAware\Reco4PHP\Tests\Integration;
 
 use GraphAware\Neo4j\Client\ClientBuilder;
 use GraphAware\Reco4PHP\Context\SimpleContext;
-use GraphAware\Reco4PHP\Persistence\ProvidedDatabaseService;
 use GraphAware\Reco4PHP\Tests\Integration\Model\RecoEngine;
 use GraphAware\Reco4PHP\RecommenderService;
 use GraphAware\Neo4j\Client\Client;
@@ -43,28 +42,6 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
     public function testRecoForJohn()
     {
         $engine = $this->recoService->getRecommender('find_friends');
-        $john = $this->getUserNode('John');
-        $recommendations = $engine->recommend($john, new SimpleContext());
-        $recommendations->sort();
-        $this->assertEquals(2, $recommendations->size());
-        $this->assertNull($recommendations->getItemBy('name', 'John'));
-        $recoForMarc = $recommendations->getItemBy('name','marc');
-        $this->assertEquals(1, $recoForMarc->totalScore());
-        $recoForBill = $recommendations->getItemBy('name', 'Bill');
-        $this->assertEquals(2, $recoForBill->totalScore());
-    }
-
-    public function testProvidedDatabaseServiceCanBeUsed()
-    {
-        $client = ClientBuilder::create()
-            ->addConnection('default', 'http://localhost:7474')
-            ->setDefaultTimeout(60)
-            ->build();
-
-        $dbService = new ProvidedDatabaseService($client);
-        $recoService = new RecommenderService($dbService);
-        $recoService->registerRecommendationEngine(new RecoEngine());
-        $engine = $recoService->getRecommender('find_friends');
         $john = $this->getUserNode('John');
         $recommendations = $engine->recommend($john, new SimpleContext());
         $recommendations->sort();
