@@ -2,7 +2,7 @@
     "name": "graphaware/reco4php",
     "description": "Neo4j based Recommendation Engine Framework for PHP",
     "type": "library",
-    "license": "ApacheV2",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "GraphAware Limited",
