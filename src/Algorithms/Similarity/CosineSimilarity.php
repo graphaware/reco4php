@@ -29,6 +29,7 @@ class CosineSimilarity implements Similarity
     {
         $sum = 0.0;
         foreach ($xVector as $k => $v) {
+            if (!isset($yVector[$k])) continue;
             $sum += (float) ($xVector[$k] * $yVector[$k]);
         }
 
