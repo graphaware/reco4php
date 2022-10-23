@@ -11,21 +11,19 @@
 
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Context\Context;
+use GraphAware\Reco4PHP\Engine\DiscoveryEngine;
+use GraphAware\Reco4PHP\Filter\BlackListBuilder;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
+use GraphAware\Reco4PHP\Result\ResultCollection;
+use Laudis\Neo4j\Types\Node;
 
 class DiscoveryPhaseExecutor
 {
-    /**
-     * @var \GraphAware\Reco4PHP\Persistence\DatabaseService
-     */
-    private $databaseService;
+    private DatabaseService $databaseService;
 
     /**
      * DiscoveryPhaseExecutor constructor.
-     *
-     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
      */
     public function __construct(DatabaseService $databaseService)
     {
@@ -33,28 +31,28 @@ class DiscoveryPhaseExecutor
     }
 
     /**
-     * @param Node                                           $input
-     * @param \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]  $engines
-     * @param \GraphAware\Reco4PHP\Filter\BlackListBuilder[] $blacklists
-     * @param Context                                        $context
-     *
-     * @return \GraphAware\Common\Result\ResultCollection
+     * @param DiscoveryEngine[]  $engines
+     * @param BlackListBuilder[] $blacklists
      */
-    public function processDiscovery(Node $input, array $engines, array $blacklists, Context $context)
+    public function processDiscovery(Node $input, array $engines, array $blacklists, Context $context): ResultCollection
     {
-        $stack = $this->databaseService->getDriver()->stack();
-        foreach ($engines as $engine) {
-            $statement = $engine->discoveryQuery($input, $context);
-            $stack->push($statement->text(), $statement->parameters(), $engine->name());
+        $statements = [];
+        $tags = [];
+        foreach (array_values($engines) as $engine) {
+            $statements[] = $engine->discoveryQuery($input, $context);
+            $tags[] = $engine->name();
         }
 
-        foreach ($blacklists as $blacklist) {
-            $statement = $blacklist->blacklistQuery($input);
-            $stack->push($statement->text(), $statement->parameters(), $blacklist->name());
+        foreach (array_values($blacklists) as $blacklist) {
+            $statements[] = $blacklist->blacklistQuery($input);
+            $tags[] = $blacklist->name();
         }
 
         try {
-            $resultCollection = $this->databaseService->getDriver()->runStack($stack);
+            $resultCollection = new ResultCollection();
+            foreach ($this->databaseService->getDriver()->runStatements($statements) as $key => $value) {
+                $resultCollection->add($value, $tags[$key]);
+            }
 
             return $resultCollection;
         } catch (\Exception $e) {

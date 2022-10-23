@@ -13,17 +13,11 @@ namespace GraphAware\Reco4PHP\Common;
 
 class ObjectSet implements Set
 {
-    /**
-     * @var string
-     */
-    protected $className;
+    protected string $className;
 
-    /**
-     * @var array
-     */
-    protected $elements = [];
+    protected array $elements = [];
 
-    final public function __construct($className)
+    final public function __construct(string $className)
     {
         if (!class_exists($className)) {
             throw new \InvalidArgumentException(sprintf('The classname %s does not exist', $className));
@@ -32,7 +26,7 @@ class ObjectSet implements Set
         $this->className = $className;
     }
 
-    public function add($element)
+    public function add(object $element): void
     {
         if ($this->valid($element) && !in_array($element, $this->elements)) {
             $this->elements[] = $element;
@@ -42,27 +36,25 @@ class ObjectSet implements Set
     /**
      * @return object[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->elements;
     }
 
-    public function size()
+    public function size(): int
     {
         return count($this->elements);
     }
 
-    public function get($key)
+    public function get($key): ?object
     {
         return $this->elements[$key];
     }
 
     /**
-     * @param object $element
-     *
      * @return bool
      */
-    protected function valid($element)
+    protected function valid(object $element)
     {
         return $element instanceof $this->className;
     }

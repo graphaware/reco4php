@@ -11,34 +11,28 @@
 
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Result\ResultCollection;
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Context\Context;
-use GraphAware\Reco4PHP\Persistence\DatabaseService;
-use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
-use Symfony\Component\Stopwatch\Stopwatch;
+use GraphAware\Reco4PHP\Persistence\DatabaseService;
+use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
+use GraphAware\Reco4PHP\Result\Recommendations;
+use GraphAware\Reco4PHP\Result\ResultCollection;
+use Laudis\Neo4j\Types\CypherMap;
+use Laudis\Neo4j\Types\Node;
 
 class RecommendationExecutor
 {
-    /**
-     * @var \GraphAware\Reco4PHP\Executor\DiscoveryPhaseExecutor
-     */
-    protected $discoveryExecutor;
+    protected DiscoveryPhaseExecutor $discoveryExecutor;
 
-    /**
-     * @var \GraphAware\Reco4PHP\Executor\PostProcessPhaseExecutor
-     */
-    protected $postProcessExecutor;
+    protected PostProcessPhaseExecutor $postProcessExecutor;
 
     public function __construct(DatabaseService $databaseService)
     {
         $this->discoveryExecutor = new DiscoveryPhaseExecutor($databaseService);
         $this->postProcessExecutor = new PostProcessPhaseExecutor($databaseService);
-        $this->stopwatch = new Stopwatch();
     }
 
-    public function processRecommendation(Node $input, RecommendationEngine $engine, Context $context)
+    public function processRecommendation(Node $input, RecommendationEngine $engine, Context $context): Recommendations
     {
         $recommendations = $this->doDiscovery($input, $engine, $context);
         $this->doPostProcess($input, $recommendations, $engine);
@@ -47,7 +41,7 @@ class RecommendationExecutor
         return $recommendations;
     }
 
-    private function doDiscovery(Node $input, RecommendationEngine $engine, Context $context)
+    private function doDiscovery(Node $input, RecommendationEngine $engine, Context $context): Recommendations
     {
         $recommendations = new Recommendations($context);
         $context->getStatistics()->startDiscovery();
@@ -69,22 +63,24 @@ class RecommendationExecutor
         return $recommendations;
     }
 
-    private function doPostProcess(Node $input, Recommendations $recommendations, RecommendationEngine $engine)
+    private function doPostProcess(Node $input, Recommendations $recommendations, RecommendationEngine $engine): void
     {
         $recommendations->getContext()->getStatistics()->startPostProcess();
         $postProcessResult = $this->postProcessExecutor->execute($input, $recommendations, $engine);
         foreach ($engine->getPostProcessors() as $postProcessor) {
             $tag = $postProcessor->name();
-            $result = $postProcessResult->get($tag);
-            $postProcessor->handleResultSet($input, $result, $recommendations);
+            $results = $postProcessResult->get($tag);
+            if ($postProcessor instanceof RecommendationSetPostProcessor) {
+                $postProcessor->handleResultSet($input, $results, $recommendations);
+            }
         }
         $recommendations->getContext()->getStatistics()->stopPostProcess();
     }
 
-    private function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist)
+    private function removeIrrelevant(Node $input, RecommendationEngine $engine, Recommendations $recommendations, array $blacklist): void
     {
         foreach ($recommendations->getItems() as $recommendation) {
-            if (array_key_exists($recommendation->item()->identity(), $blacklist)) {
+            if (array_key_exists($recommendation->item()->getId(), $blacklist)) {
                 $recommendations->remove($recommendation);
             } else {
                 foreach ($engine->filters() as $filter) {
@@ -97,16 +93,17 @@ class RecommendationExecutor
         }
     }
 
-    private function buildBlacklistedNodes(ResultCollection $result, RecommendationEngine $engine)
+    private function buildBlacklistedNodes(ResultCollection $resultCollection, RecommendationEngine $engine): array
     {
         $set = [];
         foreach ($engine->getBlacklistBuilders() as $blacklist) {
-            $res = $result->get($blacklist->name());
-            foreach ($res->records() as $record) {
-                if ($record->hasValue($blacklist->itemResultName())) {
-                    $node = $record->get($blacklist->itemResultName());
+            $results = $resultCollection->get($blacklist->name());
+            /** @var CypherMap $result */
+            foreach ($results as $result) {
+                if ($result->hasKey($blacklist->itemResultName())) {
+                    $node = $result->get($blacklist->itemResultName());
                     if ($node instanceof Node) {
-                        $set[$node->identity()] = $node;
+                        $set[$node->getId()] = $node;
                     }
                 }
             }

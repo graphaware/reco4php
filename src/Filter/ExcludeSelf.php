@@ -11,12 +11,12 @@
 
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Types\Node;
 
 class ExcludeSelf implements Filter
 {
-    public function doInclude(Node $input, Node $item)
+    public function doInclude(Node $input, Node $item): bool
     {
-        return $input->identity() !== $item->identity();
+        return $input->getId() !== $item->getId();
     }
 }

@@ -16,27 +16,21 @@ use GraphAware\Reco4PHP\Common\ObjectSet;
 
 class KNNModelBuilder
 {
-    protected $model;
+    protected Similarity $similarityFunction;
 
-    protected $similarityFunction;
-
-    protected $dataset;
-
-    public function __construct($model = null, Similarity $similarityFunction = null, $dataset = null)
+    public function __construct(Similarity $similarityFunction)
     {
-        $this->model = $model;
         $this->similarityFunction = $similarityFunction;
-        $this->dataset = $dataset;
     }
 
-    public function computeSimilarity(ObjectSet $tfSource, ObjectSet $tfDestination)
+    public function computeSimilarity(ObjectSet $tfSource, ObjectSet $tfDestination): float
     {
         $vectors = $this->createVectors($tfSource, $tfDestination);
 
         return $this->similarityFunction->getSimilarity($vectors[0], $vectors[1]);
     }
 
-    public function createVectors(ObjectSet $tfSource, ObjectSet $tfDestination)
+    public function createVectors(ObjectSet $tfSource, ObjectSet $tfDestination): array
     {
         $ratings = [];
         foreach ($tfSource->getAll() as $source) {
@@ -58,6 +52,6 @@ class KNNModelBuilder
             $yVector[] = array_key_exists(1, $ratings[$k]) ? $ratings[$k][1] : 0;
         }
 
-        return array($xVector, $yVector);
+        return [$xVector, $yVector];
     }
 }

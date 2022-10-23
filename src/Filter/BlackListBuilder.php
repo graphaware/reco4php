@@ -11,32 +11,22 @@
 
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Result\Result;
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\CypherList;
+use Laudis\Neo4j\Types\Node;
 
 interface BlackListBuilder
 {
+    public function blacklistQuery(Node $input): Statement;
+
     /**
-     * @param \GraphAware\Common\Type\Node $input
+     * @param CypherList
      *
-     * @return \GraphAware\Common\Cypher\Statement
+     * @return Node[]
      */
-    public function blacklistQuery(Node $input);
+    public function buildBlackList(CypherList $results): array;
 
-    /**
-     * @param \GraphAware\Common\Result\Result
-     *
-     * @return \GraphAware\Common\Type\Node[]
-     */
-    public function buildBlackList(Result $result);
+    public function itemResultName(): string;
 
-    /**
-     * @return string
-     */
-    public function itemResultName();
-
-    /**
-     * @return string
-     */
-    public function name();
+    public function name(): string;
 }

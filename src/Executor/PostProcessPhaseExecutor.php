@@ -11,58 +11,50 @@
 
 namespace GraphAware\Reco4PHP\Executor;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Engine\RecommendationEngine;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\Post\CypherAwarePostProcessor;
 use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendations;
+use GraphAware\Reco4PHP\Result\ResultCollection;
+use Laudis\Neo4j\Types\Node;
 
 class PostProcessPhaseExecutor
 {
-    /**
-     * @var \GraphAware\Reco4PHP\Persistence\DatabaseService
-     */
-    protected $databaseService;
+    protected DatabaseService $databaseService;
 
     /**
      * PostProcessPhaseExecutor constructor.
-     *
-     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
      */
     public function __construct(DatabaseService $databaseService)
     {
         $this->databaseService = $databaseService;
     }
 
-    /**
-     * @param \GraphAware\Common\Type\Node                     $input
-     * @param \GraphAware\Reco4PHP\Result\Recommendations      $recommendations
-     * @param \GraphAware\Reco4PHP\Engine\RecommendationEngine $recommendationEngine
-     *
-     * @return \GraphAware\Common\Result\ResultCollection
-     */
-    public function execute(Node $input, Recommendations $recommendations, RecommendationEngine $recommendationEngine)
+    public function execute(Node $input, Recommendations $recommendations, RecommendationEngine $recommendationEngine): ResultCollection
     {
-        $stack = $this->databaseService->getDriver()->stack('post_process_'.$recommendationEngine->name());
+        $statements = [];
+        $tags = [];
 
         foreach ($recommendationEngine->getPostProcessors() as $postProcessor) {
             if ($postProcessor instanceof CypherAwarePostProcessor) {
                 foreach ($recommendations->getItems() as $recommendation) {
-                    $tag = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
-                    $statement = $postProcessor->buildQuery($input, $recommendation);
-                    $stack->push($statement->text(), $statement->parameters(), $tag);
+                    $tags[] = sprintf('post_process_%s_%d', $postProcessor->name(), $recommendation->item()->identity());
+                    $statements[] = $postProcessor->buildQuery($input, $recommendation);
                 }
             } elseif ($postProcessor instanceof RecommendationSetPostProcessor) {
-                $statement = $postProcessor->buildQuery($input, $recommendations);
-                $stack->push($statement->text(), $statement->parameters(), $postProcessor->name());
+                $statements[] = $postProcessor->buildQuery($input, $recommendations);
+                $tags[] = $postProcessor->name();
             }
         }
 
         try {
-            $results = $this->databaseService->getDriver()->runStack($stack);
+            $resultCollection = new ResultCollection();
+            foreach ($this->databaseService->getDriver()->runStatements($statements) as $key => $value) {
+                $resultCollection->add($value, $tags[$key]);
+            }
 
-            return $results;
+            return $resultCollection;
         } catch (\Exception $e) {
             throw new \RuntimeException('PostProcess Query Exception - '.$e->getMessage());
         }

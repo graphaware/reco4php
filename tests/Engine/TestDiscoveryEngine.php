@@ -11,24 +11,22 @@
 
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
-use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Cypher\StatementInterface;
 use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\Node;
 
 class TestDiscoveryEngine extends SingleDiscoveryEngine
 {
-    public function discoveryQuery(Node $input, Context $context) : StatementInterface
+    public function discoveryQuery(Node $input, Context $context): Statement
     {
-        $query = "MATCH (n) WHERE id(n) <> {inputId} RETURN n";
+        $query = 'MATCH (n) WHERE id(n) <> $inputId RETURN n';
 
-        return Statement::create($query, ['inputId' => $input->identity()]);
+        return Statement::create($query, ['inputId' => $input->getId()]);
     }
 
-    public function name() : string
+    public function name(): string
     {
-        return "test_discovery";
+        return 'test_discovery';
     }
-
 }

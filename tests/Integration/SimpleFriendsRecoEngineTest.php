@@ -2,44 +2,36 @@
 
 namespace GraphAware\Reco4PHP\Tests\Integration;
 
-use GraphAware\Neo4j\Client\ClientBuilder;
 use GraphAware\Reco4PHP\Context\SimpleContext;
-use GraphAware\Reco4PHP\Tests\Integration\Model\RecoEngine;
+use GraphAware\Reco4PHP\Persistence\DatabaseService;
 use GraphAware\Reco4PHP\RecommenderService;
-use GraphAware\Neo4j\Client\Client;
+use GraphAware\Reco4PHP\Tests\Integration\Model\RecoEngine;
+use Laudis\Neo4j\Types\Node;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Class SimpleFriendsRecoEngineTest
- * @package GraphAware\Reco4PHP\Tests\Integration
+ * Class SimpleFriendsRecoEngineTest.
  *
  * @group integration
  */
-class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
+class SimpleFriendsRecoEngineTest extends TestCase
 {
-    /**
-     * @var RecommenderService
-     */
-    protected $recoService;
+    protected RecommenderService $recoService;
 
-    /**
-     * @var Client
-     */
-    protected $client;
+    protected DatabaseService $databaseService;
 
     /**
      * @setUp()
      */
-    public function setUp()
+    public function setUp(): void
     {
-        $this->recoService = RecommenderService::create('http://localhost:7474');
+        $this->databaseService = new DatabaseService('bolt://localhost:7687');
+        $this->recoService = new RecommenderService($this->databaseService);
         $this->recoService->registerRecommendationEngine(new RecoEngine());
-        $this->client = ClientBuilder::create()
-            ->addConnection('default', 'http://localhost:7474')
-            ->build();
         $this->createGraph();
     }
 
-    public function testRecoForJohn()
+    public function testRecoForJohn(): void
     {
         $engine = $this->recoService->getRecommender('find_friends');
         $john = $this->getUserNode('John');
@@ -47,23 +39,23 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
         $recommendations->sort();
         $this->assertEquals(2, $recommendations->size());
         $this->assertNull($recommendations->getItemBy('name', 'John'));
-        $recoForMarc = $recommendations->getItemBy('name','marc');
+        $recoForMarc = $recommendations->getItemBy('name', 'marc');
         $this->assertEquals(1, $recoForMarc->totalScore());
         $recoForBill = $recommendations->getItemBy('name', 'Bill');
         $this->assertEquals(2, $recoForBill->totalScore());
     }
 
-    private function getUserNode($name)
+    private function getUserNode(string $name): Node
     {
-        $q = 'MATCH (n:User) WHERE n.name = {name} RETURN n';
-        $result = $this->client->run($q, ['name' => $name]);
+        $q = 'MATCH (n:User) WHERE n.name = $name RETURN n';
+        $results = $this->databaseService->getDriver()->run($q, ['name' => $name]);
 
-        return $result->firstRecord()->get('n');
+        return $results->first()->get('n');
     }
 
-    private function createGraph()
+    private function createGraph(): void
     {
-        $this->client->run('MATCH (n) DETACH DELETE n');
+        $this->databaseService->getDriver()->run('MATCH (n) DETACH DELETE n');
         $query = 'CREATE (john:User {name:"John"})-[:FRIEND]->(judith:User {name:"Judith"}),
         (john)-[:FRIEND]->(paul:User {name:"paul"}),
         (paul)-[:FRIEND]->(marc:User {name:"marc"}),
@@ -72,6 +64,6 @@ class SimpleFriendsRecoEngineTest extends \PHPUnit_Framework_TestCase
         (judith)-[:FRIEND]->(sofia),
         (john)-[:FRIEND]->(sofia),
         (sofia)-[:FRIEND]->(:User {name:"Zoe"})';
-        $this->client->run($query);
+        $this->databaseService->getDriver()->run($query);
     }
 }

@@ -2,39 +2,38 @@
 
 namespace GraphAware\Reco4PHP\Tests\Example\PostProcessing;
 
-use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Result\Record;
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\SingleScore;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\CypherMap;
+use Laudis\Neo4j\Types\Node;
 
 class RewardWellRated extends RecommendationSetPostProcessor
 {
-    public function buildQuery(Node $input, Recommendations $recommendations)
+    public function buildQuery(Node $input, Recommendations $recommendations): Statement
     {
-        $query = 'UNWIND {ids} as id
+        $query = 'UNWIND $ids as id
         MATCH (n) WHERE id(n) = id
         MATCH (n)<-[r:RATED]-(u)
         RETURN id(n) as id, sum(r.rating) as score';
 
         $ids = [];
         foreach ($recommendations->getItems() as $item) {
-            $ids[] = $item->item()->identity();
+            $ids[] = $item->item()->getId();
         }
 
         return Statement::create($query, ['ids' => $ids]);
     }
 
-    public function postProcess(Node $input, Recommendation $recommendation, Record $record)
+    public function postProcess(Node $input, Recommendation $recommendation, CypherMap $result): void
     {
-        $recommendation->addScore($this->name(), new SingleScore($record->get('score'), 'total_ratings_relationships'));
+        $recommendation->addScore($this->name(), new SingleScore((float) $result->get('score'), 'total_ratings_relationships'));
     }
 
-    public function name()
+    public function name(): string
     {
-        return "reward_well_rated";
+        return 'reward_well_rated';
     }
-
 }

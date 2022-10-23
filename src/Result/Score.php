@@ -13,37 +13,28 @@ namespace GraphAware\Reco4PHP\Result;
 
 class Score
 {
-    /**
-     * @var float
-     */
-    protected $score = 0.0;
+    protected float $score = 0.0;
 
     /**
-     * @var \GraphAware\Reco4PHP\Result\SingleScore[]
+     * @var SingleScore[]
      */
-    protected $scores = [];
+    protected array $scores = [];
 
-    /**
-     * @param \GraphAware\Reco4PHP\Result\SingleScore $score
-     */
-    public function add(SingleScore $score)
+    public function add(SingleScore $score): void
     {
         $this->scores[] = $score;
-        $this->score += (float) $score->getScore();
+        $this->score += $score->getScore();
     }
 
-    /**
-     * @return float
-     */
-    public function score()
+    public function score(): float
     {
         return $this->score;
     }
 
     /**
-     * @return \GraphAware\Reco4PHP\Result\SingleScore[]
+     * @return SingleScore[]
      */
-    public function getScores()
+    public function getScores(): array
     {
         return $this->scores;
     }

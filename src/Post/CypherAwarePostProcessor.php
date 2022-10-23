@@ -11,16 +11,14 @@
 
 namespace GraphAware\Reco4PHP\Post;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Result\Recommendation;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\Node;
 
 interface CypherAwarePostProcessor extends PostProcessor
 {
     /**
-     * @param \GraphAware\Common\Type\Node               $input
-     * @param \GraphAware\Reco4PHP\Result\Recommendation $recommendation
-     *
-     * @return \GraphAware\Common\Cypher\Statement the statement to be executed
+     * @return Statement the statement to be executed
      */
-    public function buildQuery(Node $input, Recommendation $recommendation);
+    public function buildQuery(Node $input, Recommendation $recommendation): Statement;
 }

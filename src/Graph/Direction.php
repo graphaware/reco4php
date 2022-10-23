@@ -13,9 +13,9 @@ namespace GraphAware\Reco4PHP\Graph;
 
 final class Direction
 {
-    const BOTH = 'BOTH';
+    public const BOTH = 'BOTH';
 
-    const INCOMING = 'INCOMING';
+    public const INCOMING = 'INCOMING';
 
-    const OUTGOING = 'OUTGOING';
+    public const OUTGOING = 'OUTGOING';
 }

@@ -11,48 +11,49 @@
 
 namespace GraphAware\Reco4PHP\Tests\Engine;
 
-use GraphAware\Common\Cypher\Statement;
 use GraphAware\Reco4PHP\Config\SimpleConfig;
 use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
+use Laudis\Neo4j\Databags\Statement;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group engine
  */
-class SingleDiscoveryEngineTest extends \PHPUnit_Framework_TestCase
+class SingleDiscoveryEngineTest extends TestCase
 {
-    public function testInit()
+    public function testInit(): void
     {
         $engine = new TestDiscoveryEngine();
         $this->assertInstanceOf(SingleDiscoveryEngine::class, $engine);
         $input = FakeNode::createDummy();
         $this->assertInstanceOf(Statement::class, $engine->discoveryQuery($input, new SimpleContext()));
-        $this->assertEquals("MATCH (n) WHERE id(n) <> {inputId} RETURN n", $engine->discoveryQuery($input, new SimpleContext())->text());
-        $this->assertEquals("score", $engine->scoreResultName());
-        $this->assertEquals("reco", $engine->recoResultName());
+        $this->assertEquals('MATCH (n) WHERE id(n) <> $inputId RETURN n', $engine->discoveryQuery($input, new SimpleContext())->getText());
+        $this->assertEquals('score', $engine->scoreResultName());
+        $this->assertEquals('reco', $engine->recoResultName());
         $this->assertEquals(1, $engine->defaultScore());
-        $this->assertEquals("test_discovery", $engine->name());
+        $this->assertEquals('test_discovery', $engine->name());
     }
 
-    public function testParametersBuilding()
+    public function testParametersBuilding(): void
     {
         $engine = new TestDiscoveryEngine();
         $input = FakeNode::createDummy();
-        $this->assertEquals($input->identity(), $engine->discoveryQuery($input, new SimpleContext())->parameters()['inputId']);
-        $this->assertCount(1, $engine->discoveryQuery($input, new SimpleContext())->parameters());
+        $this->assertEquals($input->getId(), $engine->discoveryQuery($input, new SimpleContext())->getParameters()['inputId']);
+        $this->assertCount(1, $engine->discoveryQuery($input, new SimpleContext())->getParameters());
     }
 
-    public function testOverride()
+    public function testOverride(): void
     {
         $engine = new OverrideDiscoveryEngine();
         $input = FakeNode::createDummy();
         $context = new SimpleContext(new SimpleConfig());
-        $this->assertCount(2, $engine->discoveryQuery($input, $context)->parameters());
-        $this->assertEquals($input->identity(), $engine->discoveryQuery($input, $context)->parameters()['input']);
-        $this->assertEquals("recommendation", $engine->recoResultName());
-        $this->assertEquals("rate", $engine->scoreResultName());
-        $this->assertEquals("source", $engine->idParamName());
+        $this->assertCount(2, $engine->discoveryQuery($input, $context)->getParameters());
+        $this->assertEquals($input->getId(), $engine->discoveryQuery($input, $context)->getParameters()['input']);
+        $this->assertEquals('recommendation', $engine->recoResultName());
+        $this->assertEquals('rate', $engine->scoreResultName());
+        $this->assertEquals('source', $engine->idParamName());
         $this->assertEquals(10, $engine->defaultScore());
     }
 }

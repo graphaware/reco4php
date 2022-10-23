@@ -13,5 +13,5 @@ namespace GraphAware\Reco4PHP\Post;
 
 interface PostProcessor
 {
-    public function name();
+    public function name(): string;
 }

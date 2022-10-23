@@ -4,19 +4,18 @@ namespace GraphAware\Reco4PHP\Tests\Result;
 
 use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\Result\Recommendations;
-use GraphAware\Reco4PHP\Result\Score;
 use GraphAware\Reco4PHP\Result\SingleScore;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Class RecommendationsListTest
- * @package GraphAware\Reco4PHP\Tests\Result
+ * Class RecommendationsListTest.
  *
  * @group result
  */
-class RecommendationsListTest extends \PHPUnit_Framework_TestCase
+class RecommendationsListTest extends TestCase
 {
-    public function testResultGetTwoScoresIfDiscoveredTwice()
+    public function testResultGetTwoScoresIfDiscoveredTwice(): void
     {
         $node = FakeNode::createDummy();
         $list = new Recommendations(new SimpleContext());
@@ -31,7 +30,7 @@ class RecommendationsListTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('e2', $list->get(0)->getScores());
     }
 
-    public function testTotalScoreIsIncremented()
+    public function testTotalScoreIsIncremented(): void
     {
         $node = FakeNode::createDummy();
         $list = new Recommendations(new SimpleContext());
@@ -43,7 +42,7 @@ class RecommendationsListTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $reco->totalScore());
     }
 
-    public function testReasons()
+    public function testReasons(): void
     {
         $node = FakeNode::createDummy();
         $list = new Recommendations(new SimpleContext());
