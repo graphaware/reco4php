@@ -11,34 +11,29 @@
 
 namespace GraphAware\Reco4PHP\Persistence;
 
-use GraphAware\Neo4j\Client\ClientBuilder;
-use GraphAware\Neo4j\Client\ClientInterface;
+use Laudis\Neo4j\ClientBuilder;
+use Laudis\Neo4j\Contracts\ClientInterface;
 
 class DatabaseService
 {
-    private $driver;
+    private ClientInterface $driver;
 
     public function __construct($uri = null)
     {
-        if ($uri !== null) {
+        if (null !== $uri) {
             $this->driver = ClientBuilder::create()
-                ->addConnection('default', $uri)
+                ->withDriver('default', $uri)
+                ->withDefaultDriver('default')
                 ->build();
         }
     }
 
-    /**
-     * @return ClientInterface
-     */
-    public function getDriver()
+    public function getDriver(): ClientInterface
     {
         return $this->driver;
     }
 
-    /**
-     * @param \GraphAware\Neo4j\Client\ClientInterface $driver
-     */
-    public function setDriver(ClientInterface $driver)
+    public function setDriver(ClientInterface $driver): void
     {
         $this->driver = $driver;
     }

@@ -4,9 +4,10 @@ namespace GraphAware\Reco4PHP\Tests\Config;
 
 use GraphAware\Reco4PHP\Config\SimpleConfig;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Types\Node;
+use PHPUnit\Framework\TestCase;
 
-class SimpleConfigUnitTest extends \PHPUnit_Framework_TestCase
+class SimpleConfigUnitTest extends TestCase
 {
     public function testDefault()
     {

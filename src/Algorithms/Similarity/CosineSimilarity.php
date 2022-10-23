@@ -13,7 +13,7 @@ namespace GraphAware\Reco4PHP\Algorithms\Similarity;
 
 class CosineSimilarity implements Similarity
 {
-    public function getSimilarity(array $xVector, array $yVector)
+    public function getSimilarity(array $xVector, array $yVector): float
     {
         $a = $this->getDotProduct($xVector, $yVector);
         $b = $this->getNorm($xVector) * $this->getNorm($yVector);
@@ -25,7 +25,7 @@ class CosineSimilarity implements Similarity
         return 0;
     }
 
-    private function getDotProduct(array $xVector, array $yVector)
+    private function getDotProduct(array $xVector, array $yVector): float
     {
         $sum = 0.0;
         foreach ($xVector as $k => $v) {
@@ -35,7 +35,7 @@ class CosineSimilarity implements Similarity
         return $sum;
     }
 
-    private function getNorm(array $vector)
+    private function getNorm(array $vector): float
     {
         $sum = 0.0;
         foreach ($vector as $k => $v) {

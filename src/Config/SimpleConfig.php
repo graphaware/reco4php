@@ -13,30 +13,20 @@ namespace GraphAware\Reco4PHP\Config;
 
 class SimpleConfig extends KeyValueConfig
 {
-    /**
-     * @var int
-     */
-    protected $limit;
+    protected int $limit;
 
-    /**
-     * @var int
-     */
-    protected $maxTime;
+    protected int $maxTime;
 
-    /**
-     * @param int|null $limit
-     * @param int|null $maxTime
-     */
-    public function __construct($limit = null, $maxTime = null)
+    public function __construct(?int $limit = null, ?int $maxTime = null)
     {
-        $this->limit = null !== $limit ? $limit : self::UNLIMITED;
-        $this->maxTime = null !== $maxTime ? $maxTime : self::UNLIMITED;
+        $this->limit = $limit ?? self::UNLIMITED;
+        $this->maxTime = $maxTime ?? self::UNLIMITED;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function limit()
+    public function limit(): int
     {
         return $this->limit;
     }
@@ -44,7 +34,7 @@ class SimpleConfig extends KeyValueConfig
     /**
      * {@inheritdoc}
      */
-    public function maxTime()
+    public function maxTime(): int
     {
         return $this->maxTime;
     }

@@ -13,47 +13,32 @@ namespace GraphAware\Reco4PHP\Result;
 
 class SingleScore
 {
-    /**
-     * @var float
-     */
-    private $score;
+    private float $score;
 
-    /**
-     * @var null|string
-     */
-    private $reason;
+    private ?string $reason;
 
     /**
      * SingleScore constructor.
-     *
-     * @param float|$score
-     * @param null|string $reason
      */
-    public function __construct($score, $reason = null)
+    public function __construct(float $score, ?string $reason = null)
     {
-        $this->score = (float) $score;
+        $this->score = $score;
         $this->addReason($reason);
     }
 
-    public function addReason($reason = null)
+    public function addReason(?string $reason = null): void
     {
         if (null !== $reason) {
-            $this->reason = (string) $reason;
+            $this->reason = $reason;
         }
     }
 
-    /**
-     * @return float
-     */
-    public function getScore()
+    public function getScore(): float
     {
         return $this->score;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getReason()
+    public function getReason(): ?string
     {
         return $this->reason;
     }

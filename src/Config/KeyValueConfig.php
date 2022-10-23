@@ -13,46 +13,24 @@ namespace GraphAware\Reco4PHP\Config;
 
 abstract class KeyValueConfig implements Config
 {
-    /**
-     * @var array
-     */
-    protected $values = [];
+    protected array $values = [];
 
-    /**
-     * @param $key
-     *
-     * @return mixed
-     */
-    public function get($key)
+    public function get(string $key): mixed
     {
         return array_key_exists($key, $this->values) ? $this->values[$key] : null;
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function add($key, $value)
+    public function add(string $key, mixed $value): void
     {
         $this->values[$key] = $value;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function containsKey($key)
+    public function containsKey(string $key): bool
     {
         return array_key_exists($key, $this->values);
     }
 
-    /**
-     * @param mixed $o
-     *
-     * @return bool
-     */
-    public function contains($o)
+    public function contains(mixed $o): bool
     {
         return in_array($o, $this->values);
     }

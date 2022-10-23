@@ -11,29 +11,21 @@
 
 namespace GraphAware\Reco4PHP\Result;
 
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Types\Node;
 
 class Recommendation
 {
-    /**
-     * @var \GraphAware\Common\Type\Node
-     */
-    protected $item;
+    protected Node $item;
 
     /**
-     * @var \GraphAware\Reco4PHP\Result\Score[]
+     * @var Score[]
      */
-    protected $scores = [];
+    protected array $scores = [];
 
-    /**
-     * @var float
-     */
-    protected $totalScore = 0.0;
+    protected float $totalScore = 0.0;
 
     /**
      * Recommendation constructor.
-     *
-     * @param \GraphAware\Common\Type\Node $item
      */
     public function __construct(Node $item)
     {
@@ -41,19 +33,18 @@ class Recommendation
     }
 
     /**
-     * @param string                                  $name
-     * @param \GraphAware\Reco4PHP\Result\SingleScore $score
+     * @param string $name
      */
-    public function addScore($name, SingleScore $score)
+    public function addScore($name, SingleScore $score): void
     {
         $this->getScoreOrCreate($name)->add($score);
         $this->totalScore += $score->getScore();
     }
 
     /**
-     * @param \GraphAware\Reco4PHP\Result\SingleScore[]
+     * @param SingleScore[]
      */
-    public function addScores(array $scores)
+    public function addScores(array $scores): void
     {
         foreach ($scores as $name => $singleScores) {
             foreach ($singleScores->getScores() as $score) {
@@ -63,19 +54,14 @@ class Recommendation
     }
 
     /**
-     * @return \GraphAware\Reco4PHP\Result\SingleScore[]
+     * @return SingleScore[]
      */
-    public function getScores()
+    public function getScores(): array
     {
         return $this->scores;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return \GraphAware\Reco4PHP\Result\Score
-     */
-    public function getScore($key)
+    public function getScore(string $key): Score
     {
         if (!array_key_exists($key, $this->scores)) {
             throw new \InvalidArgumentException(sprintf('The recommendation does not contains a score named "%s"', $key));
@@ -84,7 +70,7 @@ class Recommendation
         return $this->scores[$key];
     }
 
-    private function getScoreOrCreate($name)
+    private function getScoreOrCreate(string $name): Score
     {
         if (!array_key_exists($name, $this->scores)) {
             $this->scores[$name] = new Score($name);
@@ -93,18 +79,12 @@ class Recommendation
         return $this->scores[$name];
     }
 
-    /**
-     * @return float
-     */
-    public function totalScore()
+    public function totalScore(): float
     {
         return $this->totalScore;
     }
 
-    /**
-     * @return \GraphAware\Common\Type\Node
-     */
-    public function item()
+    public function item(): Node
     {
         return $this->item;
     }

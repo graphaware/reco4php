@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 /**
  * This file is part of the GraphAware Reco4PHP package.
@@ -13,12 +13,12 @@ declare (strict_types = 1);
 
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Result\Record;
-use GraphAware\Common\Result\ResultCollection;
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Result\Recommendations;
+use GraphAware\Reco4PHP\Result\ResultCollection;
 use GraphAware\Reco4PHP\Result\SingleScore;
+use Laudis\Neo4j\Types\CypherMap;
+use Laudis\Neo4j\Types\Node;
 
 abstract class SingleDiscoveryEngine implements DiscoveryEngine
 {
@@ -28,39 +28,29 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
 
     /**
      * {@inheritdoc}
-     *
-     * @param Node    $input
-     * @param Node    $item
-     * @param Record  $record
-     * @param Context $context
-     *
-     * @return \GraphAware\Reco4PHP\Result\SingleScore
      */
-    public function buildScore(Node $input, Node $item, Record $record, Context $context) : SingleScore
+    public function buildScore(Node $input, Node $item, CypherMap $result, Context $context): SingleScore
     {
-        $score = $record->hasValue($this->scoreResultName()) ? $record->value($this->scoreResultName()) : $this->defaultScore();
-        $reason = $record->hasValue($this->reasonResultName()) ? $record->value($this->reasonResultName()) : null;
+        $score = $result->hasKey($this->scoreResultName()) ? $result->get($this->scoreResultName()) : $this->defaultScore();
+        $reason = $result->hasKey($this->reasonResultName()) ? $result->get($this->reasonResultName()) : null;
 
         return new SingleScore($score, $reason);
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @param Node             $input
-     * @param ResultCollection $resultCollection
-     * @param Context          $context
-     *
-     * @return \GraphAware\Reco4PHP\Result\Recommendations
      */
-    final public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context) : Recommendations
+    final public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context): Recommendations
     {
-        $result = $resultCollection->get($this->name());
+        $results = $resultCollection->get($this->name());
         $recommendations = new Recommendations($context);
 
-        foreach ($result->records() as $record) {
-            if ($record->hasValue($this->recoResultName())) {
-                $recommendations->add($record->get($this->recoResultName()), $this->name(), $this->buildScore($input, $record->get($this->recoResultName()), $record, $context));
+        /** @var CypherMap $result */
+        foreach ($results as $result) {
+            if ($result->hasKey($this->recoResultName())) {
+                /** @var Node $node */
+                $node = $result->get($this->recoResultName());
+                $recommendations->add($node, $this->name(), $this->buildScore($input, $node, $result, $context));
             }
         }
 
@@ -70,7 +60,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function recoResultName() : string
+    public function recoResultName(): string
     {
         return self::$DEFAULT_RECO_NAME;
     }
@@ -78,7 +68,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function scoreResultName() : string
+    public function scoreResultName(): string
     {
         return self::$DEFAULT_SCORE_NAME;
     }
@@ -86,7 +76,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function reasonResultName() : string
+    public function reasonResultName(): string
     {
         return self::$DEFAULT_REASON_NAME;
     }
@@ -94,7 +84,7 @@ abstract class SingleDiscoveryEngine implements DiscoveryEngine
     /**
      * {@inheritdoc}
      */
-    public function defaultScore() : float
+    public function defaultScore(): float
     {
         return 1.0;
     }

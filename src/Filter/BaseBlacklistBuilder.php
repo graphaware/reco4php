@@ -11,29 +11,29 @@
 
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Result\Result;
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Types\CypherList;
+use Laudis\Neo4j\Types\CypherMap;
+use Laudis\Neo4j\Types\Node;
 
 abstract class BaseBlacklistBuilder implements BlackListBuilder
 {
     /**
-     * @param \GraphAware\Common\Result\Result $result
-     *
-     * @return \GraphAware\Common\Type\Node[]
+     * @return Node[]
      */
-    public function buildBlackList(Result $result)
+    public function buildBlackList(CypherList $results): array
     {
         $nodes = [];
-        foreach ($result->records() as $record) {
-            if ($record->hasValue($this->itemResultName()) && $record->value($this->itemResultName()) instanceof Node) {
-                $nodes[] = $record->get($this->itemResultName());
+        /** @var CypherMap $result */
+        foreach ($results as $result) {
+            if ($result->hasKey($this->itemResultName()) && $result->get($this->itemResultName()) instanceof Node) {
+                $nodes[] = $result->get($this->itemResultName());
             }
         }
 
         return $nodes;
     }
 
-    public function itemResultName()
+    public function itemResultName(): string
     {
         return 'item';
     }

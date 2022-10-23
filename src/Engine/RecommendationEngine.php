@@ -11,77 +11,59 @@
 
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Context\Context;
+use GraphAware\Reco4PHP\Filter\BlackListBuilder;
+use GraphAware\Reco4PHP\Filter\Filter;
 use GraphAware\Reco4PHP\Persistence\DatabaseService;
+use GraphAware\Reco4PHP\Post\PostProcessor;
+use GraphAware\Reco4PHP\Result\Recommendations;
+use Laudis\Neo4j\Types\Node;
 
 interface RecommendationEngine
 {
-    /**
-     * @return string
-     */
-    public function name() : string;
+    public function name(): string;
 
     /**
-     * @return \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]
+     * @return DiscoveryEngine[]
      */
-    public function discoveryEngines() : array;
+    public function discoveryEngines(): array;
 
     /**
-     * @return \GraphAware\Reco4PHP\Filter\BlackListBuilder[]
+     * @return BlackListBuilder[]
      */
-    public function blacklistBuilders() : array;
+    public function blacklistBuilders(): array;
 
     /**
-     * @return \GraphAware\Reco4PHP\Post\PostProcessor[]
+     * @return PostProcessor[]
      */
-    public function postProcessors() : array;
+    public function postProcessors(): array;
 
     /**
-     * @return \GraphAware\Reco4PHP\Filter\Filter[]
+     * @return Filter[]
      */
-    public function filters() : array;
+    public function filters(): array;
 
     /**
-     * @return \Psr\Log\LoggerInterface[]
+     * @return DiscoveryEngine[]
      */
-    public function loggers() : array;
+    public function getDiscoveryEngines(): array;
 
     /**
-     * @return \GraphAware\Reco4PHP\Engine\DiscoveryEngine[]
+     * @return BlackListBuilder[]
      */
-    public function getDiscoveryEngines() : array;
+    public function getBlacklistBuilders(): array;
 
     /**
-     * @return \GraphAware\Reco4PHP\Filter\BlackListBuilder[]
+     * @return Filter[]
      */
-    public function getBlacklistBuilders() : array;
+    public function getFilters(): array;
 
     /**
-     * @return \GraphAware\Reco4PHP\Filter\Filter[]
+     * @return PostProcessor[]
      */
-    public function getFilters() : array;
+    public function getPostProcessors(): array;
 
-    /**
-     * @return \GraphAware\Reco4PHP\Post\PostProcessor[]
-     */
-    public function getPostProcessors() : array;
+    public function recommend(Node $input, Context $context): Recommendations;
 
-    /**
-     * @return \Psr\Log\LoggerInterface[]
-     */
-    public function getLoggers() : array;
-
-    /**
-     * @param Node    $input
-     * @param Context $context
-     *
-     * @return \GraphAware\Reco4PHP\Result\Recommendations
-     */
-    public function recommend(Node $input, Context $context);
-
-    /**
-     * @param \GraphAware\Reco4PHP\Persistence\DatabaseService $databaseService
-     */
     public function setDatabaseService(DatabaseService $databaseService);
 }

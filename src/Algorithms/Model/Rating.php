@@ -13,34 +13,22 @@ namespace GraphAware\Reco4PHP\Algorithms\Model;
 
 class Rating
 {
-    /**
-     * @var float
-     */
-    protected $rating;
+    protected float $rating;
 
-    /**
-     * @var int
-     */
-    protected $userNodeId;
+    protected int $userNodeId;
 
-    public function __construct($rating, $userNodeId)
+    public function __construct(float $rating, int $userNodeId)
     {
         $this->rating = (float) $rating;
         $this->userNodeId = (int) $userNodeId;
     }
 
-    /**
-     * @return float
-     */
-    public function getRating()
+    public function getRating(): float
     {
         return $this->rating;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->userNodeId;
     }

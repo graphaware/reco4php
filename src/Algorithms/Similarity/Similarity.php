@@ -13,5 +13,5 @@ namespace GraphAware\Reco4PHP\Algorithms\Similarity;
 
 interface Similarity
 {
-    public function getSimilarity(array $xVector, array $yVector);
+    public function getSimilarity(array $xVector, array $yVector): float;
 }

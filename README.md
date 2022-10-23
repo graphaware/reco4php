@@ -4,7 +4,7 @@
 
 GraphAware Reco4PHP is a library for building complex recommendation engines atop Neo4j.
 
-[![Build Status](https://travis-ci.org/graphaware/neo4j-php-client.svg)](https://travis-ci.org/graphaware/reco4php)
+[![Build Status](https://github.com/graphaware/reco4php/workflows/main/badge.svg)](https://github.com/graphaware/reco4php/actions)
 
 Features:
 
@@ -15,8 +15,8 @@ Features:
 
 Requirements:
 
-* PHP7.0+
-* Neo4j 2.2.6+ (Neo4j 3.0+ recommended)
+* PHP8.0+
+* Neo4j 3.5 / 4.0+
 
 The library imposes a specific recommendation engine architecture, which has emerged from our experience building recommendation
 engines and solves the architectural challenge to run recommendation engines remotely via Cypher.
@@ -79,16 +79,18 @@ The dataset is publicly available here : http://grouplens.org/datasets/movielens
 
 Once downloaded and extracted the archive, you can run the following Cypher statements for importing the dataset, just adapt the file urls to match your actual path to the files :
 
+> **_NOTE:_**  This is Cypher version 4.4 syntax.
+
 ```
-CREATE CONSTRAINT ON (m:Movie) ASSERT m.id IS UNIQUE;
-CREATE CONSTRAINT ON (g:Genre) ASSERT g.name IS UNIQUE;
-CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE;
+CREATE CONSTRAINT FOR (m:Movie) REQUIRE m.id IS UNIQUE;
+CREATE CONSTRAINT FOR (g:Genre) REQUIRE g.name IS UNIQUE;
+CREATE CONSTRAINT FOR (u:User) REQUIRE u.id IS UNIQUE;
 ```
 
 ```
 LOAD CSV WITH HEADERS FROM "file:///Users/ikwattro/dev/movielens/movies.csv" AS row
 WITH row
-MERGE (movie:Movie {id: toInt(row.movieId)})
+MERGE (movie:Movie {id: toInteger(row.movieId)})
 ON CREATE SET movie.title = row.title
 WITH movie, row
 UNWIND split(row.genres, '|') as genre
@@ -98,16 +100,19 @@ MERGE (movie)-[:HAS_GENRE]->(g)
 
 
 ```
-USING PERIODIC COMMIT 500
-LOAD CSV WITH HEADERS FROM "file:///Users/ikwattro/dev/movielens/ratings.csv" AS row
+:auto LOAD CSV WITH HEADERS FROM "file:///Users/ikwattro/dev/movielens/ratings.csv" AS row
 WITH row
-MATCH (movie:Movie {id: toInt(row.movieId)})
-MERGE (user:User {id: toInt(row.userId)})
-MERGE (user)-[r:RATED]->(movie)
-ON CREATE SET r.rating = toInt(row.rating), r.timestamp = toInt(row.timestamp)
+LIMIT 500
+CALL {
+    WITH row
+    MATCH (movie:Movie {id: toInteger(row.movieId)})
+    MERGE (user:User {id: toInteger(row.userId)})
+    MERGE (user)-[r:RATED]->(movie)
+    ON CREATE SET r.rating = toInteger(row.rating), r.timestamp = toInteger(row.timestamp)
+} IN TRANSACTIONS
 ```
 
-For the purpose of the example, we will assume we are recommending movies for the User with ID 460.
+For the purpose of the example, we will assume we are recommending movies for the User with ID 4.
 
 
 ### Installation
@@ -127,39 +132,72 @@ In order to recommend movies people should watch, you have decided that we shoul
 * Find movies rated by people who rated the same movies than me, but that I didn't rated yet
 
 As told before, the `reco4php` recommendation engine framework makes all the plumbing so you only have to concentrate on the business logic, that's why it provides base class that you should extend and just implement
-the methods of the upper interfaces, here is how you would create your first discovery engine :
+the methods of the upper interfaces, here are how you would create your first discovery engines :
 
 ```php
 <?php
 
 namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
 
-use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\Node;
 
 class RatedByOthers extends SingleDiscoveryEngine
 {
-    public function discoveryQuery(Node $input, Context $context)
+    public function discoveryQuery(Node $input, Context $context): Statement
     {
-        $query = 'MATCH (input:User) WHERE id(input) = {id}
+        $query = 'MATCH (input:User) WHERE id(input) = $id
         MATCH (input)-[:RATED]->(m)<-[:RATED]-(o)
         WITH distinct o
         MATCH (o)-[:RATED]->(reco)
         RETURN distinct reco LIMIT 500';
 
-        return Statement::create($query, ['id' => $input->identity()]);
+        return Statement::create($query, ['id' => $input->getId()]);
     }
 
-    public function name()
+    public function name(): string
     {
-        return "rated_by_others";
+        return 'rated_by_others';
     }
 }
 ```
 
-The `discoveryMethod` method should return a `Statement` object containing the query for finding recommendations,
+```php
+<?php
+
+namespace GraphAware\Reco4PHP\Tests\Example\Discovery;
+
+use GraphAware\Reco4PHP\Context\Context;
+use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\Node;
+
+class FromSameGenreILike extends SingleDiscoveryEngine
+{
+    public function name(): string
+    {
+        return 'from_genre_i_like';
+    }
+
+    public function discoveryQuery(Node $input, Context $context): Statement
+    {
+        $query = 'MATCH (input) WHERE id(input) = $id
+        MATCH (input)-[r:RATED]->(movie)-[:HAS_GENRE]->(genre)
+        WITH distinct genre, sum(r.rating) as score
+        ORDER BY score DESC
+        LIMIT 15
+        MATCH (genre)<-[:HAS_GENRE]-(reco)
+        RETURN reco
+        LIMIT 200';
+
+        return Statement::create($query, ['id' => $input->getId()]);
+    }
+}
+```
+
+The `discoveryQuery` method should return a `Statement` object containing the query for finding recommendations,
 the `name` method should return a string describing the name of your engine (this is mostly for logging purposes).
 
 The query here has some logic, we don't want to return as candidates all the movies found, as in the initial dataset it would be 10k+, so imagine what it would be on a 100M dataset. So we are summing the score
@@ -181,19 +219,19 @@ As an example of a filter, we will filter the movies that were produced before t
 
 namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Filter\Filter;
+use Laudis\Neo4j\Types\Node;
 
 class ExcludeOldMovies implements Filter
 {
-    public function doInclude(Node $input, Node $item)
+    public function doInclude(Node $input, Node $item): bool
     {
-        $title = $item->value("title");
+        $title = (string) $item->getProperty('title');
         preg_match('/(?:\()\d+(?:\))/', $title, $matches);
 
         if (isset($matches[0])) {
-            $y = str_replace('(','',$matches[0]);
-            $y = str_replace(')','', $y);
+            $y = str_replace('(', '', $matches[0]);
+            $y = str_replace(')', '', $y);
             $year = (int) $y;
             if ($year < 1999) {
                 return false;
@@ -218,22 +256,22 @@ Of course we do not want to recommend movies that the current user has already r
 
 namespace GraphAware\Reco4PHP\Tests\Example\Filter;
 
-use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Filter\BaseBlacklistBuilder;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\Node;
 
 class AlreadyRatedBlackList extends BaseBlacklistBuilder
 {
-    public function blacklistQuery(Node $input)
+    public function blacklistQuery(Node $input): Statement
     {
-        $query = 'MATCH (input) WHERE id(input) = {inputId}
+        $query = 'MATCH (input) WHERE id(input) = $inputId
         MATCH (input)-[:RATED]->(movie)
         RETURN movie as item';
 
-        return Statement::create($query, ['inputId' => $input->identity()]);
+        return Statement::create($query, ['inputId' => $input->getId()]);
     }
 
-    public function name()
+    public function name(): string
     {
         return 'already_rated';
     }
@@ -252,39 +290,39 @@ nodes against the blacklists provided.
 
 namespace GraphAware\Reco4PHP\Tests\Example\PostProcessing;
 
-use GraphAware\Common\Cypher\Statement;
-use GraphAware\Common\Result\Record;
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Post\RecommendationSetPostProcessor;
 use GraphAware\Reco4PHP\Result\Recommendation;
 use GraphAware\Reco4PHP\Result\Recommendations;
 use GraphAware\Reco4PHP\Result\SingleScore;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\CypherMap;
+use Laudis\Neo4j\Types\Node;
 
 class RewardWellRated extends RecommendationSetPostProcessor
 {
-    public function buildQuery(Node $input, Recommendations $recommendations)
+    public function buildQuery(Node $input, Recommendations $recommendations): Statement
     {
-        $query = 'UNWIND {ids} as id
+        $query = 'UNWIND $ids as id
         MATCH (n) WHERE id(n) = id
         MATCH (n)<-[r:RATED]-(u)
         RETURN id(n) as id, sum(r.rating) as score';
 
         $ids = [];
         foreach ($recommendations->getItems() as $item) {
-            $ids[] = $item->item()->identity();
+            $ids[] = $item->item()->getId();
         }
 
         return Statement::create($query, ['ids' => $ids]);
     }
 
-    public function postProcess(Node $input, Recommendation $recommendation, Record $record)
+    public function postProcess(Node $input, Recommendation $recommendation, CypherMap $result): void
     {
-        $recommendation->addScore($this->name(), new SingleScore($record->get('score'), 'total_ratings_relationships'));
+        $recommendation->addScore($this->name(), new SingleScore((float) $result->get('score'), 'total_ratings_relationships'));
     }
 
-    public function name()
+    public function name(): string
     {
-        return "reward_well_rated";
+        return 'reward_well_rated';
     }
 }
 ```
@@ -299,44 +337,46 @@ Now that our components are created, we need to build effectively our recommenda
 namespace GraphAware\Reco4PHP\Tests\Example;
 
 use GraphAware\Reco4PHP\Engine\BaseRecommendationEngine;
+use GraphAware\Reco4PHP\Tests\Example\Discovery\FromSameGenreILike;
+use GraphAware\Reco4PHP\Tests\Example\Discovery\RatedByOthers;
 use GraphAware\Reco4PHP\Tests\Example\Filter\AlreadyRatedBlackList;
 use GraphAware\Reco4PHP\Tests\Example\Filter\ExcludeOldMovies;
 use GraphAware\Reco4PHP\Tests\Example\PostProcessing\RewardWellRated;
-use GraphAware\Reco4PHP\Tests\Example\Discovery\RatedByOthers;
 
 class ExampleRecommendationEngine extends BaseRecommendationEngine
 {
-    public function name()
+    public function name(): string
     {
-        return "example";
+        return 'user_movie_reco';
     }
 
-    public function discoveryEngines()
+    public function discoveryEngines(): array
     {
-        return array(
-            new RatedByOthers()
-        );
+        return [
+            new RatedByOthers(),
+            new FromSameGenreILike(),
+        ];
     }
 
-    public function blacklistBuilders()
+    public function blacklistBuilders(): array
     {
-        return array(
-            new AlreadyRatedBlackList()
-        );
+        return [
+            new AlreadyRatedBlackList(),
+        ];
     }
 
-    public function postProcessors()
+    public function postProcessors(): array
     {
-        return array(
-            new RewardWellRated()
-        );
+        return [
+            new RewardWellRated(),
+        ];
     }
 
-    public function filters()
+    public function filters(): array
     {
-        return array(
-            new ExcludeOldMovies()
-        );
+        return [
+            new ExcludeOldMovies(),
+        ];
     }
 }
 ```
@@ -351,32 +391,25 @@ namespace GraphAware\Reco4PHP\Tests\Example;
 
 use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\RecommenderService;
+use GraphAware\Reco4PHP\Result\Recommendations;
 
 class ExampleRecommenderService
 {
-    /**
-     * @var \GraphAware\Reco4PHP\RecommenderService
-     */
-    protected $service;
+    protected RecommenderService $service;
 
     /**
      * ExampleRecommenderService constructor.
-     * @param string $databaseUri
      */
-    public function __construct($databaseUri)
+    public function __construct(string $databaseUri)
     {
         $this->service = RecommenderService::create($databaseUri);
         $this->service->registerRecommendationEngine(new ExampleRecommendationEngine());
     }
 
-    /**
-     * @param int $id
-     * @return \GraphAware\Reco4PHP\Result\Recommendations
-     */
-    public function recommendMovieForUserWithId($id)
+    public function recommendMovieForUserWithId(int $id): Recommendations
     {
         $input = $this->service->findInputBy('User', 'id', $id);
-        $recommendationEngine = $this->service->getRecommender("user_movie_reco");
+        $recommendationEngine = $this->service->getRecommender('user_movie_reco');
 
         return $recommendationEngine->recommend($input, new SimpleContext());
     }
@@ -390,9 +423,14 @@ The `recommend()` method on a recommendation engine will returns you a `Recommen
 Each score is inserted so you can easily inspect why such recommendation has been produced, example :
 
 ```php
+<?php
 
-$recommender = new ExampleRecommendationService("http://localhost:7474");
-$recommendation = $recommender->recommendMovieForUserWithId(460);
+require_once __DIR__.'/vendor/autoload.php';
+
+use GraphAware\Reco4PHP\Tests\Example\ExampleRecommenderService;
+
+$recommender = new ExampleRecommenderService('bolt://localhost:7687');
+$recommendations = $recommender->recommendMovieForUserWithId(4);
 
 print_r($recommendations->getItems(1));
 
@@ -400,18 +438,59 @@ Array
 (
     [0] => GraphAware\Reco4PHP\Result\Recommendation Object
         (
-            [item:protected] => GraphAware\Bolt\Result\Type\Node Object
+            [item:protected] => Laudis\Neo4j\Types\Node Object
                 (
-                    [identity:protected] => 13248
-                    [labels:protected] => Array
+                    [id:Laudis\Neo4j\Types\Node:private] => 2700
+                    [labels:Laudis\Neo4j\Types\Node:private] => Laudis\Neo4j\Types\CypherList Object
                         (
-                            [0] => Movie
+                            [keyCache:protected] => Array
+                                (
+                                    [0] => 0
+                                )
+
+                            [cache:protected] => Array
+                                (
+                                    [0] => Movie
+                                )
+
+                            [cacheLimit:Laudis\Neo4j\Types\AbstractCypherSequence:private] => 9223372036854775807
+                            [currentPosition:protected] => 0
+                            [generatorPosition:protected] => 1
+                            [generator:protected] => ArrayIterator Object
+                                (
+                                    [storage:ArrayIterator:private] => Array
+                                        (
+                                        )
+
+                                )
+
                         )
 
-                    [properties:protected] => Array
+                    [properties:Laudis\Neo4j\Types\Node:private] => Laudis\Neo4j\Types\CypherMap Object
                         (
-                            [id] => 2571
-                            [title] => Matrix, The (1999)
+                            [keyCache:protected] => Array
+                                (
+                                    [0] => id
+                                    [1] => title
+                                )
+
+                            [cache:protected] => Array
+                                (
+                                    [id] => 3578
+                                    [title] => Gladiator (2000)
+                                )
+
+                            [cacheLimit:Laudis\Neo4j\Types\AbstractCypherSequence:private] => 9223372036854775807
+                            [currentPosition:protected] => 0
+                            [generatorPosition:protected] => 2
+                            [generator:protected] => ArrayIterator Object
+                                (
+                                    [storage:ArrayIterator:private] => Array
+                                        (
+                                        )
+
+                                )
+
                         )
 
                 )
@@ -420,13 +499,12 @@ Array
                 (
                     [rated_by_others] => GraphAware\Reco4PHP\Result\Score Object
                         (
-                            [score:protected] => 1067
+                            [score:protected] => 1
                             [scores:protected] => Array
                                 (
                                     [0] => GraphAware\Reco4PHP\Result\SingleScore Object
                                         (
-                                            [score:GraphAware\Reco4PHP\Result\SingleScore:private] => 1067
-                                            [reason:GraphAware\Reco4PHP\Result\SingleScore:private] =>
+                                            [score:GraphAware\Reco4PHP\Result\SingleScore:private] => 1
                                         )
 
                                 )
@@ -435,13 +513,13 @@ Array
 
                     [reward_well_rated] => GraphAware\Reco4PHP\Result\Score Object
                         (
-                            [score:protected] => 261
+                            [score:protected] => 9
                             [scores:protected] => Array
                                 (
                                     [0] => GraphAware\Reco4PHP\Result\SingleScore Object
                                         (
-                                            [score:GraphAware\Reco4PHP\Result\SingleScore:private] => 261
-                                            [reason:GraphAware\Reco4PHP\Result\SingleScore:private] =>
+                                            [score:GraphAware\Reco4PHP\Result\SingleScore:private] => 9
+                                            [reason:GraphAware\Reco4PHP\Result\SingleScore:private] => total_ratings_relationships
                                         )
 
                                 )
@@ -450,8 +528,9 @@ Array
 
                 )
 
-            [totalScore:protected] => 261
+            [totalScore:protected] => 10
         )
+
 )
 ```
 ### License

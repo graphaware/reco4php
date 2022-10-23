@@ -11,17 +11,12 @@
 
 namespace GraphAware\Reco4PHP\Filter;
 
-use GraphAware\Common\Type\Node;
+use Laudis\Neo4j\Types\Node;
 
 interface Filter
 {
     /**
      * Returns whether or not the recommended node should be included in the recommendation.
-     *
-     * @param \GraphAware\Common\Type\Node $input
-     * @param \GraphAware\Common\Type\Node $item
-     *
-     * @return bool
      */
-    public function doInclude(Node $input, Node $item);
+    public function doInclude(Node $input, Node $item): bool;
 }

@@ -15,18 +15,12 @@ use GraphAware\Reco4PHP\Config\Config;
 
 interface Context
 {
-    /**
-     * @return \GraphAware\Reco4PHP\Config\Config
-     */
-    public function config() : Config;
+    public function config(): Config;
 
-    /**
-     * @return bool
-     */
-    public function timeLeft() : bool;
+    public function timeLeft(): bool;
 
     /**
      * @return \GraphAware\Reco4PHP\Context\Statistics
      */
-    public function getStatistics() : Statistics;
+    public function getStatistics(): Statistics;
 }

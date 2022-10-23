@@ -2,11 +2,12 @@
 
 namespace GraphAware\Reco4PHP\Tests\Context;
 
+use GraphAware\Reco4PHP\Config\Config;
 use GraphAware\Reco4PHP\Context\SimpleContext;
 use GraphAware\Reco4PHP\Tests\Helper\FakeNode;
-use GraphAware\Reco4PHP\Config\Config;
+use PHPUnit\Framework\TestCase;
 
-class ContextUnitTest extends \PHPUnit_Framework_TestCase
+class ContextUnitTest extends TestCase
 {
     public function testDefault()
     {
@@ -15,4 +16,3 @@ class ContextUnitTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Config::class, $context->config());
     }
 }
-

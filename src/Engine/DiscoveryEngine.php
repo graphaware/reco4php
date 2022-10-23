@@ -11,58 +11,42 @@
 
 namespace GraphAware\Reco4PHP\Engine;
 
-use GraphAware\Common\Cypher\StatementInterface;
-use GraphAware\Common\Result\Record;
-use GraphAware\Common\Type\Node;
-use GraphAware\Common\Result\ResultCollection;
 use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Result\Recommendations;
+use GraphAware\Reco4PHP\Result\ResultCollection;
 use GraphAware\Reco4PHP\Result\SingleScore;
+use Laudis\Neo4j\Databags\Statement;
+use Laudis\Neo4j\Types\CypherMap;
+use Laudis\Neo4j\Types\Node;
 
 interface DiscoveryEngine
 {
     /**
      * @return string The name of the discovery engine
      */
-    public function name() : string;
+    public function name(): string;
 
     /**
      * The statement to be executed for finding items to be recommended.
-     *
-     * @param Node    $input
-     * @param Context $context
-     *
-     * @return \GraphAware\Common\Cypher\Statement
      */
-    public function discoveryQuery(Node $input, Context $context) : StatementInterface;
+    public function discoveryQuery(Node $input, Context $context): Statement;
 
     /**
      * Returns the score produced by the recommended item.
      *
-     * @param Node    $input
-     * @param Node    $item
-     * @param Record  $record
-     * @param Context $context
-     *
-     * @return \GraphAware\Reco4PHP\Result\SingleScore A single score produced for the recommended item
+     * @return SingleScore A single score produced for the recommended item
      */
-    public function buildScore(Node $input, Node $item, Record $record, Context $context) : SingleScore;
+    public function buildScore(Node $input, Node $item, CypherMap $result, Context $context): SingleScore;
 
     /**
      * Returns a collection of Recommendation object produced by this discovery engine.
-     *
-     * @param Node             $input
-     * @param ResultCollection $resultCollection
-     * @param Context          $context
-     *
-     * @return Recommendations
      */
-    public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context) : Recommendations;
+    public function produceRecommendations(Node $input, ResultCollection $resultCollection, Context $context): Recommendations;
 
     /**
      * @return string The column identifier of the row result representing the recommended item (node)
      */
-    public function recoResultName() : string;
+    public function recoResultName(): string;
 
     /**
      * @return string The column identifier of the row result representing the score to be used, note that this
@@ -70,10 +54,10 @@ interface DiscoveryEngine
      *                <code>defaultScore()</code> or the score logic if the concrete class override the <code>buildScore</code>
      *                method.
      */
-    public function scoreResultName() : string;
+    public function scoreResultName(): string;
 
     /**
      * @return float The default score to be given to the discovered recommended item
      */
-    public function defaultScore() : float;
+    public function defaultScore(): float;
 }

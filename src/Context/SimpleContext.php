@@ -11,35 +11,25 @@
 
 namespace GraphAware\Reco4PHP\Context;
 
-use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Config\Config;
 use GraphAware\Reco4PHP\Config\SimpleConfig;
 
 class SimpleContext implements Context
 {
-    /**
-     * @var \GraphAware\Reco4PHP\Config\Config
-     */
-    protected $config;
+    protected Config $config;
 
-    /**
-     * @var \GraphAware\Reco4PHP\Context\Statistics
-     */
-    protected $statistics;
+    protected Statistics $statistics;
 
-    /**
-     * @param \GraphAware\Reco4PHP\Config\Config $config
-     */
-    public function __construct(Config $config = null)
+    public function __construct(?Config $config = null)
     {
-        $this->config = null !== $config ? $config : new SimpleConfig();
+        $this->config = $config ?? new SimpleConfig();
         $this->statistics = new Statistics();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function config() : Config
+    public function config(): Config
     {
         return $this->config;
     }
@@ -47,12 +37,15 @@ class SimpleContext implements Context
     /**
      * {@inheritdoc}
      */
-    public function timeLeft() : bool
+    public function timeLeft(): bool
     {
         return $this->statistics->getCurrentTimeSpent() < $this->config()->limit();
     }
 
-    public function getStatistics() : Statistics
+    /**
+     * {@inheritdoc}
+     */
+    public function getStatistics(): Statistics
     {
         return $this->statistics;
     }
